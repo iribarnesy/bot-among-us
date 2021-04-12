@@ -127,3 +127,7 @@ class Bot:
         if task[0] != "Unlock Manifolds":
             tasks.start_task()
         task[2]()
+
+if __name__ == '__main__':
+    b = Bot()
+    b.menu()
