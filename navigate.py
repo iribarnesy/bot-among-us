@@ -66,6 +66,18 @@ tasks = [
         ["Download/Upload (Navigation)", (860, 211)],
         ["Download/Upload (Weapons)", (694, 86)]]
 
+class Task:
+    def __init__(self, index, name, location, solve_function=None):
+        self.index = index
+        self.name = name
+        self.location = location
+        self.solve_function = solve_function
+    
+    def __repr__(self):
+        return f"{self.index}: {self.name}"
+
+TASKS = [Task(i, tasks[i][0], tasks[i][1]) for i in range(len(tasks))]
+
 def get_screen():
     imgGrab = ImageGrab.grab(bbox=(0,0,1920,1080))
     img = np.array(imgGrab)
@@ -90,6 +102,8 @@ def pathfinding(i):
     img[504:553, 1055:1216] = [0, 0, 0]
     img[560:600, 628:837] = [0, 0, 0]
     
+    img_pil = Image.fromarray(img, 'RGB').show()
+
     colors = [(198, 17, 17), (228, 132, 10), (101, 7, 46), (149, 202, 220), (174, 116, 27), (224, 116, 9)]
     
     x = 0

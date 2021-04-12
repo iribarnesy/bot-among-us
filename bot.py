@@ -85,7 +85,8 @@ class Bot:
         if(option == 2):
             tasks.menu()
         if(option == 3):
-            navigate.pathfinding()
+            prompt_message_task_number = 'task number in :\n'+"\n".join(str(t) for t in navigate.TASKS)
+            navigate.pathfinding(int(input(prompt_message_task_number)))
         if(option == 4):
             self.find_me()
 
@@ -116,7 +117,7 @@ class Bot:
             if task is not None:
                 result = navigate.pathfinding(tasks_loc.index(task))
                 pyautogui.press("tab")
-                if result is 1:
+                if result == 1:
                     self.perform_task(task)
 
     def select_screen(self):
@@ -126,6 +127,3 @@ class Bot:
         if task[0] != "Unlock Manifolds":
             tasks.start_task()
         task[2]()
-    
-bot = Bot()
-bot.menu()
