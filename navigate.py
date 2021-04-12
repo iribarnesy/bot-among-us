@@ -1,6 +1,7 @@
 import pyautogui
 import time
 import tasks
+from game_map import SkeldMap
 from PIL import ImageGrab, Image
 import cv2
 import numpy as np
@@ -8,75 +9,6 @@ import random
 
 marker = (198, 17, 17)
 marker_arrived = (228, 132, 10)
-tasks = [
-        ["Align Engine (Upper Engine)", (130, 179)],
-        ["Align Engine (Lower Engine)", (133, 425)],
-
-        ["Calibrate Distributor", (410, 323)],
-
-        ["Chart Course", (903, 236)],
-
-        ["Clean O2 Filter", (635, 228)],
-
-        ["Clear Asteroids", (707, 123)],
-
-        ["Divert Power", (328, 315)],
-        ["Accept Power (Communications)", (656, 461)],
-        ["Accept Power (Lower Engine)", (157, 356)],
-        ["Accept Power (Upper Engine)", (172, 105)],
-        ["Accept Power (Navigation)", (860, 211)],
-        ["Accept Power (O2)", (705, 216)],
-        ["Accept Power (Security)", (274, 224)],
-        ["Accept Power (Shields)", (745, 375)],
-        ["Accept Power (Weapons)", (760, 123)],
-
-        ["Empty Garbage/Chute (Cafeteria)", (623, 81)],
-        ["Empty Garbage/Chute (O2)", (635, 239)],
-        ["Empty Garbage/Chute (Storage)", (534, 519)],
-
-        ["Fix Wires (Electrical)", (368, 328)],
-        ["Fix Wires (Storage)", (475, 343)],
-        ["Fix Wires (Security)", (201, 255)],
-        ["Fix Wires (Navigation)", (801, 241)],
-        ["Fix Wires (Admin)", (534, 284)],
-        ["Fix Wires (Cafeteria)", (421, 62)],
-
-        ["Fuel Engine (Storage)", (465, 450)],
-        ["Fuel Engine (Lower Engine)", (150, 425)],
-        ["Fuel Engine (Upper Engine)", (146, 175)],
-
-        ["Inspect Sample", (394, 253)],
-
-        ["Prime Shields", (684, 459)],
-
-        ["Stabilize Steering", (903, 261)],
-
-        ["Start Reactor", (78, 271)],
-
-        ["Submit Scan", (360, 268)],
-
-        ["Swipe Card", (635, 337)], 
-
-        ["Unlock Manifolds", (60, 213)],
-        
-        ["Download/Upload (Cafeteria)", (601, 55)],
-        ["Download/Upload (Admin)", (552, 284)],
-        ["Download/Upload (Communications)", (589, 453)],
-        ["Download/Upload (Electrical)", (317, 323)],
-        ["Download/Upload (Navigation)", (860, 211)],
-        ["Download/Upload (Weapons)", (694, 86)]]
-
-class Task:
-    def __init__(self, index, name, location, solve_function=None):
-        self.index = index
-        self.name = name
-        self.location = location
-        self.solve_function = solve_function
-    
-    def __repr__(self):
-        return f"{self.index}: {self.name}"
-
-TASKS = [Task(i, tasks[i][0], tasks[i][1]) for i in range(len(tasks))]
 
 def get_screen():
     imgGrab = ImageGrab.grab(bbox=(0,0,1920,1080))
@@ -89,8 +21,8 @@ def get_screen():
 
 def pathfinding(i):
     img_map_pix = Image.open('result_test_2.jpg')
-    destination = tasks[i][1]
-    print(tasks[i][0])
+    destination = SkeldMap().tasks[i].location
+    print(SkeldMap().tasks[i].name)
     
     img_map = np.array(img_map_pix)
     img=Image.fromarray(img_map)
@@ -102,7 +34,7 @@ def pathfinding(i):
     img[504:553, 1055:1216] = [0, 0, 0]
     img[560:600, 628:837] = [0, 0, 0]
     
-    img_pil = Image.fromarray(img, 'RGB').show()
+    # img_pil = Image.fromarray(img, 'RGB').show()
 
     colors = [(198, 17, 17), (228, 132, 10), (101, 7, 46), (149, 202, 220), (174, 116, 27), (224, 116, 9)]
     
