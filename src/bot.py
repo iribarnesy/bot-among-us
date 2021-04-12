@@ -4,11 +4,12 @@ import numpy as np
 import cv2
 import pyautogui
 import pytesseract
-import navigate
-import tasks
-from tasks import TaskType
-import game_map
 from pytesseract import Output
+
+import src.navigate as navigate
+import src.tasks as tasks
+from src.tasks import TaskType
+import src.game_map as game_map
 
 
 class Bot:
@@ -37,7 +38,7 @@ class Bot:
             self.find_me()
 
     def find_me(self):
-        c = pyautogui.locateOnScreen('map_character.png', grayscale=True, confidence=.65)
+        c = pyautogui.locateOnScreen('src/img/map_character.png', grayscale=True, confidence=.65)
         pyautogui.moveTo(c)
         return c
 

@@ -4,7 +4,8 @@ import numpy as np
 import cv2
 from PIL import ImageGrab, Image
 import pytesseract
-import utils
+
+import src.utils as utils
 
 """ TaskManager
 Presuppose that the task is opened in game, then solve the task.

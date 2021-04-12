@@ -1,11 +1,12 @@
 import pyautogui
 import time
-import tasks
-from game_map import SkeldMap
 from PIL import ImageGrab, Image
 import cv2
 import numpy as np
 import random
+
+import src.tasks as tasks
+from src.game_map import SkeldMap
 
 marker = (198, 17, 17)
 marker_arrived = (228, 132, 10)
@@ -20,7 +21,7 @@ def get_screen():
     return img, pix
 
 def pathfinding(i):
-    img_map_pix = Image.open('result_test_2.jpg')
+    img_map_pix = Image.open('src/img/result_test_2.jpg')
     destination = SkeldMap().tasks[i].location
     print(SkeldMap().tasks[i].name)
     

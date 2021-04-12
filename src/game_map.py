@@ -1,4 +1,4 @@
-from tasks import TaskManager, TaskType, Task
+from src.tasks import TaskManager, TaskType, Task
 
 class SkeldMap(TaskManager):
     def __init__(self):
