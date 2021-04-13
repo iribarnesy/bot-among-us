@@ -6,6 +6,7 @@ import pyautogui
 import pytesseract
 from pytesseract import Output
 from itertools import groupby
+from typing import List, Tuple
 import math
 
 import src.navigate as navigate
@@ -33,10 +34,9 @@ class MovingAction:
 
 
 class Bot:
-    def __init__(self):
+    def __init__(self, map_img_path='src/img/WalkableMesh_resize_small.png'):
         self.name = "Le bot"
-        self.tasks = None
-        self.game_map = game_map.SkeldMap('src/img/WalkableMesh_resize_small.png')
+        self.game_map = game_map.SkeldMap(map_img_path)
 
     def menu(self):
         print("What would you like to do?")
@@ -50,9 +50,9 @@ class Bot:
         if(option == 1):
             self.startup()
         if(option == 2):
-            self.game_map.prompt_task()
+            self.game_map.taskManager.prompt_task()
         if(option == 3):
-            prompt_message_task_number = 'task number in :\n'+"\n".join(str(t) for t in self.game_map.tasks)
+            prompt_message_task_number = 'task number in :\n'+"\n".join(str(t) for t in self.game_map.taskManager.tasks)
             navigate.pathfinding(int(input(prompt_message_task_number)))
         if(option == 4):
             self.find_me()
@@ -77,13 +77,13 @@ class Bot:
             img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
             pix = img.load()
             task = None
-            for t in self.game_map.tasks:
+            for t in self.game_map.taskManager.tasks:
                 if pix[t.location] > (190, 190, 0) and pix[t.location] < (255, 255, 80) and pix[t.location][2] < 200 and pix[t.location][1] != 17:
                     print(t.name)
                     print(pix[t.location])
                     task = t
             if task is not None:
-                result = navigate.pathfinding(self.game_map.tasks.index(task))
+                result = navigate.pathfinding(self.game_map.taskManager.tasks.index(task))
                 pyautogui.press("tab")
                 if result == 1:
                     self.perform_task(task)
@@ -93,7 +93,7 @@ class Bot:
 
     def perform_task(self, task):
         if task.task_type != TaskType.Unlock_Manifold:
-            self.game_map.start_task()
+            self.game_map.taskManager.start_task()
         task.solve()
 
     
