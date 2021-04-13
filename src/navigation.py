@@ -10,7 +10,7 @@ from src.utils import SingletonMeta
 class NavigationManager(metaclass=SingletonMeta):
     def __init__(self, map_img_path):
         self.map_img_path = map_img_path
-        self.map_matrix = []
+        self.map_matrix = None
 
     def init_matrix(self):
         img_map_pix = Image.open(self.map_img_path)
@@ -24,6 +24,8 @@ class NavigationManager(metaclass=SingletonMeta):
         input : self.map_matrix
         output : path
         """
+        if self.map_matrix is None:
+            self.init_matrix()
         
         grid = Grid(matrix=self.map_matrix)
         start = grid.node(*source_coordinates)

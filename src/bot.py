@@ -5,6 +5,7 @@ import cv2
 import pyautogui
 import pytesseract
 from pytesseract import Output
+from itertools import groupby
 
 import src.navigate as navigate
 import src.tasks as tasks
@@ -16,7 +17,7 @@ class Bot:
     def __init__(self):
         self.name = "Le bot"
         self.tasks = None
-        self.game_map = game_map.SkeldMap()
+        self.game_map = game_map.SkeldMap('src/img/WalkableMesh_resize_small.png')
 
     def menu(self):
         print("What would you like to do?")
@@ -75,6 +76,47 @@ class Bot:
         if task.task_type != TaskType.Unlock_Manifold:
             self.game_map.start_task()
         task.solve()
+
+    
+    def get_direction(self, source_coordinate, target_coordinate):
+        direction = []
+
+        for axis in range(0, len(source_coordinate)):
+            
+            direction.append(target_coordinate[axis] - source_coordinate[axis])
+
+        return tuple(direction)
+        
+
+    def get_direction_and_distance(self, directions):
+        directions_and_distances = [sum(1 for _ in group) for _, group in groupby(directions)]
+        
+        return directions_and_distances
+
+    
+    def get_action_and_distance(self, directions_and_action):
+        return directions_and_action
+
+
+    def get_actions_to_destination(self, destination):
+        source_coordinate = (60,216)
+        path, _ = self.game_map.navigationManager.calculate_path(source_coordinate, destination)
+        directions = []
+        for target_coordinate in path[1:]:
+            directions.append(self.get_direction(source_coordinate, target_coordinate))
+            source_coordinate =target_coordinate
+        
+        directions_and_distances = self.get_direction_and_distance(directions)
+        action_and_distance = self.get_action_and_distance(directions_and_distances)
+
+        return action_and_distance
+
+        # return list de direction et de distance  [Action]
+
+class Action:
+    def __init__(self):
+        self.direction = None
+        self.distance = 0
 
 if __name__ == '__main__':
     b = Bot()
