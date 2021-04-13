@@ -36,10 +36,27 @@ class NavigationManager(metaclass=SingletonMeta):
 
         return path, runs
 
-    def print_path(self, path):
+    def path_to_grid(self, path, must_print=True, result_file_path=None):
+        """ Create a representation of a given path in the map_matrix.
+        's', 'e' represents respectively the start and end points. 'x' is the path and '#' is an obstacle
+        ex : 
+            +---+
+            |sx |
+            | #x|
+            |  e|
+            +---+
+        """
         grid = Grid(matrix=self.map_matrix)
         if(len(path) > 0):
-            print(grid.grid_str(path=path, start=grid.node(*path[0]), end=grid.node(*path[-1])))
+            grid_str = grid.grid_str(path=path, start=grid.node(*path[0]), end=grid.node(*path[-1]))
+            if result_file_path:
+                with open(result_file_path, "w") as result_file:
+                    result_file.write(grid_str)
+            if must_print:
+                print(grid_str)
+            return grid_str
         else:
-            print("-- No path possible --")
+            if must_print:
+                print("-- No path possible --")
+            return None
 
