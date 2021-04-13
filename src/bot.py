@@ -96,63 +96,46 @@ class Bot:
             self.game_map.taskManager.start_task()
         task.solve()
 
+
+    def get_vector_direction(self, source_coordinates, target_coordinates):
+        """ Substract the two coordinates to get the direction of the vector
+        Return a vector_direction, for example (1,1) for the top-right direction
+        """
+        return tuple(target_coordinates[axis] - source_coordinates[axis] for axis in range(len(source_coordinates)))
     
-    def get_direction(self, source_coordinate, target_coordinate):
-        direction = []
+    def get_action_str(self, vector_direction):
+        vector_directions_to_actions_str = {
+            (0,-1): 'top',
+            (1,-1): 'top-right',
+            (1,0): 'right',
+            (1,1): 'bottom-right',
+            (0,1): 'bottom',
+            (-1,1): 'bottom-left',
+            (-1,0): 'left',
+            (-1,-1): 'top-left'
+        }
+        return vector_directions_to_actions_str[vector_direction]
 
-        for axis in range(0, len(source_coordinate)):
-            
-            direction.append(target_coordinate[axis] - source_coordinate[axis])
+    def get_moving_actions_from_vector_directions(self, vector_directions):
+        """ Get the moving actions by grouping along the same vector_directions and aggregating by counting
+        """
+        return [MovingAction(self.get_action_str(vector_direction),sum(1 for _ in group)) for vector_direction, group in groupby(vector_directions)]
 
-        return tuple(direction)
+    def get_moving_actions_to_destination(self, destination):
+        """ Calculate the path between the current position and the destination given and 
+        generate a list of moving actions to get to the destination.
+        For example, to go right and then top-right it will be : [MovingAction('right',5), MovingAction('top-right', 8.5)]
+        """
+        source_coordinates = (240//4,864//4)
+        path, _ = self.game_map.navigationManager.calculate_path(source_coordinates, destination)
+        vector_directions = []
+        for target_coordinates in path[1:]:
+            vector_directions.append(self.get_vector_direction(source_coordinates, target_coordinates))
+            source_coordinates = target_coordinates
         
+        actions = self.get_moving_actions_from_vector_directions(vector_directions)
+        return actions
 
-    def get_direction_and_distance(self, directions):
-        directions_and_distances = [(value,sum(1 for _ in group)) for value, group in groupby(directions)]
-        
-        return directions_and_distances
-
-    
-    def get_action(self, direction):
-        # I think it's better if we can do with a dict 
-
-        if direction == (0,-1) :
-            action = 'top'
-        elif direction == (1,-1) : 
-            action = 'top-right'
-        elif direction == (1,0) : 
-            action = 'right'
-        elif direction == (1,1) : 
-            action = 'bottom-right'
-        elif direction == (0,1) : 
-            action = 'bottom'
-        elif direction == (-1,1) : 
-            action = 'bottom-left'
-        elif direction == (-1,0) : 
-            action = 'left'
-        elif direction == (-1,-1) : 
-            action = 'top-left'
-        
-        return action
-
-
-    def get_action_and_distance(self, directions_and_distances):
-        
-        return [(self.get_action(direction), distance) for direction, distance in directions_and_distances]
-        
-
-    def get_actions_to_destination(self, destination):
-        source_coordinate = (60,216)
-        path, _ = self.game_map.navigationManager.calculate_path(source_coordinate, destination)
-        directions = []
-        for target_coordinate in path[1:]:
-            directions.append(self.get_direction(source_coordinate, target_coordinate))
-            source_coordinate =target_coordinate
-        
-        directions_and_distances = self.get_direction_and_distance(directions)
-        action_and_distance = self.get_action_and_distance(directions_and_distances)
-
-        return action_and_distance
-        # return list de direction et de distance  [Action]
-
+if __name__ == '__main__':
+    b = Bot()
     b.menu()
