@@ -2,3 +2,4 @@ pillow
 opencv-python
 pyautogui
 pytesseract
+pathfinding
