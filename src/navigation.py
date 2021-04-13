@@ -36,5 +36,8 @@ class NavigationManager(metaclass=SingletonMeta):
 
     def print_path(self, path):
         grid = Grid(matrix=self.map_matrix)
-        print(grid.grid_str(path=path, start=grid.node(*path[0]), end=grid.node(*path[-1])))
+        if(len(path) > 0):
+            print(grid.grid_str(path=path, start=grid.node(*path[0]), end=grid.node(*path[-1])))
+        else:
+            print("-- No path possible --")
 
