@@ -9,4 +9,8 @@ class NavigationManager(metaclass=SingletonMeta):
         pass
 
     def calculate_path(self, source_coordinates, target_coordinates):
+        """ calculate a path between a start point and an end point of a matrix
+        input : self.map_matrix
+        output : path
+        """
         pass
