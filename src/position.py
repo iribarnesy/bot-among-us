@@ -24,7 +24,7 @@ class Position:
         pyautogui.press('tab')
         time.sleep(0.1)
         # find the character
-        coordinates = pyautogui.locateOnScreen('./img/map_character.png', grayscale=True, confidence=.65)
+        coordinates = pyautogui.locateOnScreen('./src/img/map_character.png', grayscale=True, confidence=.65)
         center = pyautogui.center(coordinates)
         self.vertical_position = center.y
         self.horizontal_position = center.x
@@ -73,18 +73,3 @@ class Position:
             # Update position
             self.update_pos(distance_pix, directions[0])
             self.update_pos(distance_pix, directions[1])
-
-
-
-pos = Position()
-direction = Directions()
-time.sleep(3)
-pos.find_me()
-print(pos.vertical_position)
-print(pos.horizontal_position)
-pos.move(100,direction.RIGHT_DOWN)
-print(pos.vertical_position)
-print(pos.horizontal_position)
-pos.find_me()
-print(pos.vertical_position)
-print(pos.horizontal_position)
