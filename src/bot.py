@@ -89,14 +89,38 @@ class Bot:
         
 
     def get_direction_and_distance(self, directions):
-        directions_and_distances = [sum(1 for _ in group) for _, group in groupby(directions)]
+        directions_and_distances = [(value,sum(1 for _ in group)) for value, group in groupby(directions)]
         
         return directions_and_distances
 
     
-    def get_action_and_distance(self, directions_and_action):
-        return directions_and_action
+    def get_action(self, direction):
+        # I think it's better if we can do with a dict 
 
+        if direction == (0,-1) :
+            action = 'top'
+        elif direction == (1,-1) : 
+            action = 'top-right'
+        elif direction == (1,0) : 
+            action = 'right'
+        elif direction == (1,1) : 
+            action = 'bottom-right'
+        elif direction == (0,1) : 
+            action = 'bottom'
+        elif direction == (-1,1) : 
+            action = 'bottom-left'
+        elif direction == (-1,0) : 
+            action = 'left'
+        elif direction == (-1,-1) : 
+            action = 'top-left'
+        
+        return action
+
+
+    def get_action_and_distance(self, directions_and_distances):
+        
+        return [(self.get_action(direction), distance) for direction, distance in directions_and_distances]
+        
 
     def get_actions_to_destination(self, destination):
         source_coordinate = (60,216)
