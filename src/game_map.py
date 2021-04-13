@@ -1,7 +1,9 @@
 from src.tasks import TaskManager, TaskType, Task
-
+from src.navigation import NavigationManager
 class SkeldMap(TaskManager):
-    def __init__(self):
+    def __init__(self, map_image_path):
+        self.map_image_path = map_image_path
+        self.navigationManager = NavigationManager(self.map_image_path) 
         self.tasks = [
             Task(0, "Align Engine (Upper Engine)", (273, 355), indicator_location=(130, 179), solve_function=self.align_engine_output, task_type=TaskType.Align_Engine_Output),
             Task(1, "Align Engine (Lower Engine)", (275, 854), indicator_location=(133, 425), solve_function=self.align_engine_output, task_type=TaskType.Align_Engine_Output),
