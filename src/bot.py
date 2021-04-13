@@ -6,11 +6,30 @@ import pyautogui
 import pytesseract
 from pytesseract import Output
 from itertools import groupby
+import math
 
 import src.navigate as navigate
 import src.tasks as tasks
 from src.tasks import TaskType
 import src.game_map as game_map
+
+
+class MovingAction:
+    """ Represents a moving action.
+    For example : "Go top for 5 pixels" will be Action(direction="top", distance=5)
+    """
+    def __init__(self, direction, distance: int):
+        self.direction: str = direction
+        self.distance: int
+        
+        # Distances over the diags are longer
+        if self.direction in ['top-right', 'bottom-right', 'bottom-left', 'top-left']:
+            self.distance = distance * math.sqrt(2)
+        else:
+            self.distance = distance
+
+    def __repr__(self):
+        return f"{self.distance:.2f} x {self.direction}"
 
 
 class Bot:
