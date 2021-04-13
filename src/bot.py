@@ -134,14 +134,6 @@ class Bot:
         action_and_distance = self.get_action_and_distance(directions_and_distances)
 
         return action_and_distance
-
         # return list de direction et de distance  [Action]
 
-class Action:
-    def __init__(self):
-        self.direction = None
-        self.distance = 0
-
-if __name__ == '__main__':
-    b = Bot()
     b.menu()
