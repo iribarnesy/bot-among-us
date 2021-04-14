@@ -152,14 +152,15 @@ class TaskManager(metaclass=utils.SingletonMeta):
         pyautogui.mouseUp()
 
     def clear_asteroids(self): # Méthode bourrine - spam
-        y_min = 450
-        y_max = 650
-        x_val = 960
+        pyautogui.PAUSE = 0
+        y_min = 250
+        y_max = 850
+        x_val = 1260
         pos_y = y_min
-        padding = 20
+        padding = 60
 
         refresh_img = 0
-        freq_refresh = 5
+        freq_refresh = 50
 
         pos_pixel_croix = (480, 131)
         white_croix = (238, 238, 238)
@@ -332,6 +333,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
             print(pyautogui.position())
 
     def solve_task(self, option):
+        time.sleep(2)
         if(option == TaskType.Troubleshoot):
             self.troubleshoot()
         elif(option == TaskType.Swipe_Card):
