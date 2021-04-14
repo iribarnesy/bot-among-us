@@ -34,13 +34,8 @@ class Bot:
         if(option == 3):
             prompt_message_task_number = 'task number in :\n'+"\n".join(str(t) for t in self.game_map.tasks)
             navigate.pathfinding(int(input(prompt_message_task_number)))
-        if(option == 4):
-            self.find_me()
-
-    def find_me(self):
-        c = pyautogui.locateOnScreen('src/img/map_character.png', grayscale=True, confidence=.65)
-        pyautogui.moveTo(c)
-        return c
+        # if(option == 4):
+        #     self.find_me()
 
     def startup(self):
         time.sleep(2)
