@@ -333,7 +333,6 @@ class TaskManager(metaclass=utils.SingletonMeta):
             print(pyautogui.position())
 
     def solve_task(self, option):
-        time.sleep(2)
         if(option == TaskType.Troubleshoot):
             self.troubleshoot()
         elif(option == TaskType.Swipe_Card):
