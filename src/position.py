@@ -19,6 +19,9 @@ class Position:
         # speed = number of pixels by seconds when we press a key, on a 1920 * 1080 screen.
         self.speed_straight = 103
 
+    def get_tuple_coordinates(self):
+        return (self.horizontal_position, self.vertical_position)
+
     def find_me(self):
         # Display the map
         pyautogui.press('tab')

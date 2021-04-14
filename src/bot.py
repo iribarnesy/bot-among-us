@@ -13,6 +13,7 @@ import src.navigate as navigate
 import src.tasks as tasks
 from src.tasks import TaskType
 import src.game_map as game_map
+from src.position import Position, Directions
 
 
 class MovingAction:
@@ -37,6 +38,7 @@ class Bot:
     def __init__(self, map_img_path='src/img/WalkableMesh_resize_small.png'):
         self.name = "Le bot"
         self.game_map = game_map.SkeldMap(map_img_path)
+        self.position = Position()
 
     def menu(self):
         print("What would you like to do?")
@@ -100,14 +102,14 @@ class Bot:
     
     def get_action_str(self, vector_direction):
         vector_directions_to_actions_str = {
-            (0,-1): 'top',
-            (1,-1): 'top-right',
-            (1,0): 'right',
-            (1,1): 'bottom-right',
-            (0,1): 'bottom',
-            (-1,1): 'bottom-left',
-            (-1,0): 'left',
-            (-1,-1): 'top-left'
+            (0,-1): Directions.UP,
+            (1,-1): Directions.RIGHT_UP,
+            (1,0): Directions.RIGHT,
+            (1,1): Directions.RIGHT_DOWN,
+            (0,1): Directions.DOWN,
+            (-1,1): Directions.LEFT_DOWN,
+            (-1,0): Directions.LEFT,
+            (-1,-1): Directions.LEFT_UP
         }
         return vector_directions_to_actions_str[vector_direction]
 
@@ -121,15 +123,27 @@ class Bot:
         generate a list of moving actions to get to the destination.
         For example, to go right and then top-right it will be : [MovingAction('right',5), MovingAction('top-right', 8.5)]
         """
-        source_coordinates = (240//4,864//4)
-        path, _ = self.game_map.navigationManager.calculate_path(source_coordinates, destination)
+        self.position.find_me()
+        factor = 4
+        self.position.horizontal_position = self.position.horizontal_position // factor
+        self.position.vertical_position = self.position.vertical_position // factor
+        print(self.position.get_tuple_coordinates())
+        path, _ = self.game_map.navigationManager.calculate_path(self.position.get_tuple_coordinates(), destination)
         vector_directions = []
         for target_coordinates in path[1:]:
-            vector_directions.append(self.get_vector_direction(source_coordinates, target_coordinates))
-            source_coordinates = target_coordinates
+            vector_directions.append(self.get_vector_direction(self.position.get_tuple_coordinates(), target_coordinates))
+            self.position.horizontal_position = target_coordinates[0]
+            self.position.vertical_position = target_coordinates[1]
         
         actions = self.get_moving_actions_from_vector_directions(vector_directions)
         return actions
+
+    def execute_actions(self, destination):
+        actions = self.get_moving_actions_to_destination(destination)
+        factor = 4
+        for action in actions:
+            self.position.move(action.distance * factor,action.direction)
+
 
 if __name__ == '__main__':
     b = Bot()
