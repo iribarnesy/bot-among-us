@@ -118,14 +118,12 @@ class TaskManager(metaclass=utils.SingletonMeta):
                     pyautogui.mouseUp()
 
     def prime_shields(self):
-        tiles = [(970, 370), (1080, 450), (1090, 640), (967, 547), (999, 699), (815, 617), (820, 458)]
-
-        red = (202, 102, 120)
+        tiles = [(1050, 210), (1261, 330), (1261, 586), (964, 909), (635, 725), (635, 454), (964, 425)]
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
         pix = img.load()
         for tile in tiles:
-            print(pix[tile])
-            if pix[tile] == red:
+            r, g, b = pix[tile]
+            if g < 200 and b < 200:
                 pyautogui.moveTo(tile)
                 pyautogui.click()
                 
@@ -182,25 +180,6 @@ class TaskManager(metaclass=utils.SingletonMeta):
                 refresh_img = 0
             else:
                 refresh_img = refresh_img + 1
-
-        
-        return "ok"
-
-        img = ImageGrab.grab(bbox=(910,800,1100,950))
-        img.show()
-        return "ok"
-        while True:
-            img = ImageGrab.grab(bbox=(1024,135,1361,941))
-            array = np.array(img)
-            asteroid = (24, 56, 41)
-            Y,X = np.where(np.all(array==asteroid, axis=2))
-            if len(X) != 0:
-                pyautogui.moveTo(X[0]+1024, Y[0]+135)
-                pyautogui.click()
-            else:
-                Y,X = np.where(np.all(array==asteroid, axis=2))
-                if len(X) == 0:
-                    break
 
     def clean_O2_filter(self):
         while True:
