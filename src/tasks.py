@@ -100,7 +100,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
     def empty_chute(self):
         pyautogui.moveTo(1270,420)
         pyautogui.mouseDown()
-        pyautogui.moveTo(1270,720)
+        pyautogui.moveTo(1270,720,0.2)
         time.sleep(3)
         pyautogui.mouseUp()
 

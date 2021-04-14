@@ -38,7 +38,7 @@ class Position:
             self.vertical_position = center.y
             self.horizontal_position = center.x
         else:
-            print("Didn't find me ! \U0001F648")
+            print("Didn't find me ! 🙈")
         return self.horizontal_position, self.vertical_position
 
     def update_pos(self, distance_pix, direction):
