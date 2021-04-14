@@ -101,16 +101,16 @@ class Bot:
         return tuple(target_coordinates[axis] - source_coordinates[axis] for axis in range(len(source_coordinates)))
     
     def get_action_str(self, vector_direction):
-        scale = self.game_map.navigationManager.scale
+        scale = self.game_map.navigationManager.scale 
         vector_directions_to_actions_str = {
-            (0       , -1*scale): 'top',
-            (1*scale , -1*scale): 'top-right',
-            (1*scale , 0       ): 'right',
-            (1*scale , 1*scale ): 'bottom-right',
-            (0       , 1*scale ): 'bottom',
-            (-1*scale, 1*scale ): 'bottom-left',
-            (-1*scale, 0       ): 'left',
-            (-1*scale, -1*scale): 'top-left'
+            (0       , -1*scale): Directions.UP,
+            (1*scale , -1*scale): Directions.RIGHT_UP,
+            (1*scale , 0       ): Directions.RIGHT,
+            (1*scale , 1*scale ): Directions.RIGHT_DOWN,
+            (0       , 1*scale ): Directions.DOWN,
+            (-1*scale, 1*scale ): Directions.LEFT_DOWN,
+            (-1*scale, 0       ): Directions.LEFT,
+            (-1*scale, -1*scale): Directions.LEFT_UP
         }
         return vector_directions_to_actions_str[vector_direction]
 
@@ -135,6 +135,12 @@ class Bot:
         
         actions = self.get_moving_actions_from_vector_directions(vector_directions)
         return actions
+
+    def execute_actions(self, destination):
+        actions = self.get_moving_actions_to_destination(destination)
+        for action in actions:
+            self.position.move(action.distance ,action.direction)
+
 
 if __name__ == '__main__':
     b = Bot()
