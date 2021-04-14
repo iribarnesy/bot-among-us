@@ -18,13 +18,25 @@ class NavigationManager(metaclass=SingletonMeta):
         self.init_matrix()
 
     def init_matrix(self):
-        img_map_pix = Image.open(self.map_img_path)    
+        OBSTACLE_WEIGHT_VALUE = 0
+        BEST_PATH_WEIGHT_VALUE = 1
+        WALKABLE_WEIGHT_VALUE = 2
 
+        def get_weight(non_zeros_values):
+            map_non_zeros_values_to_weight_values = {
+                4: BEST_PATH_WEIGHT_VALUE,
+                2: WALKABLE_WEIGHT_VALUE,
+                1: OBSTACLE_WEIGHT_VALUE
+            }
+            return map_non_zeros_values_to_weight_values[non_zeros_values]
+        
+        img_map_pix = Image.open(self.map_img_path)    
         img_map = np.array(img_map_pix)
         self.scale = self.original_width // img_map.shape[1]
 
         self.map_matrix = np.count_nonzero(img_map, axis=2)
-        self.map_matrix = np.where(self.map_matrix > 1, 1, 0)
+        v_get_weight = np.vectorize(get_weight)
+        self.map_matrix = np.array(list(map(v_get_weight, self.map_matrix)))
 
     def calculate_path(self, source_coordinates, target_coordinates):
         """ calculate a path between a start point and an end point of a matrix
