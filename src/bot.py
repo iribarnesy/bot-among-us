@@ -14,6 +14,7 @@ import src.tasks as tasks
 from src.tasks import TaskType
 import src.game_map as game_map
 from src.position import Position, Directions
+from src.utils import FOCUS_AMONG_SCREEN
 
 class MovingAction:
     """ Represents a moving action.
@@ -22,7 +23,7 @@ class MovingAction:
     def __init__(self, direction, distance: int):
         self.direction: str = direction
         self.distance: int = distance
-        
+        self.tasks: list(int) = None
         # Distances over the diags are longer
         # if self.direction in ['top-right', 'bottom-right', 'bottom-left', 'top-left']:
         #     self.distance = distance * math.sqrt(2)
@@ -66,6 +67,23 @@ class Bot:
         self.dim = (self.width, self.height)
         self.select_screen()
         self.read_map()
+
+
+    def get_tasks(self):
+        FOCUS_AMONG_SCREEN()
+        pyautogui.press("tab")
+        print("get_tasks")
+        img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+        pix = img.load()
+        tasks = []
+        for task in self.game_map.taskManager.tasks:
+            if pix[task.location] > (190, 190, 0) and pix[task.location] < (255, 255, 80) and pix[task.location][2] < 200 and pix[task.location][1] != 17:
+                tasks.append(task)
+        self.tasks = tasks
+        pyautogui.press("tab")
+
+        return tasks
+
 
     def read_map(self):
         while True:
@@ -141,6 +159,7 @@ class Bot:
         for action in actions:
             self.position.move(action.distance, action.direction)
 
+    
 
 if __name__ == '__main__':
     b = Bot()
