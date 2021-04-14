@@ -8,6 +8,7 @@ from pytesseract import Output
 from itertools import groupby
 from typing import List, Tuple
 import math
+import random
 
 import src.navigate as navigate
 import src.tasks as tasks
@@ -145,17 +146,38 @@ class Bot:
         for action in actions:
             self.position.move(action.distance, action.direction)
 
-    def checkImposteur(self):
-        img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+    def check_red(self,x1,y1,x2,y2):
+        img = ImageGrab.grab(bbox=(x1, y1, x2, y2))
         pix = img.load()
-        pseudo_zone = [900, 400, 1020, 420]
         
-        for pix_x in range(pseudo_zone[0], pseudo_zone[2]):
-            for pix_y in range(pseudo_zone[1], pseudo_zone[3]):
+        for pix_x in range(img.size[0]):
+            for pix_y in range(img.size[1]):
                 r, g, b = pix[(pix_x, pix_y)]
                 if r > 220 and g < 30 and b < 30:
                     return True
         return False
+
+    def checkImposteur(self):
+        return self.check_red(900, 420, 1020, 480)
+
+    def checkReport(self):
+        return self.check_red(1670,630 ,1870,830)
+    
+    def checkKill(self):
+        return self.check_red(1440,850 ,1640,1050)
+
+    def reportKill(self):
+        if self.checkReport():
+            # If we are impostor, 1/10 chance we report.
+            if self.isImposteur:
+                if random.random() < 0.1:
+                    pyautogui.press("r")
+            else:
+                pyautogui.press("r")
+    
+    def kill(self):
+        if self.checkKill():
+            pyautogui.press("q")
 
 
 if __name__ == '__main__':
