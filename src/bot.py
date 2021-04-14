@@ -72,12 +72,13 @@ class Bot:
     def get_tasks(self):
         FOCUS_AMONG_SCREEN()
         pyautogui.press("tab")
-        print("get_tasks")
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
         pix = img.load()
         tasks = []
         for task in self.game_map.taskManager.tasks:
-            if pix[task.location] > (190, 190, 0) and pix[task.location] < (255, 255, 80) and pix[task.location][2] < 200 and pix[task.location][1] != 17:
+            
+            # if pix[task.indicator_location] > (190, 190, 0) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200 and pix[task.indicator_location][1] != 17:
+            if pix[task.indicator_location] > (160, 160, 67) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200:
                 tasks.append(task)
         self.tasks = tasks
         pyautogui.press("tab")
@@ -92,9 +93,9 @@ class Bot:
             pix = img.load()
             task = None
             for t in self.game_map.taskManager.tasks:
-                if pix[t.location] > (190, 190, 0) and pix[t.location] < (255, 255, 80) and pix[t.location][2] < 200 and pix[t.location][1] != 17:
+                if pix[t.indicator_location] > (190, 190, 0) and pix[t.indicator_location] < (255, 255, 80) and pix[t.indicator_location][2] < 200 and pix[t.indicator_location][1] != 17:
                     print(t.name)
-                    print(pix[t.location])
+                    print(pix[t.indicator_location])
                     task = t
             if task is not None:
                 result = navigate.pathfinding(self.game_map.taskManager.tasks.index(task))
