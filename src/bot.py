@@ -129,6 +129,7 @@ class Bot:
             source_coordinates = self.position.find_me()
         path = self.game_map.navigationManager.calculate_path(source_coordinates, destination)
         vector_directions = []
+        source_coordinates = path[0]
         for target_coordinates in path[1:]:
             vector_directions.append(self.get_vector_direction(source_coordinates, target_coordinates))
             source_coordinates = target_coordinates
@@ -139,7 +140,7 @@ class Bot:
     def execute_actions(self, destination):
         actions = self.get_moving_actions_to_destination(destination)
         for action in actions:
-            self.position.move(action.distance ,action.direction)
+            self.position.move(action.distance, action.direction)
 
 
 if __name__ == '__main__':
