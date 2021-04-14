@@ -15,7 +15,6 @@ from src.tasks import TaskType
 import src.game_map as game_map
 from src.position import Position, Directions
 
-
 class MovingAction:
     """ Represents a moving action.
     For example : "Go top for 5 pixels" will be Action(direction="top", distance=5)
@@ -128,6 +127,9 @@ class Bot:
         if not source_coordinates:
             source_coordinates = self.position.find_me()
         path = self.game_map.navigationManager.calculate_path(source_coordinates, destination)
+        if len(path) == 0:
+            print("Didn't find a path between source and target ! 🐾")
+            return []
         vector_directions = []
         source_coordinates = path[0]
         for target_coordinates in path[1:]:
@@ -137,7 +139,7 @@ class Bot:
         actions = self.get_moving_actions_from_vector_directions(vector_directions)
         return actions
 
-    def execute_actions(self, destination):
+    def go_to_destination(self, destination):
         actions = self.get_moving_actions_to_destination(destination)
         for action in actions:
             self.position.move(action.distance, action.direction)

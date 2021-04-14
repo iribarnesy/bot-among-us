@@ -1,3 +1,5 @@
+import pyautogui
+
 class SingletonMeta(type):
     """
     The Singleton class can be implemented in different ways in Python. Some
@@ -17,3 +19,11 @@ class SingletonMeta(type):
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
         return cls._instances[cls]
+
+def FOCUS_AMONG_SCREEN():
+    among_window = pyautogui.getWindowsWithTitle("Among Us")[0]
+    if not among_window.isActive:
+        if among_window.isMaximized:
+            among_window.minimize()
+        among_window.maximize()
+        pyautogui.click(among_window.center)
