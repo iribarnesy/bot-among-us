@@ -162,21 +162,21 @@ class TaskManager(metaclass=utils.SingletonMeta):
         refresh_img = 0
         freq_refresh = 50
 
-        pos_pixel_croix = (480, 131)
         white_croix = (238, 238, 238)
 
-        img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+        img = ImageGrab.grab(bbox=(479,130 ,480,131))
         pix = img.load()
 
-        while pix[pos_pixel_croix] == white_croix:
+        while pix[0,0] == white_croix:
             pos_y = pos_y + padding
             if pos_y > y_max:
                 pos_y = y_min
+
             pyautogui.moveTo(x_val, pos_y)
             pyautogui.click()
-            
+
             if refresh_img % freq_refresh == 0:
-                img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+                img = ImageGrab.grab(bbox=(479,130 ,480,131))
                 pix = img.load()
                 refresh_img = 0
             else:
