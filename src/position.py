@@ -1,5 +1,6 @@
 import pyautogui
 import time
+import math
 
 class Directions:
     UP = "up"
@@ -16,8 +17,7 @@ class Position:
         self.vertical_position = 0
         self.horizontal_position = 0
         # speed = number of pixels by seconds when we press a key, on a 1920 * 1080 screen.
-        self.speed_straight = 102
-        self.speed_diagonal = 72
+        self.speed_straight = 103
 
     def find_me(self):
         # Display the map
@@ -51,7 +51,7 @@ class Position:
     
     def move_diagonal(self, distance_pix, direction1, direction2):
         # Compute the time to travel at the speed.
-        time_wait = distance_pix/self.speed_diagonal
+        time_wait = (distance_pix * math.sqrt(2)) / self.speed_straight
         # Move
         pyautogui.keyDown(direction1)
         pyautogui.keyDown(direction2)
