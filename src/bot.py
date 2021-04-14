@@ -127,6 +127,9 @@ class Bot:
         if not source_coordinates:
             source_coordinates = self.position.find_me()
         path = self.game_map.navigationManager.calculate_path(source_coordinates, destination)
+        if len(path) == 0:
+            print("Didn't find a path between source and target ! 🐾")
+            return []
         vector_directions = []
         source_coordinates = path[0]
         for target_coordinates in path[1:]:
