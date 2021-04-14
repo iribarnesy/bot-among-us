@@ -314,6 +314,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
 
     def troubleshoot(self):
         while True:
+            time.sleep(1)
             print(pyautogui.position())
 
     def solve_task(self, option):
