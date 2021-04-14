@@ -153,7 +153,42 @@ class TaskManager(metaclass=utils.SingletonMeta):
         pyautogui.moveTo(1250, 540)
         pyautogui.mouseUp()
 
-    def clear_asteroids(self): # Horrible Accuracy
+    def clear_asteroids(self): # Méthode bourrine - spam
+        y_min = 450
+        y_max = 650
+        x_val = 960
+        pos_y = y_min
+        padding = 20
+
+        refresh_img = 0
+        freq_refresh = 5
+
+        pos_pixel_croix = (480, 131)
+        white_croix = (238, 238, 238)
+
+        img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+        pix = img.load()
+
+        while pix[pos_pixel_croix] == white_croix:
+            pos_y = pos_y + padding
+            if pos_y > y_max:
+                pos_y = y_min
+            pyautogui.moveTo(x_val, pos_y)
+            pyautogui.click()
+            
+            if refresh_img % freq_refresh == 0:
+                img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+                pix = img.load()
+                refresh_img = 0
+            else:
+                refresh_img = refresh_img + 1
+
+        
+        return "ok"
+
+        img = ImageGrab.grab(bbox=(910,800,1100,950))
+        img.show()
+        return "ok"
         while True:
             img = ImageGrab.grab(bbox=(1024,135,1361,941))
             array = np.array(img)
