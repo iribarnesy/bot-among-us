@@ -21,13 +21,13 @@ class MovingAction:
     """
     def __init__(self, direction, distance: int):
         self.direction: str = direction
-        self.distance: int
+        self.distance: int = distance
         
         # Distances over the diags are longer
-        if self.direction in ['top-right', 'bottom-right', 'bottom-left', 'top-left']:
-            self.distance = distance * math.sqrt(2)
-        else:
-            self.distance = distance
+        # if self.direction in ['top-right', 'bottom-right', 'bottom-left', 'top-left']:
+        #     self.distance = distance * math.sqrt(2)
+        # else:
+        #     self.distance = distance
 
     def __repr__(self):
         return f"{self.distance:.2f} x {self.direction}"
