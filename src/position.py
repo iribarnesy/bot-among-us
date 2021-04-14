@@ -32,11 +32,11 @@ class Position:
         pyautogui.press('tab')
 
     def update_pos(self, distance_pix, direction):
-        if direction == "up":
+        if direction == Directions.UP:
             self.vertical_position -= distance_pix
-        elif direction == "down":
+        elif direction == Directions.DOWN:
             self.vertical_position += distance_pix
-        elif direction == "left":
+        elif direction == Directions.LEFT:
             self.horizontal_position -= distance_pix
         else:
             self.horizontal_position += distance_pix
