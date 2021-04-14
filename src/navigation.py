@@ -10,9 +10,9 @@ from src.utils import SingletonMeta
 class NavigationManager(metaclass=SingletonMeta):
     def __init__(self, map_img_path):
         self.map_img_path = map_img_path
-        self.map_matrix = []
-        self.origine_height = 1080
-        self.origine_width = 1920
+        self.map_matrix = None
+        self.original_height = 1080
+        self.original_width = 1920
         self.height = 0
         self.width = 0
 
@@ -31,6 +31,8 @@ class NavigationManager(metaclass=SingletonMeta):
         input : self.map_matrix
         output : path
         """
+        if self.map_matrix is None:
+            self.init_matrix()
         
         grid = Grid(matrix=self.map_matrix)
         start = grid.node(*source_coordinates)
@@ -41,23 +43,40 @@ class NavigationManager(metaclass=SingletonMeta):
 
         return path, runs
 
-    def print_path(self, path):
+    def path_to_grid(self, path, must_print=True, result_file_path=None):
+        """ Create a representation of a given path in the map_matrix.
+        's', 'e' represents respectively the start and end points. 'x' is the path and '#' is an obstacle
+        ex : 
+            +---+
+            |sx |
+            | #x|
+            |  e|
+            +---+
+        """
         grid = Grid(matrix=self.map_matrix)
         if(len(path) > 0):
-            print(grid.grid_str(path=path, start=grid.node(*path[0]), end=grid.node(*path[-1])))
+            grid_str = grid.grid_str(path=path, start=grid.node(*path[0]), end=grid.node(*path[-1]))
+            if result_file_path:
+                with open(result_file_path, "w") as result_file:
+                    result_file.write(grid_str)
+            if must_print:
+                print(grid_str)
+            return grid_str
         else:
-            print("-- No path possible --")
+            if must_print:
+                print("-- No path possible --")
+            return None
 
     def convert_for_realmap(self, position):
-        scale = self.origine_height / self.height
-        print(str(self.origine_height) + " / " + str(self.height))
+        scale = self.original_height / self.height
+        print(str(self.original_height) + " / " + str(self.height))
         print(scale)
         pos_x, pos_y = position
 
         return int(pos_x*scale), int(pos_y*scale)
 
     def convert_for_minimap(self, position):
-        scale = self.origine_height / self.height
+        scale = self.original_height / self.height
         pos_x, pos_y = position
 
         return int(pos_x/scale), int(pos_y/scale)
