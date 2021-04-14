@@ -2,6 +2,8 @@ import pyautogui
 import time
 import math
 
+from src.utils import FOCUS_AMONG_SCREEN
+
 class Directions:
     UP = "up"
     RIGHT_UP = "right-up"
@@ -24,15 +26,19 @@ class Position:
 
     def find_me(self):
         # Display the map
+        FOCUS_AMONG_SCREEN()
         pyautogui.press('tab')
         time.sleep(0.1)
         # find the character
         coordinates = pyautogui.locateOnScreen('./src/img/map_character.png', grayscale=True, confidence=.65)
-        center = pyautogui.center(coordinates)
-        self.vertical_position = center.y
-        self.horizontal_position = center.x
         # Close the map
         pyautogui.press('tab')
+        if coordinates:
+            center = pyautogui.center(coordinates)
+            self.vertical_position = center.y
+            self.horizontal_position = center.x
+        else:
+            print("Didn't find me ! \U0001F648")
         return self.horizontal_position, self.vertical_position
 
     def update_pos(self, distance_pix, direction):
