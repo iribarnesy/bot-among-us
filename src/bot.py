@@ -38,6 +38,7 @@ class Bot:
         self.name = "Le bot"
         self.game_map = game_map.SkeldMap(map_img_path)
         self.position = Position()
+        self.isImposteur = self.checkImposteur()
 
     def menu(self):
         print("What would you like to do?")
@@ -143,6 +144,18 @@ class Bot:
         actions = self.get_moving_actions_to_destination(destination)
         for action in actions:
             self.position.move(action.distance, action.direction)
+
+    def checkImposteur(self):
+        img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+        pix = img.load()
+        pseudo_zone = [900, 400, 1020, 420]
+        
+        for pix_x in range(pseudo_zone[0], pseudo_zone[2]):
+            for pix_y in range(pseudo_zone[1], pseudo_zone[3]):
+                r, g, b = pix[(pix_x, pix_y)]
+                if r > 220 and g < 30 and b < 30:
+                    return True
+        return False
 
 
 if __name__ == '__main__':
