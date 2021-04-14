@@ -30,6 +30,7 @@ class Position:
         self.horizontal_position = center.x
         # Close the map
         pyautogui.press('tab')
+        return self.horizontal_position, self.vertical_position
 
     def update_pos(self, distance_pix, direction):
         if direction == Directions.UP:

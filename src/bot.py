@@ -13,6 +13,7 @@ import src.navigate as navigate
 import src.tasks as tasks
 from src.tasks import TaskType
 import src.game_map as game_map
+from src.position import Position, Directions
 
 
 class MovingAction:
@@ -37,6 +38,7 @@ class Bot:
     def __init__(self, map_img_path='src/img/WalkableMesh_resize_small.png'):
         self.name = "Le bot"
         self.game_map = game_map.SkeldMap(map_img_path)
+        self.position = Position()
 
     def menu(self):
         print("What would you like to do?")
@@ -99,30 +101,33 @@ class Bot:
         return tuple(target_coordinates[axis] - source_coordinates[axis] for axis in range(len(source_coordinates)))
     
     def get_action_str(self, vector_direction):
+        scale = self.game_map.navigationManager.scale
         vector_directions_to_actions_str = {
-            (0,-1): 'top',
-            (1,-1): 'top-right',
-            (1,0): 'right',
-            (1,1): 'bottom-right',
-            (0,1): 'bottom',
-            (-1,1): 'bottom-left',
-            (-1,0): 'left',
-            (-1,-1): 'top-left'
+            (0       , -1*scale): 'top',
+            (1*scale , -1*scale): 'top-right',
+            (1*scale , 0       ): 'right',
+            (1*scale , 1*scale ): 'bottom-right',
+            (0       , 1*scale ): 'bottom',
+            (-1*scale, 1*scale ): 'bottom-left',
+            (-1*scale, 0       ): 'left',
+            (-1*scale, -1*scale): 'top-left'
         }
         return vector_directions_to_actions_str[vector_direction]
 
     def get_moving_actions_from_vector_directions(self, vector_directions):
         """ Get the moving actions by grouping along the same vector_directions and aggregating by counting
         """
-        return [MovingAction(self.get_action_str(vector_direction),sum(1 for _ in group)) for vector_direction, group in groupby(vector_directions)]
+        scale = self.game_map.navigationManager.scale
+        return [MovingAction(self.get_action_str(vector_direction),sum(scale for _ in group)) for vector_direction, group in groupby(vector_directions)]
 
-    def get_moving_actions_to_destination(self, destination):
+    def get_moving_actions_to_destination(self, destination, source_coordinates=None):
         """ Calculate the path between the current position and the destination given and 
         generate a list of moving actions to get to the destination.
         For example, to go right and then top-right it will be : [MovingAction('right',5), MovingAction('top-right', 8.5)]
         """
-        source_coordinates = (240//4,864//4)
-        path, _ = self.game_map.navigationManager.calculate_path(source_coordinates, destination)
+        if not source_coordinates:
+            source_coordinates = self.position.find_me()
+        path = self.game_map.navigationManager.calculate_path(source_coordinates, destination)
         vector_directions = []
         for target_coordinates in path[1:]:
             vector_directions.append(self.get_vector_direction(source_coordinates, target_coordinates))
