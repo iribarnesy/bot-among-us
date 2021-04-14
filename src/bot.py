@@ -171,13 +171,19 @@ class Bot:
             # If we are impostor, 1/10 chance we report.
             if self.isImposteur:
                 if random.random() < 0.1:
-                    pyautogui.press("r")
+                    pyautogui.moveTo(1770,730)
+                    pyautogui.click()
+                    # pyautogui.press("r")
             else:
-                pyautogui.press("r")
+                pyautogui.moveTo(1770,730)
+                pyautogui.click()
+                # pyautogui.press("r")
     
     def kill(self):
         if self.checkKill():
-            pyautogui.press("q")
+            pyautogui.moveTo(1540,950)
+            pyautogui.click()
+            #pyautogui.press("q")
 
 
 if __name__ == '__main__':
