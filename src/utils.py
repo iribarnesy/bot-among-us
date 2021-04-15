@@ -1,6 +1,10 @@
 import pyautogui
 from threading import Lock, Thread
 from PIL import ImageGrab
+import time
+import sys
+import trace
+
 
 def check_color(top_left_corner, bottom_right_corner, color):
     # TODO: fix because it's doesn't work, it is fitted to red only
@@ -32,6 +36,36 @@ def check_red(top_left_corner, bottom_right_corner):
     red = (220, 30, 30)
     return check_color(top_left_corner, bottom_right_corner, red)
 
+
+class KillableThread(Thread):
+  def __init__(self, *args, **keywords):
+    Thread.__init__(self, *args, **keywords)
+    self.killed = False
+  
+  def start(self):
+    self.__run_backup = self.run
+    self.run = self.__run      
+    Thread.start(self)
+  
+  def __run(self):
+    sys.settrace(self.globaltrace)
+    self.__run_backup()
+    self.run = self.__run_backup
+  
+  def globaltrace(self, frame, event, arg):
+    if event == 'call':
+      return self.localtrace
+    else:
+      return None
+  
+  def localtrace(self, frame, event, arg):
+    if self.killed:
+      if event == 'line':
+        raise SystemExit()
+    return self.localtrace
+  
+  def kill(self):
+    self.killed = True
 
 class SingletonMeta(type):
     """
