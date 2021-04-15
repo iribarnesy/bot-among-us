@@ -39,8 +39,8 @@ class Bot:
     def __init__(self, map_img_path='src/img/WalkableMesh_resize_small.png'):
         self.name = "Le bot"
         self.game_map = game_map.SkeldMap(map_img_path)
+        self.visionManager = VisionManager()
         self.position = Position()
-        self.isImposteur = self.checkImposteur()
         self.next_task: Task = None
 
     def menu(self):
@@ -185,28 +185,8 @@ class Bot:
             moving_action_thread.join()
             nb_actions_executed += 1
 
-    def check_red(self,x1,y1,x2,y2):
-        img = ImageGrab.grab(bbox=(x1, y1, x2, y2))
-        pix = img.load()
-        
-        for pix_x in range(img.size[0]):
-            for pix_y in range(img.size[1]):
-                r, g, b = pix[(pix_x, pix_y)]
-                if r > 220 and g < 30 and b < 30:
-                    return True
-        return False
-
-    def checkImposteur(self):
-        return self.check_red(900, 420, 1020, 480)
-
-    def checkReport(self):
-        return self.check_red(1670,630 ,1870,830)
-    
-    def checkKill(self):
-        return self.check_red(1440,850 ,1640,1050)
-
     def reportKill(self):
-        if self.checkReport():
+        if self.visionManager.is_btn_report_active():
             # If we are impostor, 1/10 chance we report.
             if self.isImposteur:
                 if random.random() < 0.1:
