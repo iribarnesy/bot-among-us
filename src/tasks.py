@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 from PIL import ImageGrab, Image
 import pytesseract
+from enum import Enum
 
 import src.utils as utils
 
@@ -12,7 +13,7 @@ Presuppose that the task is opened in game, then solve the task.
 This TaskManager contains the methodsto solve the main tasks.
 Please create a new class, inheriting or composing this TaskManager, which fills the tasks array with the tasks specific to the game map (cf. game_map.py)
 """
-class TaskType:
+class TaskType(Enum):
     Troubleshoot = 0
     Swipe_Card = 1
     Download_Upload = 2
