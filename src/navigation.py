@@ -20,7 +20,7 @@ class NavigationManager(metaclass=SingletonMeta):
     def init_matrix(self):
         OBSTACLE_WEIGHT_VALUE = 0
         BEST_PATH_WEIGHT_VALUE = 1
-        WALKABLE_WEIGHT_VALUE = 2
+        WALKABLE_WEIGHT_VALUE = 3
 
         def get_weight(non_zeros_values):
             map_non_zeros_values_to_weight_values = {
