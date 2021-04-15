@@ -118,14 +118,12 @@ class TaskManager(metaclass=utils.SingletonMeta):
                     pyautogui.mouseUp()
 
     def prime_shields(self):
-        tiles = [(970, 370), (1080, 450), (1090, 640), (967, 547), (999, 699), (815, 617), (820, 458)]
-
-        red = (202, 102, 120)
+        tiles = [(1050, 210), (1261, 330), (1261, 586), (964, 909), (635, 725), (635, 454), (964, 425)]
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
         pix = img.load()
         for tile in tiles:
-            print(pix[tile])
-            if pix[tile] == red:
+            r, g, b = pix[tile]
+            if g < 200 and b < 200:
                 pyautogui.moveTo(tile)
                 pyautogui.click()
                 
@@ -154,53 +152,35 @@ class TaskManager(metaclass=utils.SingletonMeta):
         pyautogui.mouseUp()
 
     def clear_asteroids(self): # Méthode bourrine - spam
-        y_min = 450
-        y_max = 650
-        x_val = 960
+        pyautogui.PAUSE = 0
+        y_min = 250
+        y_max = 850
+        x_val = 1260
         pos_y = y_min
-        padding = 20
+        padding = 60
 
         refresh_img = 0
-        freq_refresh = 5
+        freq_refresh = 50
 
-        pos_pixel_croix = (480, 131)
         white_croix = (238, 238, 238)
 
-        img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+        img = ImageGrab.grab(bbox=(479,130 ,480,131))
         pix = img.load()
 
-        while pix[pos_pixel_croix] == white_croix:
+        while pix[0,0] == white_croix:
             pos_y = pos_y + padding
             if pos_y > y_max:
                 pos_y = y_min
+
             pyautogui.moveTo(x_val, pos_y)
             pyautogui.click()
-            
+
             if refresh_img % freq_refresh == 0:
-                img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+                img = ImageGrab.grab(bbox=(479,130 ,480,131))
                 pix = img.load()
                 refresh_img = 0
             else:
                 refresh_img = refresh_img + 1
-
-        
-        return "ok"
-
-        img = ImageGrab.grab(bbox=(910,800,1100,950))
-        img.show()
-        return "ok"
-        while True:
-            img = ImageGrab.grab(bbox=(1024,135,1361,941))
-            array = np.array(img)
-            asteroid = (24, 56, 41)
-            Y,X = np.where(np.all(array==asteroid, axis=2))
-            if len(X) != 0:
-                pyautogui.moveTo(X[0]+1024, Y[0]+135)
-                pyautogui.click()
-            else:
-                Y,X = np.where(np.all(array==asteroid, axis=2))
-                if len(X) == 0:
-                    break
 
     def clean_O2_filter(self):
         while True:
