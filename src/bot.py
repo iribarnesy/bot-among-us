@@ -13,9 +13,10 @@ import threading
 
 import src.navigate as navigate
 import src.tasks as tasks
-from src.tasks import TaskType
+from src.tasks import TaskType, Task
 import src.game_map as game_map
 from src.position import Position, Directions
+from src.utils import FOCUS_AMONG_SCREEN
 
 class MovingAction:
     """ Represents a moving action.
@@ -24,7 +25,7 @@ class MovingAction:
     def __init__(self, direction, distance: int):
         self.direction: str = direction
         self.distance: int = distance
-        
+        self.next_task: Task = None
         # Distances over the diags are longer
         # if self.direction in ['top-right', 'bottom-right', 'bottom-left', 'top-left']:
         #     self.distance = distance * math.sqrt(2)
@@ -70,6 +71,32 @@ class Bot:
         self.select_screen()
         self.read_map()
 
+
+    def get_tasks(self):
+        FOCUS_AMONG_SCREEN()
+        pyautogui.press("tab")
+        img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+        pix = img.load()
+        tasks = []
+        for task in self.game_map.taskManager.tasks:
+            
+            # if pix[task.indicator_location] > (190, 190, 0) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200 and pix[task.indicator_location][1] != 17:
+            if pix[task.indicator_location] > (160, 160, 67) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200:
+                tasks.append(task)
+        pyautogui.press("tab")
+
+        return tasks
+
+
+    def get_nearest_task(self):
+        tasks = self.get_tasks()
+        source_coordinates = self.position.find_me()
+        task_and_len_path = [(task,len(self.get_moving_actions_to_destination(task.location, source_coordinates))) for task in tasks]
+        task_and_len_path = sorted(task_and_len_path, key=lambda task_len: task_len[1])
+        self.next_task = task_and_len_path[0][0]
+        # return self.next_task
+
+
     def read_map(self):
         while True:
             pyautogui.press("tab")
@@ -77,9 +104,9 @@ class Bot:
             pix = img.load()
             task = None
             for t in self.game_map.taskManager.tasks:
-                if pix[t.location] > (190, 190, 0) and pix[t.location] < (255, 255, 80) and pix[t.location][2] < 200 and pix[t.location][1] != 17:
+                if pix[t.indicator_location] > (190, 190, 0) and pix[t.indicator_location] < (255, 255, 80) and pix[t.indicator_location][2] < 200 and pix[t.indicator_location][1] != 17:
                     print(t.name)
-                    print(pix[t.location])
+                    print(pix[t.indicator_location])
                     task = t
             if task is not None:
                 result = navigate.pathfinding(self.game_map.taskManager.tasks.index(task))
@@ -197,6 +224,7 @@ class Bot:
             pyautogui.click()
             #pyautogui.press("q")
 
+    
 
 if __name__ == '__main__':
     b = Bot()
