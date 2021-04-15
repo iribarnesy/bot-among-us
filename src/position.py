@@ -35,7 +35,7 @@ class Position:
         pyautogui.press('tab')
         if coordinates:
             center = pyautogui.center(coordinates)
-            self.vertical_position = center.y + 10
+            self.vertical_position = center.y + 16
             self.horizontal_position = center.x
         else:
             print("Didn't find me ! 🙈")
