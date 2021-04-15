@@ -1,5 +1,36 @@
 import pyautogui
 from threading import Lock, Thread
+from PIL import ImageGrab
+
+def check_color(top_left_corner, bottom_right_corner, color):
+    # TODO: fix because it's doesn't work, it is fitted to red only
+    x1, y1 = top_left_corner
+    x2, y2 = bottom_right_corner
+    red, green, blue = color
+    
+    img = ImageGrab.grab(bbox=(x1, y1, x2, y2))
+    pix = img.load()
+    
+    for pix_x in range(img.size[0]):
+        for pix_y in range(img.size[1]):
+            r, g, b = pix[(pix_x, pix_y)]
+            if r > red and g < green and b < blue:
+                return True
+    return False
+
+def check_pixel_color(pixel_position, color):
+    x, y = pixel_position
+    im = pyautogui.screenshot(region=(x, y, 1, 1))
+    return im.getpixel((0,0)) == color
+
+def check_image(image_path, grayscale=True, confidence=.65):
+    coordinates = pyautogui.locateOnScreen(image_path, grayscale=grayscale, confidence=confidence)
+    return coordinates is not None
+
+
+def check_red(top_left_corner, bottom_right_corner):
+    red = (220, 30, 30)
+    return check_color(top_left_corner, bottom_right_corner, red)
 
 
 class SingletonMeta(type):
