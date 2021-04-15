@@ -72,5 +72,14 @@ class VisionManager:
     def is_btn_admin_active(self):
         return self.check_image(r"src\img\admin_btn.PNG")
     
+
     def is_btn_security_active(self):
         return self.check_image(r"src\img\security_btn.PNG")
+    
+
+    def is_emergency_time(self):
+        return self.check_image(r"src\img\skip_vote.PNG")
+
+
+    def is_game_time(self):
+        return not self.is_emergency_time()
