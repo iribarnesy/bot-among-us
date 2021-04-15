@@ -25,7 +25,6 @@ class MovingAction:
     def __init__(self, direction, distance: int):
         self.direction: str = direction
         self.distance: int = distance
-        self.next_task: Task = None
         # Distances over the diags are longer
         # if self.direction in ['top-right', 'bottom-right', 'bottom-left', 'top-left']:
         #     self.distance = distance * math.sqrt(2)
@@ -42,6 +41,7 @@ class Bot:
         self.game_map = game_map.SkeldMap(map_img_path)
         self.position = Position()
         self.isImposteur = self.checkImposteur()
+        self.next_task: Task = None
 
     def menu(self):
         print("What would you like to do?")
