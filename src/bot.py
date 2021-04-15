@@ -9,6 +9,7 @@ from itertools import groupby
 from typing import List, Tuple
 import math
 import random
+import threading
 
 import src.navigate as navigate
 import src.tasks as tasks
@@ -142,9 +143,20 @@ class Bot:
         return actions
 
     def go_to_destination(self, destination):
-        actions = self.get_moving_actions_to_destination(destination)
-        for action in actions:
-            self.position.move(action.distance, action.direction)
+        MINIMAL_DISTANCE_BEFORE_CHECK_POSITION = 25
+        NUMBER_OF_ACTIONS_BEFORE_CHECK_POSITION = 10
+        moving_actions = self.get_moving_actions_to_destination(destination)
+        nb_actions_executed = 0
+        for moving_action in moving_actions:
+            moving_action_thread = threading.Thread(name="moving_action", 
+                target=self.position.move, 
+                args=(moving_action.distance, moving_action.direction,))
+            moving_action_thread.start()
+            if nb_actions_executed >= NUMBER_OF_ACTIONS_BEFORE_CHECK_POSITION and moving_action.distance > MINIMAL_DISTANCE_BEFORE_CHECK_POSITION:
+                self.position.find_me()
+                nb_actions_executed = 0
+            moving_action_thread.join()
+            nb_actions_executed += 1
 
     def check_red(self,x1,y1,x2,y2):
         img = ImageGrab.grab(bbox=(x1, y1, x2, y2))
