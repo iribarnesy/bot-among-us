@@ -1,23 +1,24 @@
 from PIL import ImageGrab
-
+import pyautogui
 class VisionManager:
-    SECONDS_DURING_EACH_SCREEN = 3
+    SECONDS_BETWEEN_EACH_SCREEN = 3
 
     def __init__(self):
         self.vision_screen = None
         self.game_phase = None
         self.is_impostor = None
-        self.is_sabotage_active = None
+        # self.is_sabotage_active = None
 
-        self.is_map_active = None
-        self.is_btn_use_active = None
-        self.is_btn_admin_active = None
-        self.is_btn_security_active = None
-        self.is_btn_report_active = None
-        self.is_btn_sabotage_active = None
-        self.is_btn_kill_active = None
-        self.is_btn_vent_active = None
-        
+        # self.is_map_active = None
+        # self.is_btn_use_active = None
+        # self.is_btn_admin_active = None
+        # self.is_btn_security_active = None
+        # self.is_btn_report_active = None
+        # self.is_btn_sabotage_active = None
+        # self.is_btn_kill_active = None
+        # self.is_btn_vent_active = None
+
+
     def check_color(self, top_left_corner, bottom_right_corner, color):
         x1, y1 = top_left_corner
         x2, y2 = bottom_right_corner
@@ -33,18 +34,43 @@ class VisionManager:
                     return True
         return False
 
+
+    def check_image(self, image_path):
+        coordinates = pyautogui.locateOnScreen(image_path, grayscale=True, confidence=.65)
+        
+        if coordinates is None:
+            return False
+        else:
+            return True
+
+
     def check_red(self, top_left_corner, bottom_right_corner):
         red = (220, 30, 30)
         return self.check_color(top_left_corner, bottom_right_corner, red)
 
-    def checkImposteur(self):
+
+    def is_btn_is_impostor_active(self):
         self.is_impostor = self.check_red((900,420),(1020,480))
         return self.is_impostor
 
-    def checkReport(self):
-        self.is_btn_report_active = self.check_red((1670,630),(1870,830))
-        return self.is_btn_report_active
+
+    def is_btn_report_active(self):
+        return self.check_red((1670,630),(1870,830))
+
+
+    def is_btn_kill_active(self):
+        return  self.check_red((1440,850),(1640,1050))
+
+    def is_btn_vent_active(self):
+        return self.check_image(r"src\img\vent_btn.png")
+
+
+    def is_btn_sabotage_active(self):
+        return self.check_image(r"src\img\sabotage_btn.png")
+
+
+    def is_btn_admin_active(self):
+        return self.check_image(r"src\img\admin_btn.PNG")
     
-    def checkKill(self):
-        self.is_btn_kill_active = self.check_red((1440,850),(1640,1050))
-        return self.is_btn_kill_active
+    def is_btn_security_active(self):
+        return self.check_image(r"src\img\security_btn.PNG")

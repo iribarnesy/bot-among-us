@@ -17,6 +17,7 @@ from src.tasks import TaskType, Task
 import src.game_map as game_map
 from src.position import Position, Directions
 from src.utils import FOCUS_AMONG_SCREEN
+import src.vision as visionManager
 
 class MovingAction:
     """ Represents a moving action.
@@ -39,7 +40,7 @@ class Bot:
     def __init__(self, map_img_path='src/img/WalkableMesh_resize_small.png'):
         self.name = "Le bot"
         self.game_map = game_map.SkeldMap(map_img_path)
-        self.visionManager = VisionManager()
+        self.visionManager = visionManager.VisionManager()
         self.position = Position()
         self.next_task: Task = None
 
@@ -188,7 +189,7 @@ class Bot:
     def reportKill(self):
         if self.visionManager.is_btn_report_active():
             # If we are impostor, 1/10 chance we report.
-            if self.isImposteur:
+            if self.visionManager.is_impostor:
                 if random.random() < 0.1:
                     pyautogui.moveTo(1770,730)
                     pyautogui.click()
@@ -199,7 +200,7 @@ class Bot:
                 # pyautogui.press("r")
     
     def kill(self):
-        if self.checkKill():
+        if self.visionManager.is_btn_kill_active():
             pyautogui.moveTo(1540,950)
             pyautogui.click()
             #pyautogui.press("q")
