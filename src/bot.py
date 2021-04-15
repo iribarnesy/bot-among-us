@@ -11,7 +11,7 @@ import math
 
 import src.navigate as navigate
 import src.tasks as tasks
-from src.tasks import TaskType
+from src.tasks import TaskType, Task
 import src.game_map as game_map
 from src.position import Position, Directions
 from src.utils import FOCUS_AMONG_SCREEN
@@ -23,7 +23,7 @@ class MovingAction:
     def __init__(self, direction, distance: int):
         self.direction: str = direction
         self.distance: int = distance
-        self.tasks: list(int) = None
+        self.next_task: Task = None
         # Distances over the diags are longer
         # if self.direction in ['top-right', 'bottom-right', 'bottom-left', 'top-left']:
         #     self.distance = distance * math.sqrt(2)
@@ -80,10 +80,18 @@ class Bot:
             # if pix[task.indicator_location] > (190, 190, 0) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200 and pix[task.indicator_location][1] != 17:
             if pix[task.indicator_location] > (160, 160, 67) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200:
                 tasks.append(task)
-        self.tasks = tasks
         pyautogui.press("tab")
 
         return tasks
+
+
+    def get_nearest_task(self):
+        tasks = self.get_tasks()
+        source_coordinates = self.position.find_me()
+        task_and_len_path = [(task,len(self.get_moving_actions_to_destination(task.location, source_coordinates))) for task in tasks]
+        task_and_len_path = sorted(task_and_len_path, key=lambda task_len: task_len[1])
+        self.next_task = task_and_len_path[0][0]
+        # return self.next_task
 
 
     def read_map(self):

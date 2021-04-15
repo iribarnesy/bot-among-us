@@ -25,7 +25,7 @@ class SkeldMap():
             Task(16, "Empty Garbage/Chute (O2)", (1260, 473), indicator_location=(1260, 473), solve_function=self.taskManager.empty_chute, task_type=TaskType.Empty_Chute),
             Task(17, "Empty Garbage/Chute (Storage)", (1092, 1020), indicator_location=(1092, 1020), solve_function=self.taskManager.empty_chute, task_type=TaskType.Empty_Chute),
             Task(18, "Fix Wires (Electrical)", (742, 651), indicator_location=(742, 651), solve_function=self.taskManager.fix_wires, task_type=TaskType.Fix_Wires),
-            Task(19, "Fix Wires (Storage)", (978, 696), indicator_location=(978, 696), solve_function=self.taskManager.fix_wires, task_type=TaskType.Fix_Wires),
+            Task(19, "Fix Wires (Storage)", (978, 696), indicator_location=(981, 674), solve_function=self.taskManager.fix_wires, task_type=TaskType.Fix_Wires),
             Task(20, "Fix Wires (Security)", (422, 528), indicator_location=(422, 528), solve_function=self.taskManager.fix_wires, task_type=TaskType.Fix_Wires),
             Task(21, "Fix Wires (Navigation)", (1652, 492), indicator_location=(1652, 492), solve_function=self.taskManager.fix_wires, task_type=TaskType.Fix_Wires),
             Task(22, "Fix Wires (Admin)", (1114, 599), indicator_location=(1114, 599), solve_function=self.taskManager.fix_wires, task_type=TaskType.Fix_Wires),
