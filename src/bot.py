@@ -17,6 +17,7 @@ from src.tasks import TaskType, Task
 import src.game_map as game_map
 from src.position import Position, Directions
 from src.utils import FOCUS_AMONG_SCREEN
+from src.vision import VisionManager, GamePhase
 
 class MovingAction:
     """ Represents a moving action.
@@ -39,9 +40,16 @@ class Bot:
     def __init__(self, map_img_path='src/img/WalkableMesh_resize_small.png'):
         self.name = "Le bot"
         self.game_map = game_map.SkeldMap(map_img_path)
+        self.vision_manager = VisionManager()
         self.position = Position()
-        self.isImposteur = self.checkImposteur()
         self.next_task: Task = None
+        # event
+        VisionManager().event_handler.link(self.reportKill, 'btnReportChanged')
+        VisionManager().event_handler.link(self.kill, 'btnKillChanged')
+        VisionManager().event_handler.link(self.camera, 'btnSecurityChanged')
+        VisionManager().event_handler.link(self.admin, 'btnAdminChanged')
+        VisionManager().event_handler.link(self.sabotage, 'btnSabotageChanged')
+        VisionManager().event_handler.link(self.vote, 'gamePhaseChanged')
 
     def menu(self):
         print("What would you like to do?")
@@ -55,9 +63,9 @@ class Bot:
         if(option == 1):
             self.run()
         if(option == 2):
-            self.game_map.taskManager.prompt_task()
+            self.game_map.task_manager.prompt_task()
         if(option == 3):
-            prompt_message_task_number = 'task number in :\n'+"\n".join(str(t) for t in self.game_map.taskManager.tasks)
+            prompt_message_task_number = 'task number in :\n'+"\n".join(str(t) for t in self.game_map.task_manager.tasks)
             navigate.pathfinding(int(input(prompt_message_task_number)))
         # if(option == 4):
         #     self.find_me()
@@ -83,7 +91,7 @@ class Bot:
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
         pix = img.load()
         tasks = []
-        for task in self.game_map.taskManager.tasks:
+        for task in self.game_map.task_manager.tasks:
             
             # if pix[task.indicator_location] > (190, 190, 0) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200 and pix[task.indicator_location][1] != 17:
             if pix[task.indicator_location] > (160, 160, 67) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200:
@@ -120,20 +128,20 @@ class Bot:
             img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
             pix = img.load()
             task = None
-            for t in self.game_map.taskManager.tasks:
+            for t in self.game_map.task_manager.tasks:
                 if pix[t.indicator_location] > (190, 190, 0) and pix[t.indicator_location] < (255, 255, 80) and pix[t.indicator_location][2] < 200 and pix[t.indicator_location][1] != 17:
                     print(t.name)
                     print(pix[t.indicator_location])
                     task = t
             if task is not None:
-                result = navigate.pathfinding(self.game_map.taskManager.tasks.index(task))
+                result = navigate.pathfinding(self.game_map.task_manager.tasks.index(task))
                 pyautogui.press("tab")
                 if result == 1:
                     self.perform_task(task)
 
     def perform_task(self, task):
         if task.task_type != TaskType.Unlock_Manifold:
-            self.game_map.taskManager.start_task()
+            self.game_map.task_manager.start_task()
         task.solve()
 
 
@@ -144,7 +152,7 @@ class Bot:
         return tuple(target_coordinates[axis] - source_coordinates[axis] for axis in range(len(source_coordinates)))
     
     def get_action_str(self, vector_direction):
-        scale = self.game_map.navigationManager.scale 
+        scale = self.game_map.navigation_manager.scale 
         vector_directions_to_actions_str = {
             (0       , -1*scale): Directions.UP,
             (1*scale , -1*scale): Directions.RIGHT_UP,
@@ -160,7 +168,7 @@ class Bot:
     def get_moving_actions_from_vector_directions(self, vector_directions):
         """ Get the moving actions by grouping along the same vector_directions and aggregating by counting
         """
-        scale = self.game_map.navigationManager.scale
+        scale = self.game_map.navigation_manager.scale
         return [MovingAction(self.get_action_str(vector_direction),sum(scale for _ in group)) for vector_direction, group in groupby(vector_directions)]
 
     def get_moving_actions_to_destination(self, destination, source_coordinates=None):
@@ -170,7 +178,7 @@ class Bot:
         """
         if not source_coordinates:
             source_coordinates = self.position.find_me()
-        path = self.game_map.navigationManager.calculate_path(source_coordinates, destination)
+        path = self.game_map.navigation_manager.calculate_path(source_coordinates, destination)
         if len(path) == 0:
             print("Didn't find a path between source and target ! 🐾")
             return []
@@ -199,30 +207,10 @@ class Bot:
             moving_action_thread.join()
             nb_actions_executed += 1
 
-    def check_red(self,x1,y1,x2,y2):
-        img = ImageGrab.grab(bbox=(x1, y1, x2, y2))
-        pix = img.load()
-        
-        for pix_x in range(img.size[0]):
-            for pix_y in range(img.size[1]):
-                r, g, b = pix[(pix_x, pix_y)]
-                if r > 220 and g < 30 and b < 30:
-                    return True
-        return False
-
-    def checkImposteur(self):
-        return self.check_red(900, 420, 1020, 480)
-
-    def checkReport(self):
-        return self.check_red(1670,630 ,1870,830)
-    
-    def checkKill(self):
-        return self.check_red(1440,850 ,1640,1050)
-
-    def reportKill(self):
-        if self.checkReport():
+    def reportKill(self, is_btn_report_active):
+        if is_btn_report_active:
             # If we are impostor, 1/10 chance we report.
-            if self.isImposteur:
+            if self.vision_manager.is_impostor():
                 if random.random() < 0.1:
                     pyautogui.moveTo(1770,730)
                     pyautogui.click()
@@ -232,12 +220,32 @@ class Bot:
                 pyautogui.click()
                 # pyautogui.press("r")
     
-    def kill(self):
-        if self.checkKill():
+    def kill(self, is_btn_kill_active):
+        if is_btn_kill_active:
             pyautogui.moveTo(1540,950)
             pyautogui.click()
             #pyautogui.press("q")
 
+    def camera(self, is_btn_security_active):
+        if is_btn_security_active:
+            pyautogui.press("e")
+
+    
+    def admin(self, is_btn_admin_active):
+        if is_btn_admin_active:
+            pyautogui.press("e")
+
+    def sabotage(self, is_btn_sabotage_active):
+        if is_btn_sabotage_active:
+            pyautogui.press("e")
+
+    
+    def vote(self, is_vote_time):
+        if is_vote_time == GamePhase.Vote:
+            pyautogui.moveTo(337,936)
+            pyautogui.click()
+            pyautogui.moveTo(571,936)   
+            pyautogui.click()
     
 
 if __name__ == '__main__':

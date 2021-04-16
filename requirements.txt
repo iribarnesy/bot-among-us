@@ -3,3 +3,5 @@ opencv-python
 pyautogui
 pytesseract
 pathfinding
+eventhandler
+google-cloud-vision
