@@ -1,10 +1,13 @@
 from enum import Enum
 import time
+from PIL import ImageGrab, Image
 import pyautogui
 from eventhandler import EventHandler
 
 from src.enums.pixels import Colors, PixelPositions, PixelRegions
 from src.utils import check_image, check_color, check_red, check_pixel_color
+from src.utils import open_tasks_tab, close_tasks_tab, flatten
+from typing import Tuple
 from src.utils import KillableThread, SingletonMeta
 
 class GamePhase(Enum):
@@ -61,6 +64,10 @@ class VisionManager(metaclass=SingletonMeta):
     def stop_vision_loop(self):
         self.vision_thread.kill()
         print("Terminate :", self.vision_thread)
+
+    def is_sabotage_running(self):
+        open_tasks_tab()
+        tasks_tab_img = ImageGrab.grab(bbox=(flatten(PixelRegions.TASKS_TAB.value)))
 
 
     def get_game_phase(self):
