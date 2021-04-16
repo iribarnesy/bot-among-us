@@ -424,21 +424,19 @@ class TaskManager(metaclass=utils.SingletonMeta):
                 refresh_img = 0
             else:
                 refresh_img = refresh_img + 1
-        
-        pyautogui.mouseUp()
-        time.sleep(0.5)
 
         # We fund the angle where the solution is. Now we go for it.
+        right_angle = (end_fund_angle + start_fund_angle)/2
+        angle = end_fund_angle
 
-        pos_x_fake = circle_center[0] + circle_radius * math.cos(angle-0.5)
-        pos_y_fake = circle_center[1] + circle_radius * math.sin(angle-0.5)
+        while (pix[0,0] == white_cross) and (angle >= right_angle):
+            angle -= 0.04
+            pos_x = circle_center[0] + circle_radius * math.cos(angle)
+            pos_y = circle_center[1] + circle_radius * math.sin(angle)
+            pyautogui.moveTo(pos_x,pos_y)
+            time.sleep(0.01)
 
-        pos_x_sol = circle_center[0] + circle_radius * math.cos(end_fund_angle)
-        pos_y_sol = circle_center[1] + circle_radius * math.sin(end_fund_angle)
-        pyautogui.dragTo(pos_x_fake, pos_y_fake, 0.3, button='left')
-        time.sleep(0.5)
-        pyautogui.dragTo(pos_x_sol, pos_y_sol, 0.3, button='left')
-
+        pyautogui.mouseUp()
 
     def sabotage_reactor(self):
         pyautogui.moveTo(960, 720)

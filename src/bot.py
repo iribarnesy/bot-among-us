@@ -63,9 +63,9 @@ class Bot:
         if(option == 1):
             self.run()
         if(option == 2):
-            self.game_map.task_manager.prompt_task()
+            self.game_map.taskManager.prompt_task()
         if(option == 3):
-            prompt_message_task_number = 'task number in :\n'+"\n".join(str(t) for t in self.game_map.task_manager.tasks)
+            prompt_message_task_number = 'task number in :\n'+"\n".join(str(t) for t in self.game_map.taskManager.tasks)
             navigate.pathfinding(int(input(prompt_message_task_number)))
         # if(option == 4):
         #     self.find_me()
@@ -91,7 +91,7 @@ class Bot:
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
         pix = img.load()
         tasks = []
-        for task in self.game_map.task_manager.tasks:
+        for task in self.game_map.taskManager.tasks:
             
             # if pix[task.indicator_location] > (190, 190, 0) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200 and pix[task.indicator_location][1] != 17:
             if pix[task.indicator_location] > (160, 160, 67) and pix[task.indicator_location] < (255, 255, 80) and pix[task.indicator_location][2] < 200:
@@ -128,20 +128,20 @@ class Bot:
             img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
             pix = img.load()
             task = None
-            for t in self.game_map.task_manager.tasks:
+            for t in self.game_map.taskManager.tasks:
                 if pix[t.indicator_location] > (190, 190, 0) and pix[t.indicator_location] < (255, 255, 80) and pix[t.indicator_location][2] < 200 and pix[t.indicator_location][1] != 17:
                     print(t.name)
                     print(pix[t.indicator_location])
                     task = t
             if task is not None:
-                result = navigate.pathfinding(self.game_map.task_manager.tasks.index(task))
+                result = navigate.pathfinding(self.game_map.taskManager.tasks.index(task))
                 pyautogui.press("tab")
                 if result == 1:
                     self.perform_task(task)
 
     def perform_task(self, task):
         if task.task_type != TaskType.Unlock_Manifold:
-            self.game_map.task_manager.start_task()
+            self.game_map.taskManager.start_task()
         task.solve()
 
 
@@ -152,7 +152,7 @@ class Bot:
         return tuple(target_coordinates[axis] - source_coordinates[axis] for axis in range(len(source_coordinates)))
     
     def get_action_str(self, vector_direction):
-        scale = self.game_map.navigation_manager.scale 
+        scale = self.game_map.navigationManager.scale 
         vector_directions_to_actions_str = {
             (0       , -1*scale): Directions.UP,
             (1*scale , -1*scale): Directions.RIGHT_UP,
@@ -168,7 +168,7 @@ class Bot:
     def get_moving_actions_from_vector_directions(self, vector_directions):
         """ Get the moving actions by grouping along the same vector_directions and aggregating by counting
         """
-        scale = self.game_map.navigation_manager.scale
+        scale = self.game_map.navigationManager.scale
         return [MovingAction(self.get_action_str(vector_direction),sum(scale for _ in group)) for vector_direction, group in groupby(vector_directions)]
 
     def get_moving_actions_to_destination(self, destination, source_coordinates=None):
@@ -178,7 +178,7 @@ class Bot:
         """
         if not source_coordinates:
             source_coordinates = self.position.find_me()
-        path = self.game_map.navigation_manager.calculate_path(source_coordinates, destination)
+        path = self.game_map.navigationManager.calculate_path(source_coordinates, destination)
         if len(path) == 0:
             print("Didn't find a path between source and target ! 🐾")
             return []
