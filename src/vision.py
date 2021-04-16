@@ -81,7 +81,7 @@ class VisionManager(metaclass=SingletonMeta):
         result = check_red(*PixelRegions.REPORT_BTN.value)
         if result != self._is_btn_report_active:
             self.event_handler.fire('btnReportChanged', result)
-            self.__is_btn_report_active = result
+            self._is_btn_report_active = result
         return result
 
     def is_btn_kill_active(self):
