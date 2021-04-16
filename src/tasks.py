@@ -356,12 +356,9 @@ class TaskManager(metaclass=utils.SingletonMeta):
         warped = cv2.warpPerspective(img, M, (width, height))
         image = cv2.rotate(warped, cv2.cv2.ROTATE_90_CLOCKWISE)
 
-        cv2.imwrite("image.png", image)
         data = pytesseract.image_to_string(image, lang='eng',config='--psm 6 -c tessedit_char_whitelist=0123456789')
-        print(data)
         for el in data[0:5]:
             val = int(el)
-            print(el, val)
             if val >= 0 and val < 10:
                 pyautogui.moveTo(coord_numbers[val])
                 pyautogui.click()
