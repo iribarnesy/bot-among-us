@@ -47,3 +47,11 @@ class SkeldMap():
             Task(38, "Download/Upload (Navigation)", (1752, 438), indicator_location=(1752, 438), solve_function=self.taskManager.download_upload, task_type=TaskType.Download_Upload),
             Task(39, "Download/Upload (Weapons)", (1413, 177), indicator_location=(1413, 177), solve_function=self.taskManager.download_upload, task_type=TaskType.Download_Upload)
         ]
+        self.taskManager.sabotage = [
+            Task(40, "Sabotage O2 (Admin)", (1326, 600), indicator_location=(1326, 600), solve_function=self.taskManager.sabotage_oxygen, task_type=TaskType.Sabotage_O2),
+            Task(41, "Sabotage O2 (O2)", (1333, 448), indicator_location=(1333, 448), solve_function=self.taskManager.sabotage_oxygen, task_type=TaskType.Sabotage_O2),
+            Task(42, "Sabotage Com", (1241, 990), indicator_location=(1241, 990), solve_function=self.taskManager.sabotage_communication, task_type=TaskType.Sabotage_Com),
+            Task(43, "Sabotage Reactor (High)", (183, 400), indicator_location=(183, 400), solve_function=self.taskManager.sabotage_reactor, task_type=TaskType.Sabotage_Reactor),
+            Task(44, "Sabotage Reactor (Low)", (170, 667), indicator_location=(170, 667), solve_function=self.taskManager.sabotage_reactor, task_type=TaskType.Sabotage_Reactor),
+            Task(45, "Sabotage_Elec", (660, 750), indicator_location=(660, 746), solve_function=self.taskManager.sabotage_electrical, task_type=TaskType.Sabotage_Elec)
+        ]
