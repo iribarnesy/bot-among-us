@@ -203,7 +203,6 @@ class TaskManager(metaclass=utils.SingletonMeta):
             while True:
                 img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
                 pix = img.load()
-                print(pix[distributor[i]])
                 if pix[distributor[i]] == on:
                     pyautogui.click()
                     break
