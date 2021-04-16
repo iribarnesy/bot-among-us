@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 from PIL import ImageGrab, Image
 import pytesseract
+import math
 
 import src.utils as utils
 
@@ -32,6 +33,10 @@ class TaskType:
     Start_Reactor = 16
     Chart_Course = 17
     Unlock_Manifold = 18
+    Sabotage_O2 = 19
+    Sabotage_Com = 20
+    Sabotage_Reactor = 21
+    Sabotage_Elec = 22
 
 class Task:
     def __init__(self, index, name, location, indicator_location=None, solve_function=None, task_type=None):
@@ -53,6 +58,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
 
     def __init__(self):
         self.tasks = []
+        self.sabotage = []
 
     def __repr__(self):
         tasks = "\n".join(str(t) for t in self.tasks)
@@ -326,6 +332,86 @@ class TaskManager(metaclass=utils.SingletonMeta):
                     pyautogui.click()
         time.sleep(10)
 
+    def sabotage_oxygen(self):
+        pass
+    
+    def sabotage_communication(self):
+        pyautogui.PAUSE = 0
+        down_left_button = (1118, 879)
+        mid_button = (1240, 685)
+        # down_right_button = (1366, 880)
+        circle_center = (1241, 820)
+        circle_radius = 138
+        start_angle = 2.6710101913802777
+        end_angle = 0.4375391366820185
+
+        # Move button to down left.
+        pyautogui.moveTo(mid_button)
+        pyautogui.dragTo(down_left_button[0], down_left_button[1], 0.3, button='left')
+        pyautogui.mouseDown()
+
+        white_cross = (238, 238, 238)
+        img = ImageGrab.grab(bbox=(510,382 ,511,383))
+        pix = img.load()
+
+        # we pass over most of the circle (angle from 2.6 to 2 * pi)
+        angle = start_angle
+        refresh_img = 0
+        freq_refresh = 5
+
+        while (pix[0,0] == white_cross) and (angle <= 2 * math.pi):
+            angle += 0.005
+            pos_x = circle_center[0] + circle_radius * math.cos(angle)
+            pos_y = circle_center[1] + circle_radius * math.sin(angle)
+            pyautogui.moveTo(pos_x,pos_y)
+            time.sleep(0.01)
+
+            if refresh_img % freq_refresh == 0:
+                img = ImageGrab.grab(bbox=(510,382 ,511,383))
+                pix = img.load()
+                refresh_img = 0
+            else:
+                refresh_img = refresh_img + 1
+
+        # we pass over the rest of the circle (angle from 0 to 0.4)
+        if pix[0,0] == white_cross:
+            angle = 0
+            refresh_img = 0
+            freq_refresh = 5
+
+            while (pix[0,0] == white_cross) and (angle <= end_angle):
+                angle += 0.005
+                pos_x = circle_center[0] + circle_radius * math.cos(angle)
+                pos_y = circle_center[1] + circle_radius * math.sin(angle)
+                pyautogui.moveTo(pos_x,pos_y)
+                time.sleep(0.01)
+
+                if refresh_img % freq_refresh == 0:
+                    img = ImageGrab.grab(bbox=(510,382 ,511,383))
+                    pix = img.load()
+                    refresh_img = 0
+                else:
+                    refresh_img = refresh_img + 1
+        
+        pyautogui.mouseUp()
+
+
+    def sabotage_reactor(self):
+        pyautogui.moveTo(960, 720)
+        pyautogui.mouseDown()
+
+        img = ImageGrab.grab(bbox=(1299,199 ,1300,200))
+        pix = img.load()
+
+        while pix[0,0][0] > 250:
+            time.sleep(0.1)
+            img = ImageGrab.grab(bbox=(1299,199 ,1300,200))
+            pix = img.load()
+
+        pyautogui.mouseUp()
+
+    def sabotage_electrical(self):
+        pass
 
     def troubleshoot(self):
         while True:
