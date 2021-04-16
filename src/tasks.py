@@ -120,6 +120,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
                 if pix[wires[i]] == pix[wires[j]]:
                     pyautogui.moveTo(wires[i])
                     pyautogui.mouseDown()
+                    time.sleep(0.01)
                     pyautogui.moveTo(wires[j])
                     pyautogui.mouseUp()
 
