@@ -411,7 +411,19 @@ class TaskManager(metaclass=utils.SingletonMeta):
         pyautogui.mouseUp()
 
     def sabotage_electrical(self):
-        pass
+        coord_light = [(1, 10), (176,1), (347, 2), (521, 3), (697, 6)]
+        right_green = (0, 255, 0)
+        pos_x_img = 616
+        pos_y_img = 895
+        img = ImageGrab.grab(bbox=(pos_x_img ,pos_y_img ,1315 ,906))
+        pix = img.load()
+        while(pix[coord_light[0]] != right_green or pix[coord_light[1]] != right_green or pix[coord_light[2]] != right_green or pix[coord_light[3]] != right_green or pix[coord_light[4]] != right_green):
+            for pt in coord_light:
+                if pix[pt] != right_green:
+                    pyautogui.moveTo(pos_x_img + pt[0], pos_y_img + pt[1] - 120)
+                    pyautogui.click()
+            img = ImageGrab.grab(bbox=(pos_x_img ,pos_y_img ,1315 ,906))
+            pix = img.load()
 
     def troubleshoot(self):
         while True:
