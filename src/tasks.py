@@ -190,6 +190,8 @@ class TaskManager(metaclass=utils.SingletonMeta):
             else:
                 refresh_img = refresh_img + 1
 
+        pyautogui.PAUSE = 0.1
+
     def clean_O2_filter(self):
         while True:
             img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
@@ -437,6 +439,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
             time.sleep(0.01)
 
         pyautogui.mouseUp()
+        pyautogui.PAUSE = 0.1
 
     def sabotage_reactor(self):
         pyautogui.moveTo(960, 720)

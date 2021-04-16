@@ -28,7 +28,6 @@ class Position:
         # Display the map
         FOCUS_AMONG_SCREEN()
         pyautogui.press('tab')
-        time.sleep(0.1)
         # find the character
         coordinates = pyautogui.locateOnScreen('./src/img/map_character.png', grayscale=True, confidence=.65)
         # Close the map
@@ -83,3 +82,4 @@ class Position:
             # Update position
             self.update_pos(distance_pix, directions[0])
             self.update_pos(distance_pix, directions[1])
+        pyautogui.PAUSE = 0.1

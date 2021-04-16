@@ -87,7 +87,6 @@ class Bot:
     def get_tasks(self):
         FOCUS_AMONG_SCREEN()
         pyautogui.press("tab")
-        time.sleep(0.1)
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
         pix = img.load()
         tasks = []
