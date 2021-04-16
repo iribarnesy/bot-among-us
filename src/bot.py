@@ -45,6 +45,10 @@ class Bot:
         self.next_task: Task = None
         # event
         VisionManager().event_handler.link(self.reportKill, 'btnReportChanged')
+        VisionManager().event_handler.link(self.kill, 'btnKillChanged')
+        VisionManager().event_handler.link(self.camera, 'btnSecurityChanged')
+        VisionManager().event_handler.link(self.admin, 'btnAdminChanged')
+        VisionManager().event_handler.link(self.sabotage, 'btnSabotageChanged')
 
     def menu(self):
         print("What would you like to do?")
@@ -191,7 +195,7 @@ class Bot:
     def reportKill(self, is_btn_report_active):
         if is_btn_report_active:
             # If we are impostor, 1/10 chance we report.
-            if self.vision_manager.is_impostor:
+            if self.vision_manager.is_impostor():
                 if random.random() < 0.1:
                     pyautogui.moveTo(1770,730)
                     pyautogui.click()
@@ -201,12 +205,26 @@ class Bot:
                 pyautogui.click()
                 # pyautogui.press("r")
     
-    def kill(self):
-        if self.vision_manager.is_btn_kill_active():
+    def kill(self, is_btn_kill_active):
+        if is_btn_kill_active:
             pyautogui.moveTo(1540,950)
             pyautogui.click()
             #pyautogui.press("q")
 
+    def camera(self, is_btn_security_active):
+        if is_btn_security_active:
+            pyautogui.press("e")
+
+    
+    def admin(self, is_btn_admin_active):
+        if is_btn_admin_active:
+            pyautogui.press("e")
+
+    def sabotage(self, is_btn_sabotage_active):
+        print("sabotage")
+        if is_btn_sabotage_active:
+            print("if sabotage")
+            pyautogui.press("e")
     
 
 if __name__ == '__main__':

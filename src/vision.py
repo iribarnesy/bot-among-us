@@ -40,6 +40,15 @@ class VisionManager(metaclass=SingletonMeta):
         for _ in range(self.MAX_ITERATIONS_FOR_THREAD):
             self.vision_screen = pyautogui.screenshot()
             self.is_btn_report_active()
+            self.is_btn_admin_active()
+            self.is_btn_security_active()
+            # self.is_btn_use_active()
+            if self.is_impostor():
+                self.is_btn_kill_active()
+                # self.is_btn_sabotage_active()
+                # self.is_btn_vent_active()
+                
+
             time.sleep(self.SECONDS_BETWEEN_EACH_SCREEN)
 
     def is_vision_looping(self):
