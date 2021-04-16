@@ -191,7 +191,7 @@ class Bot:
     def reportKill(self, is_btn_report_active):
         if is_btn_report_active:
             # If we are impostor, 1/10 chance we report.
-            if self.vision_manager.is_impostor:
+            if self.vision_manager.is_impostor():
                 if random.random() < 0.1:
                     pyautogui.moveTo(1770,730)
                     pyautogui.click()
