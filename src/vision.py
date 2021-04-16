@@ -39,6 +39,7 @@ class VisionManager(metaclass=SingletonMeta):
     def compute_screen(self):
         for _ in range(self.MAX_ITERATIONS_FOR_THREAD):
             self.vision_screen = pyautogui.screenshot()
+            self.get_game_phase()
             self.is_btn_report_active()
             self.is_btn_admin_active()
             self.is_btn_security_active()
@@ -68,7 +69,6 @@ class VisionManager(metaclass=SingletonMeta):
             result = GamePhase.Vote   
         else:
             result = GamePhase.Game
-
         if result != self.game_phase:
             self.event_handler.fire('gamePhaseChanged', result)
             self.game_phase = result

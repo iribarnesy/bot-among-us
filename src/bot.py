@@ -17,7 +17,7 @@ from src.tasks import TaskType, Task
 import src.game_map as game_map
 from src.position import Position, Directions
 from src.utils import FOCUS_AMONG_SCREEN
-from src.vision import VisionManager
+from src.vision import VisionManager, GamePhase
 
 class MovingAction:
     """ Represents a moving action.
@@ -49,6 +49,7 @@ class Bot:
         VisionManager().event_handler.link(self.camera, 'btnSecurityChanged')
         VisionManager().event_handler.link(self.admin, 'btnAdminChanged')
         VisionManager().event_handler.link(self.sabotage, 'btnSabotageChanged')
+        VisionManager().event_handler.link(self.vote, 'gamePhaseChanged')
 
     def menu(self):
         print("What would you like to do?")
@@ -221,10 +222,16 @@ class Bot:
             pyautogui.press("e")
 
     def sabotage(self, is_btn_sabotage_active):
-        print("sabotage")
         if is_btn_sabotage_active:
-            print("if sabotage")
             pyautogui.press("e")
+
+    
+    def vote(self, is_vote_time):
+        if is_vote_time == GamePhase.Vote:
+            pyautogui.moveTo(337,936)
+            pyautogui.click()
+            pyautogui.moveTo(571,936)   
+            pyautogui.click()
     
 
 if __name__ == '__main__':
