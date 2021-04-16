@@ -333,7 +333,40 @@ class TaskManager(metaclass=utils.SingletonMeta):
         time.sleep(10)
 
     def sabotage_oxygen(self):
-        pass
+        img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
+        img.save("C:/Users/Administrator/Desktop/bot-among-us/src/img/temp.png")
+
+        img = cv2.imread("C:/Users/Administrator/Desktop/bot-among-us/src/img/temp.png")
+
+        coord_numbers = [(959,864), (795,381), (957,374), (1118,369), (819,537), (934,535), (1113,526), (814,688), (972,729), (1144,851)]
+        coord_validate = (1113,875)
+        coord_code = np.array([[[1246,362]], [[1227,333]], [[1327,280]], [[1360,322]]])
+        rect = cv2.minAreaRect(coord_code)
+        box = cv2.boxPoints(rect)
+        box = np.int0(box)
+        cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
+        width = int(rect[1][0])
+        height = int(rect[1][1])
+        src_pts = box.astype("float32")
+        dst_pts = np.array([[0, height-1],
+                        [0, 0],
+                        [width-1, 0],
+                        [width-1, height-1]], dtype="float32")
+        M = cv2.getPerspectiveTransform(src_pts, dst_pts)
+        warped = cv2.warpPerspective(img, M, (width, height))
+        image = cv2.rotate(warped, cv2.cv2.ROTATE_90_CLOCKWISE)
+
+        cv2.imwrite("image.png", image)
+        data = pytesseract.image_to_string(image, lang='eng',config='--psm 6 -c tessedit_char_whitelist=0123456789')
+        print(data)
+        for el in data[0:5]:
+            val = int(el)
+            print(el, val)
+            if val >= 0 and val < 10:
+                pyautogui.moveTo(coord_numbers[val])
+                pyautogui.click()
+        pyautogui.moveTo(coord_validate)
+        pyautogui.click()
     
     def sabotage_communication(self):
         pyautogui.PAUSE = 0
