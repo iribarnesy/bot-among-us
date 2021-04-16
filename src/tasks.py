@@ -376,9 +376,12 @@ class TaskManager(metaclass=utils.SingletonMeta):
         circle_center = (1241, 820)
         circle_radius = 138
         start_angle = 2.6710101913802777
-        end_angle = 0.4375391366820185
+        end_angle = (2 * math.pi) + 0.4375391366820185
+        # red_light = (1352, 667)
+        # green_light = (1403, 670)
 
         # Move button to down left.
+
         pyautogui.moveTo(mid_button)
         pyautogui.dragTo(down_left_button[0], down_left_button[1], 0.3, button='left')
         pyautogui.mouseDown()
@@ -390,10 +393,14 @@ class TaskManager(metaclass=utils.SingletonMeta):
         # we pass over most of the circle (angle from 2.6 to 2 * pi)
         angle = start_angle
         refresh_img = 0
-        freq_refresh = 5
+        freq_refresh = 10
+        # fund_angle = 0 if never fund, 1 if found, 2 if founded before.
+        fund_angle = 0
+        start_fund_angle = start_angle
+        end_fund_angle = end_angle
 
-        while (pix[0,0] == white_cross) and (angle <= 2 * math.pi):
-            angle += 0.005
+        while (pix[0,0] == white_cross) and (angle <= end_angle) and (fund_angle < 2):
+            angle += 0.04
             pos_x = circle_center[0] + circle_radius * math.cos(angle)
             pos_y = circle_center[1] + circle_radius * math.sin(angle)
             pyautogui.moveTo(pos_x,pos_y)
@@ -402,31 +409,37 @@ class TaskManager(metaclass=utils.SingletonMeta):
             if refresh_img % freq_refresh == 0:
                 img = ImageGrab.grab(bbox=(510,382 ,511,383))
                 pix = img.load()
+                imgTest = ImageGrab.grab(bbox=(1352,667 ,1353,668))
+                pixTest = imgTest.load()
+                # If the red light become switch off
+                if(pixTest[0,0][0] < 255):
+                    if fund_angle == 1 :
+                        end_fund_angle = angle
+                    elif fund_angle == 0 :
+                        start_fund_angle = angle
+                        end_fund_angle = angle
+                        fund_angle = 1
+                # If the red light switch on
+                if (pixTest[0,0][0] == 255) and (fund_angle == 1):
+                    fund_angle = 2
+
                 refresh_img = 0
             else:
                 refresh_img = refresh_img + 1
-
-        # we pass over the rest of the circle (angle from 0 to 0.4)
-        if pix[0,0] == white_cross:
-            angle = 0
-            refresh_img = 0
-            freq_refresh = 5
-
-            while (pix[0,0] == white_cross) and (angle <= end_angle):
-                angle += 0.005
-                pos_x = circle_center[0] + circle_radius * math.cos(angle)
-                pos_y = circle_center[1] + circle_radius * math.sin(angle)
-                pyautogui.moveTo(pos_x,pos_y)
-                time.sleep(0.01)
-
-                if refresh_img % freq_refresh == 0:
-                    img = ImageGrab.grab(bbox=(510,382 ,511,383))
-                    pix = img.load()
-                    refresh_img = 0
-                else:
-                    refresh_img = refresh_img + 1
         
         pyautogui.mouseUp()
+        time.sleep(0.5)
+
+        # We fund the angle where the solution is. Now we go for it.
+
+        pos_x_fake = circle_center[0] + circle_radius * math.cos(angle-0.5)
+        pos_y_fake = circle_center[1] + circle_radius * math.sin(angle-0.5)
+
+        pos_x_sol = circle_center[0] + circle_radius * math.cos(end_fund_angle)
+        pos_y_sol = circle_center[1] + circle_radius * math.sin(end_fund_angle)
+        pyautogui.dragTo(pos_x_fake, pos_y_fake, 0.3, button='left')
+        time.sleep(0.5)
+        pyautogui.dragTo(pos_x_sol, pos_y_sol, 0.3, button='left')
 
 
     def sabotage_reactor(self):
