@@ -53,7 +53,7 @@ class Bot:
         option = int(input('options:'))
 
         if(option == 1):
-            self.startup()
+            self.run()
         if(option == 2):
             self.game_map.taskManager.prompt_task()
         if(option == 3):
@@ -62,19 +62,24 @@ class Bot:
         # if(option == 4):
         #     self.find_me()
 
-    def startup(self):
-        time.sleep(2)
-        self.scale_percent = 100 # percent of original size
-        self.width = int(1920 * self.scale_percent / 100)
-        self.height = int(1080 * self.scale_percent / 100)
-        self.dim = (self.width, self.height)
-        self.select_screen()
-        self.read_map()
+    def run(self):
+        print("GET !")
+        self.get_nearest_task()
+        while(self.next_task != None):
+            print("NEAREST :")
+            print(self.next_task.name)
+            self.go_to_destination(self.next_task.location)
+            print("PERFORM !")
+            self.perform_task(self.next_task)
+            time.sleep(1.5)
+            self.get_nearest_task()
+        print("FIN LOL")
 
 
     def get_tasks(self):
         FOCUS_AMONG_SCREEN()
         pyautogui.press("tab")
+        time.sleep(0.1)
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
         pix = img.load()
         tasks = []
@@ -87,13 +92,25 @@ class Bot:
 
         return tasks
 
+    def manhattan_distance(self,source,target):
+        distance = abs(source[0]-target[0]) + abs(source[1]-target[1])
+        return distance
 
     def get_nearest_task(self):
         tasks = self.get_tasks()
-        source_coordinates = self.position.find_me()
-        task_and_len_path = [(task,len(self.get_moving_actions_to_destination(task.location, source_coordinates))) for task in tasks]
-        task_and_len_path = sorted(task_and_len_path, key=lambda task_len: task_len[1])
-        self.next_task = task_and_len_path[0][0]
+        if len(tasks) == 0:
+            self.next_task = None
+        else :
+            source_coordinates = self.position.find_me()
+            task_and_manhattan = [(task,self.manhattan_distance(source_coordinates, task.location)) for task in tasks]
+            task_and_manhattan = sorted(task_and_manhattan, key=lambda task_len: task_len[1])
+            for test in task_and_manhattan:
+                print(test[0].name)
+            self.next_task = task_and_manhattan[0][0]
+        # TODO : Compute the real distance for the x nearest tasks, stock self.next_task and self.next_path.
+        # task_and_len_path = [(task,len(self.get_moving_actions_to_destination(task.location, source_coordinates))) for task in tasks]
+        # task_and_len_path = sorted(task_and_len_path, key=lambda task_len: task_len[1])
+        # self.next_task = task_and_len_path[0][0]
         # return self.next_task
 
 
@@ -113,9 +130,6 @@ class Bot:
                 pyautogui.press("tab")
                 if result == 1:
                     self.perform_task(task)
-
-    def select_screen(self):
-        pyautogui.click(int(self.width/2), int(self.height/2))
 
     def perform_task(self, task):
         if task.task_type != TaskType.Unlock_Manifold:
