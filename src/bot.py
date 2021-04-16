@@ -43,6 +43,8 @@ class Bot:
         self.vision_manager = VisionManager()
         self.position = Position()
         self.next_task: Task = None
+        # event
+        VisionManager().event_handler.link(self.reportKill, 'btnReportChanged')
 
     def menu(self):
         print("What would you like to do?")
@@ -186,8 +188,8 @@ class Bot:
             moving_action_thread.join()
             nb_actions_executed += 1
 
-    def reportKill(self):
-        if self.vision_manager.is_btn_report_active():
+    def reportKill(self, is_btn_report_active):
+        if is_btn_report_active:
             # If we are impostor, 1/10 chance we report.
             if self.vision_manager.is_impostor:
                 if random.random() < 0.1:
