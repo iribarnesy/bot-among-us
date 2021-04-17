@@ -13,12 +13,12 @@ import threading
 
 import src.navigate as navigate
 import src.tasks as tasks
-from src.tasks import TaskType, Task
+from src.tasks import TaskType, Task, TaskManager
 import src.game_map as game_map
 from src.position import Position, Directions
 from src.utils import FOCUS_AMONG_SCREEN
 from src.vision import VisionManager, GamePhase
-
+from src.enums.texts import TasksTexts
 class MovingAction:
     """ Represents a moving action.
     For example : "Go top for 5 pixels" will be Action(direction="top", distance=5)
@@ -50,6 +50,7 @@ class Bot:
         VisionManager().event_handler.link(self.admin, 'btnAdminChanged')
         VisionManager().event_handler.link(self.sabotage, 'btnSabotageChanged')
         VisionManager().event_handler.link(self.vote, 'gamePhaseChanged')
+        VisionManager().event_handler.link(self.react_to_sabotage_running, 'sabotageRunningChanged')
 
     def menu(self):
         print("What would you like to do?")
@@ -76,13 +77,19 @@ class Bot:
         while(self.next_task != None):
             print("NEAREST :")
             print(self.next_task.name)
-            self.go_to_destination(self.next_task.location)
-            print("PERFORM !")
-            self.perform_task(self.next_task)
-            time.sleep(1.5)
+            self.go_and_perform(self.next_task)
             self.get_nearest_task()
         print("FIN LOL")
 
+    def go_and_perform(self, task: Task):
+        self.go_to_destination(task.location)
+        if VisionManager().is_btn_use_active():
+            print("PERFORM !")
+            self.perform_task(task)
+            time.sleep(1.5)
+            return True
+        else:
+            return False
 
     def get_tasks(self):
         FOCUS_AMONG_SCREEN()
@@ -245,7 +252,19 @@ class Bot:
             pyautogui.click()
             pyautogui.moveTo(571,936)   
             pyautogui.click()
-    
+
+    def react_to_sabotage_running(self, sabotage_running: TaskType):
+        if sabotage_running is not None:
+            VisionManager().want_to_read_tasks = False
+            print("Detected that", sabotage_running, "is running ! ☣")
+            sabotage_task = list(filter(lambda x: x.task_type == sabotage_running, TaskManager().sabotages))[0]
+            is_task_done = False
+            while not is_task_done:
+                is_task_done = self.go_and_perform(sabotage_task)
+                VisionManager()._is_sabotage_running = is_task_done
+                VisionManager().want_to_read_tasks = is_task_done
+
+    # dead emoji 👻
 
 if __name__ == '__main__':
     b = Bot()
