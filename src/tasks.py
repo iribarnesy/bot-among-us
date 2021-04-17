@@ -8,6 +8,7 @@ import math
 from enum import Enum
 
 import src.utils as utils
+from src.enums.texts import TasksTexts
 
 """ TaskManager
 Presuppose that the task is opened in game, then solve the task.
@@ -39,6 +40,16 @@ class TaskType(Enum):
     Sabotage_Reactor = 21
     Sabotage_Elec = 22
 
+    @classmethod
+    def get_sabotage_from_text(cls, task_text: TasksTexts):
+        task_text_to_task_type = {
+            TasksTexts.SABOTAGE_O2: cls.Sabotage_O2,
+            TasksTexts.SABOTAGE_LIGHTS: cls.Sabotage_Elec,
+            TasksTexts.SABOTAGE_COMMS: cls.Sabotage_Com,
+            TasksTexts.SABOTAGE_REACTOR: cls.Sabotage_Reactor
+        }
+        return task_text_to_task_type[task_text]
+
 class Task:
     def __init__(self, index, name, location, indicator_location=None, solve_function=None, task_type=None):
         self.index = index
@@ -59,7 +70,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
 
     def __init__(self):
         self.tasks = []
-        self.sabotage = []
+        self.sabotages = []
 
     def __repr__(self):
         tasks = "\n".join(str(t) for t in self.tasks)
