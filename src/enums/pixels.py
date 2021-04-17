@@ -21,7 +21,7 @@ class Colors(Enum):
 class PixelPositions(Enum):
     MAIN_BTN = (1769, 942)
     OPEN_TASKS_BTN = (0, 290)
-    CLOSE_TASKS_BTN = (777, 290)
+    CLOSE_TASKS_BTN = (70, 290)
 
 class PixelRegions(Enum):
     REPORT_BTN = (1670,630),(1870,830)
