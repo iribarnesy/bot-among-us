@@ -11,7 +11,7 @@ from src.enums.pixels import PixelPositions
 def open_tasks_tab():
     pyautogui.moveTo(PixelPositions.OPEN_TASKS_BTN.value)
     pyautogui.click()
-    time.sleep(0.1)
+    time.sleep(0.2)
 
 def close_tasks_tab():
     pyautogui.moveTo(PixelPositions.CLOSE_TASKS_BTN.value)
@@ -24,35 +24,15 @@ def flatten(region: Tuple):
       x2, y2 = bottom_right
       return x1, y1, x2, y2
 
-# def detect_text(path):
-#     """Detects text in the file."""
-#     from google.cloud import vision
-#     import io
-#     client = vision.ImageAnnotatorClient()
-
-#     with io.open(path, 'rb') as image_file:
-#         content = image_file.read()
-
-#     image = vision.Image(content=content)
-
-#     response = client.text_detection(image=image)
-#     texts = response.text_annotations
-#     print('Texts:')
-
-#     for text in texts:
-#         print('\n"{}"'.format(text.description))
-
-#         vertices = (['({},{})'.format(vertex.x, vertex.y)
-#                     for vertex in text.bounding_poly.vertices])
-
-#         print('bounds: {}'.format(','.join(vertices)))
-
-#     if response.error.message:
-#         raise Exception(
-#             '{}\nFor more info on error messages, check: '
-#             'https://cloud.google.com/apis/design/errors'.format(
-#                 response.error.message))
-
+def is_in_text(short_text_to_find, long_text):
+      """ For now, find exactly the string.
+      TODO: find when the string is almost matching. For example :
+        'Sbotged' should be found in 'Comms Sabotaged'
+      """
+      res = long_text.find(short_text_to_find)
+      return res != -1
+            
+      
 def check_color(top_left_corner, bottom_right_corner, color):
     # TODO: fix because it's doesn't work, it is fitted to red only
     x1, y1 = top_left_corner
