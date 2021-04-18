@@ -3,6 +3,7 @@ from enum import Enum
 class Colors(Enum):
     # Main button (1769, 942)
     USE_BTN_ACTIVE = (170, 187, 187)
+    USE_BTN_ACTIVE_RED = (202, 117, 117)
     USE_BTN_INACTIVE = (94, 108, 108)
     SECURITY_BTN_ACTIVE = (0, 205, 104)
     ADMIN_BTN_ACTIVE = (85, 102, 102)
@@ -25,6 +26,6 @@ class PixelPositions(Enum):
 
 class PixelRegions(Enum):
     REPORT_BTN = (1670,630),(1870,830)
-    KILL_BTN = (1440,850),(1640,1050)
+    KILL_BTN = (1480,890),(1640,1050)
     CHARACTER_NAME = (900,420),(1020,480)
     TASKS_TAB = (18,120),(748,1080)

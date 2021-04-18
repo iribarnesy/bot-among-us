@@ -76,11 +76,11 @@ class VisionManager(metaclass=SingletonMeta):
     def stop_vision_loop(self):
         self.vision_thread.kill()
         print("Terminate :", self.vision_thread)
+        self.stop_read_tasks()
 
 
     def start_read_tasks(self):
         if not self.is_read_tasks_running():
-            print("Run read_tasks !!")
             self.read_tasks_thread = KillableThread(name="read_tasks", target=self.read_tasks)
             self.read_tasks_thread.start()
 
@@ -145,12 +145,14 @@ class VisionManager(metaclass=SingletonMeta):
         return self.game_phase
 
     def is_impostor(self):
+        # The character must stay immobile when it is reading the name
         if self._is_impostor is None:
             self._is_impostor = check_red(*PixelRegions.CHARACTER_NAME.value)
         return self._is_impostor
 
     def is_btn_use_active(self):
         result = check_pixel_color(PixelPositions.MAIN_BTN.value, Colors.USE_BTN_ACTIVE.value)
+        result = result or check_pixel_color(PixelPositions.MAIN_BTN.value, Colors.USE_BTN_ACTIVE_RED.value)
         if result != self.is_btn_use_active:
             self._is_btn_use_active = result
             self.event_handler.fire('btnUseChanged', result)
@@ -165,7 +167,7 @@ class VisionManager(metaclass=SingletonMeta):
 
     def is_btn_kill_active(self):
         result = check_red(*PixelRegions.KILL_BTN.value)
-        if result != self.is_btn_kill_active:
+        if result != self._is_btn_kill_active:
             self._is_btn_kill_active = result
             self.event_handler.fire('btnKillChanged', result)
         return result
