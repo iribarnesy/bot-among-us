@@ -8,6 +8,18 @@ import trace
 
 from src.enums.pixels import PixelPositions
 
+
+def manhattan_distance(source, target):
+    distance = abs(source[0]-target[0]) + abs(source[1]-target[1])
+    return distance
+
+def zero_pause_pyautogui_decorator(func):
+    def wrapper():
+        pyautogui.PAUSE = 0
+        func()
+        pyautogui.PAUSE = 0.1
+    return wrapper
+
 def open_tasks_tab():
     mouse_pos = pyautogui.position()
     pyautogui.moveTo(PixelPositions.OPEN_TASKS_BTN.value, _pause=0)
