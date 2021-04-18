@@ -348,11 +348,11 @@ class TaskManager(metaclass=utils.SingletonMeta):
 
     def sabotage_oxygen(self):
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
-        img.save("C:/Users/Administrator/Desktop/bot-among-us/src/img/temp.png")
+        img.save("src/img/temp.png")
 
-        img = cv2.imread("C:/Users/Administrator/Desktop/bot-among-us/src/img/temp.png")
+        img = cv2.imread("src/img/temp.png")
 
-        coord_numbers = [(959,864), (795,381), (957,374), (1118,369), (819,537), (934,535), (1113,526), (814,688), (972,729), (1144,851)]
+        coord_numbers = [(959,864), (795,381), (957,374), (1118,369), (819,537), (934,535), (1113,526), (814,688), (972,729), (1113,729)]
         coord_validate = (1113,875)
         coord_code = np.array([[[1246,362]], [[1227,333]], [[1327,280]], [[1360,322]]])
         rect = cv2.minAreaRect(coord_code)
