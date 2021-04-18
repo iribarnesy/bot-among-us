@@ -83,3 +83,6 @@ class Position:
             self.update_pos(distance_pix, directions[0])
             self.update_pos(distance_pix, directions[1])
         pyautogui.PAUSE = 0.1
+
+    def __repr__(self):
+        return f"Position({self.horizontal_position},{self.vertical_position})"
