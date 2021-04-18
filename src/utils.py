@@ -9,13 +9,17 @@ import trace
 from src.enums.pixels import PixelPositions
 
 def open_tasks_tab():
-    pyautogui.moveTo(PixelPositions.OPEN_TASKS_BTN.value)
-    pyautogui.click()
-    time.sleep(0.2)
+    mouse_pos = pyautogui.position()
+    pyautogui.moveTo(PixelPositions.OPEN_TASKS_BTN.value, _pause=0)
+    pyautogui.click(_pause=0.001)
+    pyautogui.moveTo(*mouse_pos, _pause=0)
+    time.sleep(0.3)
 
 def close_tasks_tab():
-    pyautogui.moveTo(PixelPositions.CLOSE_TASKS_BTN.value)
-    pyautogui.click()
+    mouse_pos = pyautogui.position()
+    pyautogui.moveTo(PixelPositions.CLOSE_TASKS_BTN.value, _pause=0)
+    pyautogui.click(_pause=0.001)
+    pyautogui.moveTo(*mouse_pos, _pause=0)
     time.sleep(0.1)
 
 def flatten(region: Tuple):
