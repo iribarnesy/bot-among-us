@@ -14,9 +14,9 @@ def screen_positive_negative():
             loop_time = time()
             if key.char == 'p':
                 print("positive")
-                pyautogui.screenshot('src/players_recognition/positive/{}.jpg'.format(loop_time))
+                pyautogui.screenshot('positive/{}.jpg'.format(loop_time))
             elif key.char == 'n':
-                pyautogui.screenshot('src/players_recognition/negative/{}.jpg'.format(loop_time))
+                pyautogui.screenshot('negative/{}.jpg'.format(loop_time))
         except AttributeError:
             print('Oops, attribute error on key', key)
 
@@ -30,8 +30,6 @@ def screen_positive_negative():
             on_press=on_press,
             on_release=on_release) as listener:
         listener.join()
-
-
 
 # reads all the files in the /negative folder and generates neg.txt from them.
 # we'll run it manually like this:
