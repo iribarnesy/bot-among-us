@@ -31,8 +31,6 @@ def screen_positive_negative():
             on_release=on_release) as listener:
         listener.join()
 
-
-
 # reads all the files in the /negative folder and generates neg.txt from them.
 # we'll run it manually like this:
 # $ python
@@ -67,3 +65,6 @@ def generate_negative_description_file():
 
 # my final classifier training arguments:
 # $ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data cascade/ -vec pos.vec -bg neg.txt -precalcValBufSize 6000 -precalcIdxBufSize 6000 -numPos 200 -numNeg 1000 -numStages 12 -w 24 -h 24 -maxFalseAlarmRate 0.4 -minHitRate 0.999
+
+# screen_positive_negative()
+# generate_negative_description_file()
