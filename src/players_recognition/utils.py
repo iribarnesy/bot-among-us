@@ -3,8 +3,6 @@ import cv2.cv2 as cv
 import numpy as np
 import os
 from time import time
-from window_capture import WindowCapture
-from vision import Vision
 import pyautogui
 
 from pynput.keyboard import Key, Listener
@@ -16,9 +14,9 @@ def screen_positive_negative():
             loop_time = time()
             if key.char == 'p':
                 print("positive")
-                pyautogui.screenshot('positive/{}.jpg'.format(loop_time))
+                pyautogui.screenshot('src/players_recognition/positive/{}.jpg'.format(loop_time))
             elif key.char == 'n':
-                pyautogui.screenshot('negative/{}.jpg'.format(loop_time))
+                pyautogui.screenshot('src/players_recognition/negative/{}.jpg'.format(loop_time))
         except AttributeError:
             print('Oops, attribute error on key', key)
 
