@@ -1,61 +1,39 @@
 import os
-
-import cv2 as cv
+import cv2.cv2 as cv
 import numpy as np
 import os
 from time import time
 from window_capture import WindowCapture
 from vision import Vision
+import pyautogui
+
+from pynput.keyboard import Key, Listener
+
+def screen_positive_negative():
+    def on_press(key):
+        try:
+            print(key)
+            loop_time = time()
+            if key.char == 'p':
+                print("positive")
+                pyautogui.screenshot('positive/{}.jpg'.format(loop_time))
+            elif key.char == 'n':
+                pyautogui.screenshot('negative/{}.jpg'.format(loop_time))
+        except AttributeError:
+            print('Oops, attribute error on key', key)
+
+    def on_release(key):
+        if key == Key.esc:
+            # Stop listener
+            return False
+
+    # Collect events until released
+    with Listener(
+            on_press=on_press,
+            on_release=on_release) as listener:
+        listener.join()
 
 
-def run():
-    # Change the working directory to the folder this script is in.
-    # Doing this because I'll be putting the files from each video in their own folder on GitHub
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-
-    # initialize the WindowCapture class
-    wincap = WindowCapture('Among Us')
-
-    # load the trained model
-    # cascade_limestone = cv.CascadeClassifier('limestone_model_final.xml')
-    # load an empty Vision class
-    vision_limestone = Vision(None)
-
-    loop_time = time()
-    while(True):
-
-        # get an updated image of the game
-        screenshot = wincap.get_screenshot()
-
-        # do object detection
-        # rectangles = cascade_limestone.detectMultiScale(screenshot)
-
-        # draw the detection results onto the original image
-        # detection_image = vision_limestone.draw_rectangles(screenshot, rectangles)
-
-        # display the images
-        # cv.imshow('Matches', detection_image)
-
-        # debug the loop rate
-        print('FPS {}'.format(1 / (time() - loop_time)))
-        loop_time = time()
-
-        # press 'q' with the output window focused to exit.
-        # press 'f' to save screenshot as a positive image, press 'd' to 
-        # save as a negative image.
-        # waits 1 ms every loop to process key presses
-        key = cv.waitKey()
-        print(key)
-        if key == ord('q'):
-            cv.destroyAllWindows()
-            break
-        elif key == ord('f'):
-            cv.imwrite('positive/{}.jpg'.format(loop_time), screenshot)
-        elif key == ord('d'):
-            cv.imwrite('negative/{}.jpg'.format(loop_time), screenshot)
-
-    print('Done.')
 
 # reads all the files in the /negative folder and generates neg.txt from them.
 # we'll run it manually like this:
@@ -71,6 +49,13 @@ def generate_negative_description_file():
         # loop over all the filenames
         for filename in os.listdir('negative'):
             f.write('negative/' + filename + '\n')
+
+def generate_positive_description_file():
+    # open the output file for writing. will overwrite all existing data in there
+    with open('pos.txt', 'w') as f:
+        # loop over all the filenames
+        for filename in os.listdir('positive'):
+            f.write('positive/' + filename + '\n')
 
 # the opencv_annotation executable can be found in opencv/build/x64/vc15/bin
 # generate positive description file using:
