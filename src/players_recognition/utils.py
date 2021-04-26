@@ -40,7 +40,7 @@ def screen_positive_negative():
 # $ python
 # Python 3.8.0 (tags/v3.8.0:fa919fd, Oct 14 2019, 19:21:23) [MSC v.1916 32 bit (Intel)] on win32
 # Type "help", "copyright", "credits" or "license" for more information.
-# >>> from cascadeutils import generate_negative_description_file
+# >>> from utils import generate_negative_description_file
 # >>> generate_negative_description_file()
 # >>> exit()
 def generate_negative_description_file():
@@ -56,6 +56,10 @@ def generate_positive_description_file():
         # loop over all the filenames
         for filename in os.listdir('positive'):
             f.write('positive/' + filename + '\n')
+
+def generate_description_files():
+    generate_positive_description_file()
+    generate_negative_description_file()
 
 # the opencv_annotation executable can be found in opencv/build/x64/vc15/bin
 # generate positive description file using:
