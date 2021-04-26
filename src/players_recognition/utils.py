@@ -14,9 +14,9 @@ def screen_positive_negative():
             loop_time = time()
             if key.char == 'p':
                 print("positive")
-                pyautogui.screenshot('src/players_recognition/positive/{}.jpg'.format(loop_time))
+                pyautogui.screenshot('positive/{}.jpg'.format(loop_time))
             elif key.char == 'n':
-                pyautogui.screenshot('src/players_recognition/negative/{}.jpg'.format(loop_time))
+                pyautogui.screenshot('negative/{}.jpg'.format(loop_time))
         except AttributeError:
             print('Oops, attribute error on key', key)
 
