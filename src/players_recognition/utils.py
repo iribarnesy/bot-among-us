@@ -58,13 +58,17 @@ def generate_negative_description_file():
 # Will exit automatically when you've annotated all of the images
 
 # generate positive samples from the annotations to get a vector file using:
-# $ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_createsamples.exe -info pos.txt -w 24 -h 24 -num 1000 -vec pos.vec
+# $ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_createsamples.exe -info pos.txt -w 32 -h 32 -num 604 -vec pos.vec
+# D:/Bureau/opencv/build/x64/vc15/bin/opencv_createsamples.exe -info pos.txt -w 32 -h 32 -num 1000 -vec pos.vec
 
 # train the cascade classifier model using:
-# $ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data cascade/ -vec pos.vec -bg neg.txt -numPos 200 -numNeg 100 -numStages 10 -w 24 -h 24
+# $ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data cascade_model/ -vec pos.vec -bg neg.txt -numPos 200 -numNeg 100 -numStages 10 -w 24 -h 24
+# D:/Bureau/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data cascade_model/ -vec pos.vec -bg neg.txt -numPos 200 -numNeg 100 -numStages 10 -w 32 -h 32
 
 # my final classifier training arguments:
-# $ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data cascade/ -vec pos.vec -bg neg.txt -precalcValBufSize 6000 -precalcIdxBufSize 6000 -numPos 200 -numNeg 1000 -numStages 12 -w 24 -h 24 -maxFalseAlarmRate 0.4 -minHitRate 0.999
+# $ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data cascade_model/ -vec pos.vec -bg neg.txt -precalcValBufSize 6000 -precalcIdxBufSize 6000 -numPos 200 -numNeg 1000 -numStages 12 -w 24 -h 24 -maxFalseAlarmRate 0.4 -minHitRate 0.999
+# $ D:/Bureau/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data cascade_model/ -vec pos.vec -bg neg.txt -precalcValBufSize 6000 -precalcIdxBufSize 6000 -numPos 784 -numNeg 1600 -numStages 12 -w 32 -h 32 -maxFalseAlarmRate 0.4 -minHitRate 0.999
+
 
 # screen_positive_negative()
 # generate_negative_description_file()
