@@ -49,6 +49,7 @@ def generate_negative_description_file():
 # the opencv_annotation executable can be found in opencv/build/x64/vc15/bin
 # generate positive description file using:
 # $ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_annotation.exe --annotations=pos.txt --images=positive/
+# D:/Bureau/opencv/build/x64/vc15/bin/opencv_annotation.exe --annotations=full-pos.txt --images=positive/
 
 # You click once to set the upper left corner, then again to set the lower right corner.
 # Press 'c' to confirm.
