@@ -116,13 +116,14 @@ class VisionManager(metaclass=SingletonMeta):
             content = image_file.read()
 
         image = vision.Image(content=content)
+        # pylint: disable=no-member
         response = client.text_detection(image=image)
         texts = response.text_annotations
 
-        for text in texts:
+        # for text in texts:
             # print('\n"{}"'.format(text.description))
-            vertices = (['({},{})'.format(vertex.x, vertex.y)
-                        for vertex in text.bounding_poly.vertices])
+            # vertices = (['({},{})'.format(vertex.x, vertex.y)
+                        # for vertex in text.bounding_poly.vertices])
             # print('bounds: {}'.format(','.join(vertices)))
 
         if response.error.message:
