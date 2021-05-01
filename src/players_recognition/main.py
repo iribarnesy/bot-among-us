@@ -6,20 +6,12 @@ from time import time, sleep
 import pyautogui
 from matplotlib import pyplot as plt
 
-from window_capture import WindowCapture
 from vision import Vision
-
-# Change the working directory to the folder this script is in.
-# Doing this because I'll be putting the files from each video in their own folder on GitHub
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+from players_detector import PlayersDetector, plot_prediction
 
 def run():
     # load the trained model
-    cascade_model = cv.CascadeClassifier('cascade_model/cascade.xml')
-    # load an empty Vision class
-    vision = Vision(None)
-
-    # sleep(3)
+    detection_model = PlayersDetector()
 
     loop_time = time()
     while(True):
@@ -28,18 +20,30 @@ def run():
         screenshot = np.array(pyautogui.screenshot())
 
         # do object detection
-        rectangles = cascade_model.detectMultiScale(screenshot)
+        detections = detection_model.detect_from_np_array(screenshot)
+
+        boxes = detections['detection_boxes'][0].numpy()
+        scores = detections['detection_scores'][0].numpy()
+        classes = detections['detection_classes'][0].numpy().astype(np.uint32)
+        good_boxes = boxes[scores > 0.6]
+        if len(good_boxes) > 1:
+            print("Saw", len(good_boxes), "people")
 
         # draw the detection results onto the original image
-        detection_image = vision.draw_rectangles(screenshot, rectangles)
+        line_color = (0, 255, 0)
+        line_type = cv.LINE_4
+        for (ymin, xmin, ymax, xmax) in good_boxes:
+            # determine the box positions
+            top_left = (int(xmin * 1920), int(ymin * 1080))
+            bottom_right = (int(xmax * 1920), int(ymax * 1080))
+            # draw the box
+            cv.rectangle(screenshot, top_left, bottom_right, line_color, thickness=5, lineType=line_type)
+        screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
 
         # display the images
-        # cv.startWindowThread()
-        # cv.namedWindow('Matches')
-        cv.imshow('Matches', detection_image)
+        cv.namedWindow('Matches')
+        cv.imshow('Matches', screenshot)
         cv.waitKey(1)
-        # plt.imshow(detection_image)
-        # plt.show()
 
         # debug the loop rate
         print('FPS {}'.format(1 / (time() - loop_time)))
