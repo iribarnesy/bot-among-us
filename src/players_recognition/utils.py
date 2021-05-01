@@ -4,8 +4,17 @@ import numpy as np
 import os
 from time import time
 import pyautogui
-
+from PIL import Image
+from tqdm import tqdm
 from pynput.keyboard import Key, Listener
+
+
+def resize_images_in_folder(image_folder, new_image_folder):
+    os.mkdir(new_image_folder)
+    for filename in tqdm(os.listdir(image_folder)):
+      image = Image.open(image_folder +"/"+ filename)
+      new_image = image.resize((480, 270))
+      new_image.save(new_image_folder + "/" + filename)
 
 def screen_positive_negative():
     def on_press(key):
