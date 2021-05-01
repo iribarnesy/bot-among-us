@@ -36,3 +36,19 @@ python -m pip install -U .
 ```
 
 You can then run `python object_detection/builders/model_builder_tf2_test.py` to verify that the installation is fine.
+
+Copy the model (download it from [the google drive folder](https://drive.google.com/drive/u/1/folders/1-JZd1OF8aOJ08qXstt6wx8AOytp1LtSM)) to a new models/ folder at the root of the project. It should be as below :
+
+```bash
+models/
+└───all_boxes_model_40_batches/
+    ├───assets/
+    ├───variables/
+    ├───checkpoint
+    ├───ckpt-1-1.data-00000-of-00001
+    ├───ckpt-1-1.index
+    ├───saved_model.pb
+    └───ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.config
+```
+
+Then, you can run `python src/players_recognition/main.py` to vizualize the players detection loop.
