@@ -36,6 +36,8 @@ cp object_detection/packages/tf2/setup.py .
 python -m pip install -U .
 ```
 
+If the last command exit with error please try to run `python -m pip install --user .`
+
 You can then run `python object_detection/builders/model_builder_tf2_test.py` to verify that the installation is fine.
 
 Copy the model (download it from [the google drive folder](https://drive.google.com/drive/u/1/folders/1-JZd1OF8aOJ08qXstt6wx8AOytp1LtSM)) to a new models/ folder at the root of the project. It should be as below :
@@ -53,3 +55,10 @@ models/
 ```
 
 Then, you can run `python src/players_recognition/main.py` to vizualize the players detection loop.
+
+If you have some errors due to matplotlib or opencv please uninstall and reinstall the packages
+
+```bash
+pip uninstall opencv-python matplotlib
+pip install opencv-python matplotlib
+```
