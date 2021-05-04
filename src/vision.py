@@ -45,7 +45,8 @@ class VisionManager(metaclass=SingletonMeta):
                                          'tasksTabChanged', 'sabotageRunningChanged')
         self.event_handler.link(self.is_sabotage_running, 'tasksTabChanged')
 
-
+    """ Global vision thread
+    """
     def start_vision_loop(self):
         self.vision_thread = KillableThread(name="compute_screen", target=self.compute_screen)
         self.vision_thread.start()
@@ -79,6 +80,8 @@ class VisionManager(metaclass=SingletonMeta):
         self.stop_read_tasks()
 
 
+    """ Read the tasks tab
+    """
     def start_read_tasks(self):
         if not self.is_read_tasks_running():
             self.read_tasks_thread = KillableThread(name="read_tasks", target=self.read_tasks)
@@ -134,6 +137,8 @@ class VisionManager(metaclass=SingletonMeta):
 
         return texts[0]
 
+    """ Other events
+    """
     def get_game_phase(self):
         is_vote_phase = check_image(r"src\img\skip_vote.PNG")
         if is_vote_phase:

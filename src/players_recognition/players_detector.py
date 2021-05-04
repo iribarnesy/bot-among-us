@@ -52,7 +52,7 @@ class PlayersDetector:
   def load_model(self, checkpoint_path):
     tf.keras.backend.clear_session()
 
-    print('Building model and restoring weights for fine-tuning...', flush=True)
+    print('Building model and restoring weights...', flush=True)
     num_classes = 1
     pipeline_config = f"{MODEL_PATH}/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.config"
 
