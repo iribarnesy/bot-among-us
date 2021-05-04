@@ -1,4 +1,5 @@
 import pyautogui
+import cv2.cv2 as cv
 from threading import Lock, Thread
 from PIL import ImageGrab
 from typing import Tuple
@@ -8,6 +9,18 @@ import trace
 
 from src.enums.pixels import PixelPositions
 
+def draw_boxes(boxes, screenshot):
+  line_color = (0, 255, 0)
+  line_type = cv.LINE_4
+  thickness = 5
+  screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
+  for (ymin, xmin, ymax, xmax) in boxes:
+      # determine the box positions
+      top_left = (int(xmin * 1920), int(ymin * 1080))
+      bottom_right = (int(xmax * 1920), int(ymax * 1080))
+      # draw the box
+      cv.rectangle(screenshot, top_left, bottom_right, line_color, thickness, line_type)
+  return screenshot
 
 def manhattan_distance(source, target):
     distance = abs(source[0]-target[0]) + abs(source[1]-target[1])
