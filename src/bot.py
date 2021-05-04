@@ -7,10 +7,13 @@ from src.navigation import NavigationManager, MovingAction
 from src.brain import BrainManager
 
 class Bot:
-    def __init__(self, map_img_path='src/img/WalkableMesh_resize_small.png'):
+    def __init__(self, 
+                 map_img_path='src/img/WalkableMesh_resize_small.png',
+                 want_to_read_tasks=True,
+                 debug_mode=True):
         self.name = "Le bot"
         self.game_map = SkeldMap(map_img_path)
-        self.vision_manager = VisionManager()
+        self.vision_manager = VisionManager(want_to_read_tasks=want_to_read_tasks, debug_mode=debug_mode)
         self.position = Position()
         
         self.brain_manager = BrainManager(self.position, vision_manager=self.vision_manager)

@@ -1,5 +1,7 @@
 from enum import Enum
 import time
+import numpy as np
+import cv2.cv2 as cv
 from PIL import ImageGrab, Image
 import pyautogui
 from eventhandler import EventHandler
@@ -9,9 +11,11 @@ from src.enums.pixels import Colors, PixelPositions, PixelRegions
 from src.enums.images import ImagesPath
 from src.enums.texts import TasksTexts
 from src.tasks import TaskType
+from src.utils import draw_boxes
 from src.utils import check_image, check_color, check_red, check_pixel_color
 from src.utils import open_tasks_tab, close_tasks_tab, flatten, is_in_text
 from src.utils import KillableThread, SingletonMeta
+from src.players_recognition.players_detector import PlayersDetector
 
 class GamePhase(Enum):
     Game = "game"
@@ -19,14 +23,23 @@ class GamePhase(Enum):
     Lobby = "lobby"
 
 class VisionManager(metaclass=SingletonMeta):
-    def __init__(self):
+    def __init__(self, 
+                 want_to_read_tasks=True,
+                 debug_mode=False): 
         self.vision_screen = None
+        self.vision_screen_transformed = None
+        self.debug_mode = debug_mode
+
         self.vision_thread: KillableThread = None
+
         self.read_tasks_thread: KillableThread = None
-        self.want_to_read_tasks = True
+        self.want_to_read_tasks = want_to_read_tasks
+        self.tasks_text = None
+
+        self.detect_players_thread: KillableThread = None
+        self.detector = PlayersDetector()
 
         self.game_phase: GamePhase = None
-        self.tasks_text = None
         self._is_impostor = None
         self._is_btn_use_active = None
         self._is_btn_report_active = None
@@ -38,7 +51,7 @@ class VisionManager(metaclass=SingletonMeta):
         self._is_sabotage_running = False
         self.sabotage_running = None
 
-        self.SECONDS_BETWEEN_EACH_SCREEN = 1
+        self.SECONDS_BETWEEN_EACH_SCREEN = 0
         self.MAX_ITERATIONS_FOR_THREAD = 60
         self.event_handler = EventHandler('gamePhaseChanged', 'btnUseChanged', 'btnReportChanged', 'btnKillChanged',
                                          'btnVentChanged', 'btnSabotageChanged', 'btnAdminChanged', 'btnSecurityChanged', 
@@ -48,12 +61,14 @@ class VisionManager(metaclass=SingletonMeta):
     """ Global vision thread
     """
     def start_vision_loop(self):
-        self.vision_thread = KillableThread(name="compute_screen", target=self.compute_screen)
-        self.vision_thread.start()
+        if not self.is_vision_looping():
+            self.vision_thread = KillableThread(name="compute_screen", target=self.compute_screen)
+            self.vision_thread.start()
 
     def compute_screen(self):
+        cv.namedWindow('Matches')
         for _ in range(self.MAX_ITERATIONS_FOR_THREAD):
-            self.vision_screen = pyautogui.screenshot()
+            self.vision_screen = np.array(pyautogui.screenshot())
             self.get_game_phase()
             self.is_btn_report_active()
             self.is_btn_admin_active()
@@ -66,7 +81,19 @@ class VisionManager(metaclass=SingletonMeta):
                 self.is_btn_kill_active()
                 # self.is_btn_sabotage_active()
                 # self.is_btn_vent_active()
+            
+            self.start_detect_players()
+
+            if self.vision_screen_transformed is not None:
+                im = cv.resize(self.vision_screen_transformed, (960, 540))
+            else:
+                im = cv.resize(self.vision_screen, (960, 540))
+                im = cv.cvtColor(im, cv.COLOR_BGR2RGB)
+            cv.imshow('Matches', im)
+            cv.waitKey(1)
+
             time.sleep(self.SECONDS_BETWEEN_EACH_SCREEN)
+        cv.destroyAllWindows()
 
     def is_vision_looping(self):
         if self.vision_thread is not None:
@@ -78,7 +105,38 @@ class VisionManager(metaclass=SingletonMeta):
         self.vision_thread.kill()
         print("Terminate :", self.vision_thread)
         self.stop_read_tasks()
+        self.stop_detect_players()
 
+    """ Detection of the players
+    """
+    def start_detect_players(self):
+        if not self.is_detect_players_running():
+            self.detect_players_thread = KillableThread(name="detect_players", target=self.detect_players)
+            print("Start:", self.detect_players_thread)
+            self.detect_players_thread.start()
+
+    def detect_players(self, min_confidence_threshold=0.6):
+        screenshot_np = np.array(pyautogui.screenshot())
+        detections = self.detector.detect_from_np_array(screenshot_np)
+        boxes = detections['detection_boxes'][0].numpy()
+        scores = detections['detection_scores'][0].numpy()
+        # classes = detections['detection_classes'][0].numpy().astype(np.uint32)
+        good_boxes = boxes[scores > min_confidence_threshold]
+        # draw the detection results onto the original image
+        if self.debug_mode:
+            print(f"Found {len(good_boxes)} player(s)")
+            self.vision_screen_transformed = draw_boxes(good_boxes, screenshot_np)
+
+    def is_detect_players_running(self):
+        if self.detect_players_thread is not None:
+            return self.detect_players_thread.is_alive()
+        else:
+            return False
+
+    def stop_detect_players(self):
+        if self.detect_players_thread is not None:
+            self.detect_players_thread.kill()
+            print("Terminate :", self.detect_players_thread)
 
     """ Read the tasks tab
     """
@@ -105,9 +163,9 @@ class VisionManager(metaclass=SingletonMeta):
             return False
 
     def stop_read_tasks(self):
-        self.read_tasks_thread.kill()
-        print("Terminate :", self.read_tasks_thread)
-
+        if self.read_tasks_thread is not None:
+            self.read_tasks_thread.kill()
+            print("Terminate :", self.read_tasks_thread)
 
     def detect_text(self, path):
         """Detects text in the file."""
@@ -122,12 +180,6 @@ class VisionManager(metaclass=SingletonMeta):
         # pylint: disable=no-member
         response = client.text_detection(image=image)
         texts = response.text_annotations
-
-        # for text in texts:
-            # print('\n"{}"'.format(text.description))
-            # vertices = (['({},{})'.format(vertex.x, vertex.y)
-                        # for vertex in text.bounding_poly.vertices])
-            # print('bounds: {}'.format(','.join(vertices)))
 
         if response.error.message:
             raise Exception(
