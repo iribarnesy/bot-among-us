@@ -1,5 +1,9 @@
+from shapely.geometry import Polygon
+
 from src.tasks import TaskManager, TaskType, Task
 from src.navigation import NavigationManager
+from src.room import Room
+
 class SkeldMap():
     def __init__(self, map_image_path):
         self.map_image_path = map_image_path
@@ -54,4 +58,20 @@ class SkeldMap():
             Task(43, "Sabotage Reactor (High)", (183, 400), indicator_location=(183, 400), solve_function=self.taskManager.sabotage_reactor, task_type=TaskType.Sabotage_Reactor),
             Task(44, "Sabotage Reactor (Low)", (170, 667), indicator_location=(170, 667), solve_function=self.taskManager.sabotage_reactor, task_type=TaskType.Sabotage_Reactor),
             Task(45, "Sabotage_Elec", (660, 750), indicator_location=(660, 746), solve_function=self.taskManager.sabotage_electrical, task_type=TaskType.Sabotage_Elec)
+        ]
+        self.room = [
+            Room("Upper Engine", Polygon([(299,166),(442,166),(442,384),(247,384),(247,213)])),
+            Room("Medbay", Polygon([(590,327),(768,327),(768,434),(839,505),(839,560),(625,560),(590,515)])),
+            Room("Cafeteria", Polygon([(876,39),(1135,39),(1257,160),(1257,398),(1152,503),(896,504),(791,400),(791,123)])),
+            Room("Weapons", Polygon([(1339,137),(1442,137),(1531,225),(1531,354),(1384,354),(1339,314)])),
+            Room("O2", Polygon([(1281,383),(1371,383),(1371,528),(1217,529),(1217,467),(1281,398)])),
+            Room("Navigation", Polygon([(1689,401),(1769,401),(1838,462),(1838,539),(1769,594),(1689,594)])),
+            Room("Shields", Polygon([(1382,715),(1530,715),(1530,844),(1441,935),(1339,935),(1339,759)])),
+            Room("Communications", Polygon([(1110,878),(1321,878),(1321,997),(1277,1039),(1154,1039),(1110,998)])),
+            Room("Storage", Polygon([(903,659),(1091,659),(1091,1039),(927,1039),(839,953),(839,721)])),
+            Room("Admin", Polygon([(1131,556),(1338,556),(1338,707),(1301,745),(1131,745)])),
+            Room("Electrical", Polygon([(626,601),(840,601),(840,655),(789,706),(789,790),(745,831),(626,831)])),
+            Room("Lower Engine", Polygon([(244,677),(442,677),(442,894),(298,894),(244,853)])),
+            Room("Security", Polygon([(490,399),(532,399),(563,431),(563,621),(452,619),(452,438)])),
+            Room("Reactor", Polygon([(157,357),(199,357),(199,425),(265,425),(265,622),(199,622),(199,690),(155,690),(82,646),(82,404)]))
         ]
