@@ -1,6 +1,7 @@
 # Added by developers
 environments/
 models/
+tensorflow_models/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
