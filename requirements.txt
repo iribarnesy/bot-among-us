@@ -5,3 +5,9 @@ pytesseract
 pathfinding
 eventhandler
 google-cloud-vision
+shapely
+gtts
+playsound
+discord.py
+asyncio
+python-dotenv

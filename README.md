@@ -62,3 +62,26 @@ If you have some errors due to matplotlib or opencv please uninstall and reinsta
 pip uninstall opencv-python matplotlib
 pip install opencv-python matplotlib
 ```
+
+## Add dependencies to make the bot speak
+
+First install the python dependencies with `pip install -r requirements.txt` (if not done before)
+
+Then, it's necessary to have ffmpeg installed, just run `ffmpeg` in shell to verify it. If you have not, you can [download ffmpeg for windows](https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2021-05-05-12-34/ffmpeg-n4.4-10-g75c3969292-win64-gpl-4.4.zip) and add it to your PATH.
+
+Finally you have to add some secrets to a `.env` file at the root of the project.
+
+```bash
+DISCORD_TOKEN = <DISCORD_TOKEN>
+GUILD = <GUILD>
+CHANNEL = <CHANNEL>
+TEXT_CHANNEL_ID = <TEXT_CHANNEL_ID>
+VOICE_CHANNEL_ID = <VOICE_CHANNEL_ID>
+```
+
+Then you can instantiate the bot and make him say something. It will connect to the discord server/guild, join the "among" channel and speak.
+
+```python
+bot = Bot()
+bot.discord_bot.say("something")
+```
