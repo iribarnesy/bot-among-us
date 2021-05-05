@@ -1,7 +1,7 @@
 import pyautogui
 import cv2.cv2 as cv
 from threading import Lock, Thread
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
 from typing import Tuple
 import time
 import sys
@@ -72,24 +72,25 @@ def dominant_color(colors_representation):
 
   return dominant_color
  
-def get_player_color(top_left_corner, bottom_right_corner):
+def get_player_color(top_left_corner, bottom_right_corner, screen):
     colors = Colors.get_all_player_colors()
 
     x1, y1 = top_left_corner
     x2, y2 = bottom_right_corner
-    
-    img = ImageGrab.grab(bbox=(x1, y1, x2, y2))
-    pixels = img.load()
-    # img.show()
+    # print("get_player_color", x1, y1, x2, y2)
+    img = screen[y1:y2, x1:x2]
+    # image = Image.fromarray(img)
+    # image.show()
     color_representation = {'RED_PLAYER':0,'BLUE_PLAYER':0,'GREEN_PLAYER':0,'YELLOW_PLAYER':0,
                      'ORANGE_PLAYER':0,'PINK_PLAYER':0,'PURPLE_PLAYER':0,'WHITE_PLAYER':0,
                      'BLACK_PLAYER':0,'BROWN_PLAYER':0,'CYAN_PLAYER':0,'LIME_PLAYER':0}
-    for pix_x in range(img.size[0]):
-      for pix_y in range(img.size[1]):
+    for raw in img:
+      for pixel in raw:
         for color in colors:          
-          if all(x <= max(y,z) and x >= min(y,z) for x, y, z in zip(pixels[pix_x, pix_y], color[0], color[1])):
+          if all(x <= max(y,z) and x >= min(y,z) for x, y, z in zip(pixel, color[0], color[1])):
             color_representation[Colors(color).name] += 1
-
+    # print("representation", color_representation)
+    # print("dominant_color", dominant_color(color_representation))
     return dominant_color(color_representation)
 
 

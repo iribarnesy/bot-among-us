@@ -52,7 +52,7 @@ class VisionManager(metaclass=SingletonMeta):
         self.MAX_ITERATIONS_FOR_THREAD = 60
         self.event_handler = EventHandler('gamePhaseChanged', 'btnUseChanged', 'btnReportChanged', 'btnKillChanged',
                                          'btnVentChanged', 'btnSabotageChanged', 'btnAdminChanged', 'btnSecurityChanged', 
-                                         'tasksTabChanged', 'sabotageRunningChanged')
+                                         'tasksTabChanged', 'sabotageRunningChanged','seePeople')
         self.event_handler.link(self.is_sabotage_running, 'tasksTabChanged')
 
     def init_event_values(self):
@@ -74,9 +74,9 @@ class VisionManager(metaclass=SingletonMeta):
         if not self.is_vision_looping():
             self.vision_thread = KillableThread(name="compute_screen", target=self.compute_screen)
             self.vision_thread.start()
-        print("memorize players thread")
-        self.memorize_players_thread = KillableThread(name="memorize_players", target=self.memorize_players)
-        self.memorize_players_thread.start()
+        # print("memorize players thread")
+        # self.memorize_players_thread = KillableThread(name="memorize_players", target=self.memorize_players)
+        # self.memorize_players_thread.start()
 
     def compute_screen(self):
         if self.debug_mode:
@@ -113,10 +113,10 @@ class VisionManager(metaclass=SingletonMeta):
             cv.destroyAllWindows()
     
     
-    def memorize_players(self):
-        print("memorize_players")
-        for _ in range(self.MAX_ITERATIONS_FOR_THREAD):
-            self.is_see_people()
+    # def memorize_players(self):
+    #     print("memorize_players")
+    #     for _ in range(self.MAX_ITERATIONS_FOR_THREAD):
+    #         self.is_see_people()
 
     
     def get_region(self, coordinates):
@@ -129,21 +129,29 @@ class VisionManager(metaclass=SingletonMeta):
 
         return region
     
-    def is_see_people(self):
-        self.vision_screen = pyautogui.screenshot()
+    def get_addapted_boxes(self, boxes):
+        final_boxes = []
+        for box in boxes:
+            final_boxes.append([int(box[0]*1080), int(box[1]*1920), int(box[2]*1080), int(box[3]*1920)])
+        return final_boxes
+
+    def is_see_people(self, boxes, screen):
+        # print("is_see_people", boxes)
+        # self.vision_screen = pyautogui.screenshot()
         # retour IA object détection : liste de liste de coordonnées [ymin%ecran, xmin%ecran, ymax%ecran, xmax%ecran] 
         # IL FAUDRAT DONC MULTIPLI PAR 1920*1080
-        retour = [[477,919,597,995],[803,1218,868,1305]]
-        # url_photo = "src/players_recognition/positive/" + retour.split(' ',1)[0]
-        # coord = retour.split(' ',1)[1].split(' ')
+        boxes_addapted = self.get_addapted_boxes(boxes)
+        # print("boxes_adapted", boxes_addapted)
+        # url_photo = "src/players_recognition/positive/" + boxes_addapted.split(' ',1)[0]
+        # coord = boxes_addapted.split(' ',1)[1].split(' ')
         # count_players = 0
         data = {"players":[],"killed":[]}
         # while count_players < int(coord[0]):
-        for player in retour:
+        for player in boxes_addapted:
             # actual_player_box = (int(coord[count_players*4 +2]), int(coord[count_players*4 +1]), int(coord[count_players*4 +4]), int(coord[count_players*4 +3]))
             # Define Color
             region = self.get_region(player)
-            color = get_player_color((player[1], player[0]), (player[3], player[2]))
+            color = get_player_color((player[1], player[0]), (player[3], player[2]), screen)
             if color == "WHITE_PLAYER":
                 continue
             # Check if is death
@@ -155,10 +163,9 @@ class VisionManager(metaclass=SingletonMeta):
                 data["players"].append(color)
             # count_players = count_players +1
         # print(data)
-        # PROBLEME ICI SI ON RESTE AVEC LES AUTRES EN CHANGEANT DE SALLE
-        if self.last_log != data:
-            self.event_handler.fire('seePeople', data)
-            self.last_log = data
+        # if self.last_log != data:
+        #     self.event_handler.fire('seePeople', data)
+        #     self.last_log = data
 
     def is_vision_looping(self):
         if self.vision_thread is not None:
@@ -169,8 +176,8 @@ class VisionManager(metaclass=SingletonMeta):
     def stop_vision_loop(self):
         self.vision_thread.kill()
         print("Terminate :", self.vision_thread)
-        self.memorize_players_thread.kill()
-        print("Terminate :", self.memorize_players_thread)
+        # self.memorize_players_thread.kill()
+        # print("Terminate :", self.memorize_players_thread)
         self.stop_read_tasks()
         self.stop_detect_players()
 
@@ -189,6 +196,7 @@ class VisionManager(metaclass=SingletonMeta):
         scores = detections['detection_scores'][0].numpy()
         # classes = detections['detection_classes'][0].numpy().astype(np.uint32)
         good_boxes = boxes[scores > min_confidence_threshold]
+        self.is_see_people(good_boxes, screenshot_np)
         # draw the detection results onto the original image
         if self.debug_mode:
             print(f"Found {len(good_boxes)} player(s)")
