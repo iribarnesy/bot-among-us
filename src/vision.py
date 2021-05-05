@@ -27,8 +27,8 @@ class GamePhase(Enum):
 class VisionManager(metaclass=SingletonMeta):
     def __init__(self, 
                  want_to_read_tasks=True,
+                 want_to_detect_players=True,
                  debug_mode=False):
-        self.takeScreen = True
         self.vision_screen = None
         self.vision_screen_transformed = None
         self.debug_mode = debug_mode
@@ -40,11 +40,22 @@ class VisionManager(metaclass=SingletonMeta):
         self.tasks_text = None
     
         self.detect_players_thread: KillableThread = None
+        self.want_to_detect_players = want_to_detect_players
         self.detector = PlayersDetector()
 
         self.memorize_players_thread: KillableThread = None
         self.last_log = None
         
+        self.init_event_values()
+
+        self.SECONDS_BETWEEN_EACH_SCREEN = 0
+        self.MAX_ITERATIONS_FOR_THREAD = 60
+        self.event_handler = EventHandler('gamePhaseChanged', 'btnUseChanged', 'btnReportChanged', 'btnKillChanged',
+                                         'btnVentChanged', 'btnSabotageChanged', 'btnAdminChanged', 'btnSecurityChanged', 
+                                         'tasksTabChanged', 'sabotageRunningChanged')
+        self.event_handler.link(self.is_sabotage_running, 'tasksTabChanged')
+
+    def init_event_values(self):
         self.game_phase: GamePhase = None
         self._is_impostor = None
         self._is_btn_use_active = None
@@ -56,13 +67,6 @@ class VisionManager(metaclass=SingletonMeta):
         self._is_btn_security_active = None
         self._is_sabotage_running = False
         self.sabotage_running = None
-
-        self.SECONDS_BETWEEN_EACH_SCREEN = 0
-        self.MAX_ITERATIONS_FOR_THREAD = 60
-        self.event_handler = EventHandler('gamePhaseChanged', 'btnUseChanged', 'btnReportChanged', 'btnKillChanged',
-                                         'btnVentChanged', 'btnSabotageChanged', 'btnAdminChanged', 'btnSecurityChanged', 
-                                         'tasksTabChanged', 'sabotageRunningChanged', 'updateRoom', 'seePeople')
-        self.event_handler.link(self.is_sabotage_running, 'tasksTabChanged')
 
     """ Global vision thread
     """
@@ -92,7 +96,8 @@ class VisionManager(metaclass=SingletonMeta):
                 # self.is_btn_sabotage_active()
                 # self.is_btn_vent_active()
             
-            self.start_detect_players()
+            if self.want_to_detect_players:
+                self.start_detect_players()
             
             if self.debug_mode:
                 if self.vision_screen_transformed is not None:

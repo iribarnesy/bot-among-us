@@ -21,6 +21,7 @@ class Bot:
     def run(self, react_to_events=True, blacklist_events=[]):
         if react_to_events:
             self.brain_manager.connect_events(blacklist_events)
+        self.vision_manager.init_event_values()
         self.vision_manager.start_vision_loop()
     
     def stop(self):
