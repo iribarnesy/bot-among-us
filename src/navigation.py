@@ -132,12 +132,7 @@ class NavigationManager(metaclass=SingletonMeta):
         scale = self.scale
         return [MovingAction(self.get_action_str(vector_direction),sum(scale for _ in group)) for vector_direction, group in groupby(vector_directions)]
 
-    def get_moving_actions_to_destination(self, destination, source_coordinates):
-        """ Calculate the path between the current position and the destination given and 
-        generate a list of moving actions to get to the destination.
-        For example, to go right and then top-right it will be : [MovingAction('right',5), MovingAction('top-right', 8.5)]
-        """
-        path = self.calculate_path(source_coordinates, destination)
+    def get_moving_action_from_path(self, path):
         if len(path) == 0:
             print("Didn't find a path between source and target ! 🐾")
             return []
@@ -150,3 +145,11 @@ class NavigationManager(metaclass=SingletonMeta):
         actions = self.get_moving_actions_from_vector_directions(vector_directions)
         return actions
 
+    def get_moving_actions_to_destination(self, destination, source_coordinates):
+        """ Calculate the path between the current position and the destination given and 
+        generate a list of moving actions to get to the destination.
+        For example, to go right and then top-right it will be : [MovingAction('right',5), MovingAction('top-right', 8.5)]
+        """
+        path = self.calculate_path(source_coordinates, destination)
+        actions = self.get_moving_action_from_path(path)
+        return actions

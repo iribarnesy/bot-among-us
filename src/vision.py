@@ -65,6 +65,7 @@ class VisionManager(metaclass=SingletonMeta):
 
     """ Global vision thread
     """
+    
     def start_vision_loop(self):
         if not self.is_vision_looping():
             self.vision_thread = KillableThread(name="compute_screen", target=self.compute_screen)
@@ -74,14 +75,11 @@ class VisionManager(metaclass=SingletonMeta):
         cv.namedWindow('Matches')
         for _ in range(self.MAX_ITERATIONS_FOR_THREAD):
             self.vision_screen = np.array(pyautogui.screenshot())
-            self.get_game_phase()
+            self.vision_screen = pyautogui.screenshot()
             self.is_btn_report_active()
             self.is_btn_admin_active()
             self.is_btn_security_active()
-            # self.is_btn_use_active()
-            if self.want_to_read_tasks and not self.is_read_tasks_running():
-                self.start_read_tasks()
-                
+            self.is_btn_use_active()
             if self.is_impostor():
                 self.is_btn_kill_active()
                 # self.is_btn_sabotage_active()
@@ -97,6 +95,10 @@ class VisionManager(metaclass=SingletonMeta):
                 im = cv.cvtColor(im, cv.COLOR_BGR2RGB)
             cv.imshow('Matches', im)
             cv.waitKey(1)
+            
+            if self.want_to_read_tasks and not self.is_read_tasks_running():
+                self.start_read_tasks()
+            self.get_game_phase()
 
             time.sleep(self.SECONDS_BETWEEN_EACH_SCREEN)
         cv.destroyAllWindows()

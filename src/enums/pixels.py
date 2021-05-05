@@ -27,5 +27,5 @@ class PixelPositions(Enum):
 class PixelRegions(Enum):
     REPORT_BTN = (1670,630),(1870,830)
     KILL_BTN = (1480,890),(1640,1050)
-    CHARACTER_NAME = (900,420),(1020,480)
+    CHARACTER_NAME = (850,350),(1020,480)
     TASKS_TAB = (18,120),(748,1080)

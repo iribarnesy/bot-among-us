@@ -2,6 +2,7 @@ import random
 import pyautogui
 import time
 import threading
+import pickle
 from PIL import ImageGrab
 
 from src.utils import SingletonMeta, KillableThread
@@ -20,6 +21,7 @@ class BrainManager(metaclass=SingletonMeta):
         self.next_task: Task = None
         self.position = bot_position
         self.vision_manager = vision_manager
+        self.tasks_to_fake = None
 
         self.events = {
             'btnReportChanged': self.on_report_btn_changed,
@@ -99,16 +101,33 @@ class BrainManager(metaclass=SingletonMeta):
     ### Tasks resolution
 
     def start_tasks_resolution_thread(self):
-        self.tasks_resolution_thread = KillableThread(name="tasks_resolution", target=self.tasks_resolution)
-        self.tasks_resolution_thread.start()
+        if self.vision_manager.is_impostor():
+            self.tasks_resolution_thread = KillableThread(name="tasks_resolution", target=self.fake_task)
+            self.tasks_resolution_thread.start()
+        else:
+            self.tasks_resolution_thread = KillableThread(name="tasks_resolution", target=self.tasks_resolution)
+            self.tasks_resolution_thread.start()
     
     def tasks_resolution(self):
         self.get_nearest_task()
         while(self.next_task != None):
             print(f"Next task : {self.next_task.name}")
-            BrainManager().go_and_perform(self.next_task)
+            self.go_and_perform(self.next_task)
             self.get_nearest_task()
         print("All tasks done ! ✅")
+        #Tasks are finished, we patrol then !  
+        self.patrol()
+
+    def fake_task(self):
+        if self.tasks_to_fake == None :
+            self.tasks_to_fake = self.get_tasks()
+        while len(self.tasks_to_fake) != 0:
+            print(f"Next task : {self.tasks_to_fake[0].name}")
+            self.go_and_fake(self.tasks_to_fake[0])
+            print("Task faked Haha !")
+            self.tasks_to_fake.pop(0)
+        print("All tasks Faked ! ✅")
+        self.patrol()
     
     def is_tasks_resolution_running(self):
         if self.tasks_resolution_thread is not None:
@@ -151,21 +170,112 @@ class BrainManager(metaclass=SingletonMeta):
     # dead emoji 👻
 
     ### Control methods
-    
+
+    def patrol(self):
+        with open('./src/data/path_patrol.pkl', 'rb') as f:
+            path = pickle.load(f)
+
+        with open('./src/data/moving_actions_patrol.pkl', 'rb') as f:
+            moving_actions = pickle.load(f)
+        
+        our_position = self.position.find_me()
+        # find the closer point
+        closer_point = (0,0)
+        closer_indice = 0
+        closer_distance = 99999
+        # print("SEARCH CLOSER")
+        for i in range(len(path)):
+            distance = manhattan_distance(our_position, path[i])
+            if distance < closer_distance:
+                closer_point = path[i]
+                closer_indice = i
+                closer_distance = distance
+        # print("Closer", closer_point)
+
+        # Go to closer point
+        self.go_to_destination_from_pos(closer_point, our_position)
+        print("START PATROL")
+        # Start patrol
+        moving_actions_start = NavigationManager().get_moving_action_from_path(path[closer_indice:])
+        self.follow_move_actions(moving_actions_start)
+        # print("TRUE PATROL")
+        while(True):
+            self.follow_move_actions(moving_actions)
+
+    def charge_patrol(self):
+        print("Charge")
+        path = []
+        path.append(NavigationManager().calculate_path((1016, 130),(683, 515)))
+        path.append(NavigationManager().calculate_path((683, 515),(322, 217))[1:])
+        path.append(NavigationManager().calculate_path((322, 217),(197, 494))[1:])
+        path.append(NavigationManager().calculate_path((197, 494),(201, 590))[1:])
+        print("1")
+        path.append(NavigationManager().calculate_path((201, 590),(499, 541))[1:])
+        path.append(NavigationManager().calculate_path((499, 541),(374, 868))[1:])
+        path.append(NavigationManager().calculate_path((374, 868),(736, 684))[1:])
+        print("2")
+        path.append(NavigationManager().calculate_path((736, 684),(1178, 729))[1:])
+        path.append(NavigationManager().calculate_path((1178, 729),(1296, 727))[1:])
+        path.append(NavigationManager().calculate_path((1296, 727),(1304, 630))[1:])
+        path.append(NavigationManager().calculate_path((1304, 630), (1448, 207))[1:])
+        print("3")
+        path.append(NavigationManager().calculate_path((1448, 207), (1315, 475))[1:])
+        path.append(NavigationManager().calculate_path((1315, 475),(1749, 531))[1:])
+        path.append(NavigationManager().calculate_path((1749, 531),(1444, 873))[1:])
+        print("4")
+        path.append(NavigationManager().calculate_path((1444, 873),(1216, 972))[1:])
+        path.append(NavigationManager().calculate_path((1216, 972),(1016, 130))[1:])
+        pathFlat = [item for sublist in path for item in sublist]
+
+        print(path)
+        print("\n\n\n")
+        print(pathFlat)
+        print("\n\n\n")
+
+        print("GO")
+        moving_actions = NavigationManager().get_moving_action_from_path(pathFlat)
+        print(moving_actions)
+        print("\n\n\n")
+        
+        with open('./src/data/moving_actions_patrol.pkl', 'wb') as f:
+            pickle.dump(moving_actions, f)
+
+        with open('./src/data/path_patrol.pkl', 'wb') as f:
+            pickle.dump(pathFlat, f)
+
+    def go_to_destination_from_pos(self, destination, position):
+        moving_actions = NavigationManager().get_moving_actions_to_destination(destination, position)
+        self.follow_move_actions(moving_actions)
+
     def go_to_destination(self, destination):
-        MINIMAL_DISTANCE_BEFORE_CHECK_POSITION = 25
-        NUMBER_OF_ACTIONS_BEFORE_CHECK_POSITION = 10
         moving_actions = NavigationManager().get_moving_actions_to_destination(destination, self.position.find_me())
+        self.follow_move_actions(moving_actions)
+
+    def follow_move_actions(self,moving_actions):
+        MINIMAL_DISTANCE_BEFORE_CHECK_POSITION = 15
+        NUMBER_OF_ACTIONS_BEFORE_CHECK_POSITION = 10
+        self.position.set_health_pos()
         nb_actions_executed = 0
+        # threadStarted = False
         for moving_action in moving_actions:
-            moving_action_thread = threading.Thread(name="moving_action", 
-                target=self.position.move, 
-                args=(moving_action.distance, moving_action.direction,))
-            moving_action_thread.start()
+            self.position.move(moving_action.distance, moving_action.direction)
+            # moving_action_thread = threading.Thread(name="moving_action", 
+            #     target=self.position.move, 
+            #     args=(moving_action.distance, moving_action.direction,))
+            # moving_action_thread.start()
             if nb_actions_executed >= NUMBER_OF_ACTIONS_BEFORE_CHECK_POSITION and moving_action.distance > MINIMAL_DISTANCE_BEFORE_CHECK_POSITION:
-                self.position.find_me()
+                # if threadStarted:
+                #     findme_action_thread.join()
+                # findme_action_thread = threading.Thread(name="moving_action", 
+                #     target=self.position.find_me)
+                # findme_action_thread.start()
+                # threadStarted = True
                 nb_actions_executed = 0
-            moving_action_thread.join()
+                self.position.find_me()
+                if self.position.too_far_from_health_pos() :
+                    print("On revient dans le droit chemin !")
+                    self.go_to_destination((self.position.horizontal_position_healthCheck, self.position.vertical_position_healthCheck))
+            # moving_action_thread.join()
             nb_actions_executed += 1
 
     def perform_task(self, task):
@@ -181,10 +291,14 @@ class BrainManager(metaclass=SingletonMeta):
         if VisionManager().is_btn_use_active():
             print(f"Perform task : {task.name} 🦾")
             self.perform_task(task)
-            time.sleep(1.5)
             return True
         else:
             return False
+
+    def go_and_fake(self, task: Task):
+        self.go_to_destination(task.location)
+        # A changer !
+        time.sleep(task.time_to_fake)
 
 
     ### Tasks methods

@@ -18,11 +18,22 @@ class Position:
     def __init__(self):
         self.vertical_position = 0
         self.horizontal_position = 0
+        self.vertical_position_healthCheck = 0
+        self.horizontal_position_healthCheck = 0
         # speed = number of pixels by seconds when we press a key, on a 1920 * 1080 screen.
         self.speed_straight = 103
 
     def get_tuple_coordinates(self):
         return (self.horizontal_position, self.vertical_position)
+
+    def set_health_pos(self):
+        self.vertical_position_healthCheck = self.vertical_position
+        self.horizontal_position_healthCheck = self.horizontal_position
+
+    def too_far_from_health_pos(self):
+        distance = abs(self.vertical_position_healthCheck - self.vertical_position)
+        distance += abs(self.horizontal_position_healthCheck - self.horizontal_position)
+        return distance > 20
 
     def find_me(self):
         # Display the map
@@ -50,6 +61,16 @@ class Position:
         else:
             self.horizontal_position += distance_pix
 
+    def update_healthCheck_pos(self, distance_pix, direction):
+        if direction == Directions.UP:
+            self.vertical_position_healthCheck -= distance_pix
+        elif direction == Directions.DOWN:
+            self.vertical_position_healthCheck += distance_pix
+        elif direction == Directions.LEFT:
+            self.horizontal_position_healthCheck -= distance_pix
+        else:
+            self.horizontal_position_healthCheck += distance_pix
+
     def move_straight(self, distance_pix, direction):
         # Compute the time to travel at the speed.
         time_wait = distance_pix/self.speed_straight
@@ -76,12 +97,15 @@ class Position:
             self.move_straight(distance_pix, direction)
             # Update position
             self.update_pos(distance_pix, direction)
+            self.update_healthCheck_pos(distance_pix, direction)
         else:
             # move
             self.move_diagonal(distance_pix,directions[0],directions[1])
             # Update position
             self.update_pos(distance_pix, directions[0])
             self.update_pos(distance_pix, directions[1])
+            self.update_healthCheck_pos(distance_pix, directions[0])
+            self.update_healthCheck_pos(distance_pix, directions[1])
         pyautogui.PAUSE = 0.1
 
     def __repr__(self):

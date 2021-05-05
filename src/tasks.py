@@ -51,13 +51,14 @@ class TaskType(Enum):
         return task_text_to_task_type[task_text]
 
 class Task:
-    def __init__(self, index, name, location, indicator_location=None, solve_function=None, task_type=None):
+    def __init__(self, index, name, location, indicator_location=None, solve_function=None, task_type=None, time_to_fake=None):
         self.index = index
         self.name = name
         self.location = location
         self.indicator_location = indicator_location
         self.solve_function = solve_function
         self.task_type = task_type
+        self.time_to_fake = time_to_fake
 
     def solve(self):
         return self.solve_function()
@@ -87,23 +88,27 @@ class TaskManager(metaclass=utils.SingletonMeta):
         time.sleep(1)
         pyautogui.moveTo(540, 400)
         pyautogui.drag(900, 0, 1.1, button='left')
+        time.sleep(2)
 
     def download_upload(self):
         pyautogui.moveTo(970, 650)
         pyautogui.click()
+        time.sleep(10)
 
     def accept_power(self):
         pyautogui.moveTo(956, 539)
         pyautogui.click()
+        time.sleep(1.5)
 
     def fuel_engines(self):
         pyautogui.moveTo(1470, 880)
         pyautogui.mouseDown()
         time.sleep(5)
         pyautogui.mouseUp()
+        time.sleep(0.5)
 
     def submit_scan(self):
-        time.sleep(10)
+        time.sleep(11.5)
 
     def divert_power(self):
         sliders = [(620, 780), (715, 780), (813, 780), (912, 780), (1007, 780), (1101, 780), (1201, 780), (1297, 780)]
@@ -114,6 +119,8 @@ class TaskManager(metaclass=utils.SingletonMeta):
                 pyautogui.moveTo(i)
                 pyautogui.drag(0, -100, 0.5, button='left')
                 break
+        
+        time.sleep(1.5)
 
     def empty_chute(self):
         pyautogui.moveTo(1270,420)
@@ -121,6 +128,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
         pyautogui.moveTo(1270,720,0.2)
         time.sleep(3)
         pyautogui.mouseUp()
+        time.sleep(1.5)
 
     def fix_wires(self):
         wires = [(560, 270), (560, 460), (560, 650), (560, 830), (1330, 270), (1330, 460), (1330, 650), (1330, 830)]
@@ -135,6 +143,8 @@ class TaskManager(metaclass=utils.SingletonMeta):
                     time.sleep(0.01)
                     pyautogui.moveTo(wires[j])
                     pyautogui.mouseUp()
+        
+        time.sleep(1.5)
 
     def prime_shields(self):
         tiles = [(1050, 210), (1261, 330), (1261, 586), (964, 909), (635, 725), (635, 454), (964, 425)]
@@ -145,6 +155,8 @@ class TaskManager(metaclass=utils.SingletonMeta):
             if g < 200 and b < 200:
                 pyautogui.moveTo(tile)
                 pyautogui.click()
+        
+        time.sleep(1.5)
                 
 
     def inspect_sample(self):
@@ -152,13 +164,15 @@ class TaskManager(metaclass=utils.SingletonMeta):
         red = (246, 134, 134)
         pyautogui.moveTo(1260, 930)
         pyautogui.click()
-        time.sleep(70)
+        time.sleep(62)
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
         pix = img.load()
         for tube in tubes:
             if pix[tube] == red:
                 pyautogui.moveTo(tube[0], 850)
                 pyautogui.click()
+
+        time.sleep(1.5)
 
     def align_engine_output(self):
         img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
@@ -169,6 +183,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
         pyautogui.mouseDown()
         pyautogui.moveTo(1250, 540)
         pyautogui.mouseUp()
+        time.sleep(1.5)
 
     def clear_asteroids(self): # Méthode bourrine - spam
         pyautogui.PAUSE = 0
@@ -202,6 +217,7 @@ class TaskManager(metaclass=utils.SingletonMeta):
                 refresh_img = refresh_img + 1
 
         pyautogui.PAUSE = 0.1
+        time.sleep(0.5)
 
     def clean_O2_filter(self):
         while True:
@@ -215,6 +231,8 @@ class TaskManager(metaclass=utils.SingletonMeta):
             else:
                 break
 
+        time.sleep(1.5)
+
     def calibrate_distributor(self):
         distributor = [(800, 300), (800, 550), (800, 830)]
         buttons = [(1230, 310), (1230, 580), (1230, 840)]
@@ -225,8 +243,10 @@ class TaskManager(metaclass=utils.SingletonMeta):
                 img = ImageGrab.grab(bbox=(0,0 ,1920,1080))
                 pix = img.load()
                 if pix[distributor[i]] == on:
+                    time.sleep(0.05)
                     pyautogui.click()
                     break
+        time.sleep(1.5)
 
     def start_reactor(self): 
         lights = [(500, 450), (650, 450), (790, 450), (500, 600), (650, 600), (790, 600), (500, 750), (650, 750), (790, 750)]
@@ -247,15 +267,17 @@ class TaskManager(metaclass=utils.SingletonMeta):
                     break
                 
             time.sleep(1)
-            print(flashed)
             for k in flashed:
                 pyautogui.moveTo(buttons[k])
                 pyautogui.click()
-                time.sleep(0.2)        
+                time.sleep(0.2)  
+
+        time.sleep(1.5)   
 
     def stabilize_steering(self):
         pyautogui.moveTo(960, 537)
         pyautogui.click()
+        time.sleep(2)
 
     def chart_course(self):
         img = ImageGrab.grab(bbox=(465,265,1455,815))
@@ -273,13 +295,14 @@ class TaskManager(metaclass=utils.SingletonMeta):
             counter = 0
             for i in range(len(X)):
                 if ((X[i] > (node-40)-465) and (X[i] < (node+40)-465)):
-                    print(str(X[i]) + ", " + str(Y[i]))
                     x_avg += X[i]
                     y_avg += Y[i]
                     counter += 1
             if(counter != 0):
                 pyautogui.moveTo(x_avg/counter+500, y_avg/counter+265)
                 pyautogui.mouseDown()
+        
+        time.sleep(1.5)
                 
 
     def unlock_manifold_get_numbers(self):
@@ -335,6 +358,8 @@ class TaskManager(metaclass=utils.SingletonMeta):
             else:
                 self.start_task()
                 continue
+
+        time.sleep(1.5)
 
     def input_numbers(self, data):
         numbers = [(660, 450), (820, 450), (960, 450), (1120, 450), (1260, 450), (660, 620), (820, 620), (960, 620), (1120, 620), (1260, 620)]
