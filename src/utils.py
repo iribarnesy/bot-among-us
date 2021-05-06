@@ -1,13 +1,13 @@
 import pyautogui
 import cv2.cv2 as cv
 from threading import Lock, Thread
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
 from typing import Tuple
 import time
 import sys
 import trace
 
-from src.enums.pixels import PixelPositions
+from src.enums.pixels import PixelPositions, Colors
 
 def draw_boxes(boxes, screenshot):
   line_color = (0, 255, 0)
@@ -60,8 +60,40 @@ def is_in_text(short_text_to_find, long_text):
       """
       res = long_text.find(short_text_to_find)
       return res != -1
-            
-      
+
+
+def dominant_color(colors_representation):
+  max_representation = 0
+  dominant_color = "ALONE"
+  for color, representaion in colors_representation.items():
+    if representaion > max_representation:
+      max_representation = representaion
+      dominant_color = color
+
+  return dominant_color
+ 
+def get_player_color(top_left_corner, bottom_right_corner, screen):
+    colors = Colors.get_all_player_colors()
+
+    x1, y1 = top_left_corner
+    x2, y2 = bottom_right_corner
+    # print("get_player_color", x1, y1, x2, y2)
+    img = screen[y1:y2, x1:x2]
+    # image = Image.fromarray(img)
+    # image.show()
+    color_representation = {'RED_PLAYER':0,'BLUE_PLAYER':0,'GREEN_PLAYER':0,'YELLOW_PLAYER':0,
+                     'ORANGE_PLAYER':0,'PINK_PLAYER':0,'PURPLE_PLAYER':0,'WHITE_PLAYER':0,
+                     'BLACK_PLAYER':0,'BROWN_PLAYER':0,'CYAN_PLAYER':0,'LIME_PLAYER':0}
+    for raw in img:
+      for pixel in raw:
+        for color in colors:          
+          if all(x <= max(y,z) and x >= min(y,z) for x, y, z in zip(pixel, color[0], color[1])):
+            color_representation[Colors(color).name] += 1
+    # print("representation", color_representation)
+    # print("dominant_color", dominant_color(color_representation))
+    return dominant_color(color_representation)
+
+
 def check_color(top_left_corner, bottom_right_corner, color):
     # TODO: fix because it's doesn't work, it is fitted to red only
     x1, y1 = top_left_corner
