@@ -11,11 +11,12 @@ class Bot:
     def __init__(self, 
                  map_img_path='src/img/new_walkable_small.png',
                  want_to_read_tasks=True,
+                 want_to_detect_players=True,
                  want_to_connect_discord=True,
                  debug_mode=True):
         self.name = "Le bot"
         self.game_map = SkeldMap(map_img_path)
-        self.vision_manager = VisionManager(want_to_read_tasks=want_to_read_tasks, debug_mode=debug_mode)
+        self.vision_manager = VisionManager(want_to_read_tasks=want_to_read_tasks, want_to_detect_players=want_to_detect_players, debug_mode=debug_mode)
         self.position = Position()
         
         self.brain_manager = BrainManager(self.position, vision_manager=self.vision_manager)

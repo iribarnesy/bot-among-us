@@ -39,7 +39,8 @@ class VisionManager(metaclass=SingletonMeta):
 
         self.detect_players_thread: KillableThread = None
         self.want_to_detect_players = want_to_detect_players
-        self.detector = PlayersDetector()
+        if self.want_to_detect_players:
+            self.detector = PlayersDetector()
 
         self.init_event_values()
 
