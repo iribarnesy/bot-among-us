@@ -152,6 +152,30 @@ class BrainManager(metaclass=SingletonMeta):
             self.tasks_resolution_thread.kill()
             print("Terminate :", self.tasks_resolution_thread)
 
+    ### Vote methods
+
+    def vote(self, target):
+        img = ImageGrab.grab(bbox=(0, 0, 1920, 1080))
+        pix = img.load()
+        lst_crewmate = [(880, 260), (880, 400), (880, 540), (880, 680), (880, 820), (1540, 260), (1540, 400), (1540, 540), (1540, 680), (1540, 820)]
+        valid_button = 160
+        x_pix_check_color = 530
+        y_pix_check_color = 50
+
+        if target  == "None":
+            pyautogui.moveTo(337,936)
+            pyautogui.click()
+            pyautogui.moveTo(571,936)   
+            pyautogui.click()
+        else:
+            for crewmate in lst_crewmate:
+                if pix[crewmate][0] > 230:
+                    if pix[crewmate[0] - x_pix_check_color, crewmate[1] + y_pix_check_color] == target.value:
+                        pyautogui.moveTo(crewmate)
+                        pyautogui.click()
+                        pyautogui.moveTo(crewmate[0] - valid_button, crewmate[1])
+                        pyautogui.click()
+                        break
 
     ### Sabotage resolution
 

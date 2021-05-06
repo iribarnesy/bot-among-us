@@ -28,6 +28,19 @@ class Colors(Enum):
     CYAN_PLAYER = ((56, 255, 221),(36, 169, 191))
     LIME_PLAYER = ((80, 240, 57),(21, 168, 66)) # TODO
 
+    RED_PLAYER_VOTE = (190, 63, 70)
+    BLUE_PLAYER_VOTE = (61, 88, 215)
+    GREEN_PLAYER_VOTE = (60, 149, 93)
+    YELLOW_PLAYER_VOTE = (226, 234, 123)
+    ORANGE_PLAYER_VOTE = (226, 147, 69)
+    PINK_PLAYER_VOTE = (221, 114, 197)
+    PURPLE_PLAYER_VOTE = ((107, 47, 188),(59, 23, 124)) #
+    WHITE_PLAYER_VOTE = ((215, 225, 241),(132, 149, 192)) #
+    BLACK_PLAYER_VOTE = ((63, 71, 78),(30, 31, 38)) #
+    BROWN_PLAYER_VOTE = ((113, 73, 30),(94, 38, 21))  #
+    CYAN_PLAYER_VOTE = (89, 242, 224)
+    LIME_PLAYER_VOTE = ((80, 240, 57),(21, 168, 66))  #
+
     @classmethod
     def get_text_colors(cls):
         return [cls.RED_TEXT.value, cls.YELLOW_TEXT.value, cls.WHITE_TEXT.value]
