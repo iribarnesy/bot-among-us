@@ -15,9 +15,41 @@ class Colors(Enum):
     YELLOW_TEXT = (245, 229, 4)
     WHITE_TEXT = (255, 255, 255)
 
+    RED_PLAYER = ((194, 17, 17),(120, 8, 55))
+    BLUE_PLAYER = ((19, 45, 205),(9, 21, 140))
+    GREEN_PLAYER = ((17, 126, 44),(10, 76, 46))
+    YELLOW_PLAYER = ((231, 231, 82),(189, 131, 33))
+    ORANGE_PLAYER = ((233, 123, 13),(176, 61, 21))
+    PINK_PLAYER = ((227, 81, 178),(167, 42, 169))
+    PURPLE_PLAYER = ((107, 47, 188),(59, 23, 124))
+    WHITE_PLAYER = ((215, 225, 241),(132, 149, 192))
+    BLACK_PLAYER = ((63, 71, 78),(30, 31, 38))
+    BROWN_PLAYER = ((113, 73, 30),(94, 38, 21)) 
+    CYAN_PLAYER = ((56, 255, 221),(36, 169, 191))
+    LIME_PLAYER = ((80, 240, 57),(21, 168, 66)) # TODO
+
+    RED_PLAYER_VOTE = (190, 63, 70)
+    BLUE_PLAYER_VOTE = (61, 88, 215)
+    GREEN_PLAYER_VOTE = (60, 149, 93)
+    YELLOW_PLAYER_VOTE = (226, 234, 123)
+    ORANGE_PLAYER_VOTE = (226, 147, 69)
+    PINK_PLAYER_VOTE = (221, 114, 197)
+    PURPLE_PLAYER_VOTE = ((107, 47, 188),(59, 23, 124)) #
+    WHITE_PLAYER_VOTE = ((215, 225, 241),(132, 149, 192)) #
+    BLACK_PLAYER_VOTE = ((63, 71, 78),(30, 31, 38)) #
+    BROWN_PLAYER_VOTE = ((113, 73, 30),(94, 38, 21))  #
+    CYAN_PLAYER_VOTE = (89, 242, 224)
+    LIME_PLAYER_VOTE = ((80, 240, 57),(21, 168, 66))  #
+
     @classmethod
     def get_text_colors(cls):
         return [cls.RED_TEXT.value, cls.YELLOW_TEXT.value, cls.WHITE_TEXT.value]
+    
+    @classmethod
+    def get_all_player_colors(cls):
+        return [cls.RED_PLAYER.value, cls.BLUE_PLAYER.value, cls.GREEN_PLAYER.value, cls.YELLOW_PLAYER.value,
+                cls.ORANGE_PLAYER.value, cls.PINK_PLAYER.value, cls.PURPLE_PLAYER.value, cls.WHITE_PLAYER.value,
+                cls.BLACK_PLAYER.value, cls.BROWN_PLAYER.value, cls.CYAN_PLAYER.value, cls.LIME_PLAYER.value]
 
 class PixelPositions(Enum):
     MAIN_BTN = (1769, 942)
