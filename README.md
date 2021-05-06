@@ -7,6 +7,8 @@
 - Numpy
 - PyAutoGUI
 - Among Us (Steam)
+- FFMPEG
+- shapely (install with conda)
 
 ## Execute
 
@@ -82,6 +84,7 @@ VOICE_CHANNEL_ID = <VOICE_CHANNEL_ID>
 Then you can instantiate the bot and make him say something. It will connect to the discord server/guild, join the "among" channel and speak.
 
 ```python
+from src.bot import Bot
 bot = Bot()
 bot.discord_bot.say("something")
 ```
