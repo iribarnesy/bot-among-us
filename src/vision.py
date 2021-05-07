@@ -139,36 +139,28 @@ class VisionManager(metaclass=SingletonMeta):
         return final_boxes
 
     def is_see_people(self, boxes, screen):
-        # print("is_see_people", boxes)
-        # self.vision_screen = pyautogui.screenshot()
         # retour IA object détection : liste de liste de coordonnées [ymin%ecran, xmin%ecran, ymax%ecran, xmax%ecran] 
         # IL FAUDRAT DONC MULTIPLI PAR 1920*1080
         boxes_addapted = self.get_addapted_boxes(boxes)
-        # print("boxes_adapted", boxes_addapted)
-        # url_photo = "src/players_recognition/positive/" + boxes_addapted.split(' ',1)[0]
-        # coord = boxes_addapted.split(' ',1)[1].split(' ')
-        # count_players = 0
+        
         data = {"players":[],"killed":[]}
-        # while count_players < int(coord[0]):
+        
         for player in boxes_addapted:
-            # actual_player_box = (int(coord[count_players*4 +2]), int(coord[count_players*4 +1]), int(coord[count_players*4 +4]), int(coord[count_players*4 +3]))
-            # Define Color
             region = self.get_region(player)
+            # Define Color
             color = get_player_color((player[1], player[0]), (player[3], player[2]), screen)
             if color == "WHITE_PLAYER":
                 continue
             # Check if is death
-            # print(color)
             is_dead = pyautogui.locateOnScreen('./src/img/dead_body.jpg', region=region, grayscale=True, confidence=.65)
             if is_dead:
                 data["killed"].append(color)
             else:
                 data["players"].append(color)
-            # count_players = count_players +1
         # print(data)
-        # if self.last_log != data:
-        #     self.event_handler.fire('seePeople', data)
-        #     self.last_log = data
+        if self.last_log != data:
+            self.event_handler.fire('seePeople', data)
+            self.last_log = data
 
     def is_vision_looping(self):
         if self.vision_thread is not None:

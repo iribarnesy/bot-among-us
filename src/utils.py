@@ -77,7 +77,6 @@ def get_player_color(top_left_corner, bottom_right_corner, screen):
 
     x1, y1 = top_left_corner
     x2, y2 = bottom_right_corner
-    # print("get_player_color", x1, y1, x2, y2)
     img = screen[y1:y2, x1:x2]
     # image = Image.fromarray(img)
     # image.show()
@@ -89,8 +88,10 @@ def get_player_color(top_left_corner, bottom_right_corner, screen):
         for color in colors:          
           if all(x <= max(y,z) and x >= min(y,z) for x, y, z in zip(pixel, color[0], color[1])):
             color_representation[Colors(color).name] += 1
-    # print("representation", color_representation)
-    # print("dominant_color", dominant_color(color_representation))
+    #Because black is to much present
+    color_representation["BLACK_PLAYER"] = color_representation["BLACK_PLAYER"]/2
+    # color_representation["WHITE_PLAYER"] = 0
+   
     return dominant_color(color_representation)
 
 
