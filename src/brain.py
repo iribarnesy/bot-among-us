@@ -21,7 +21,7 @@ class BrainManager(metaclass=SingletonMeta):
         self.sabotage_resolution_thread = None
         self.tasks_resolution_thread = None
         self.memorize_room_thread = None
-        self.time_init = None
+        self.time_init = time.time()
 
         self.next_task: Task = None
         self.position = bot_position
