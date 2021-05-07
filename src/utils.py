@@ -115,8 +115,8 @@ def check_pixel_color(pixel_position, color):
     im = pyautogui.screenshot(region=(x, y, 1, 1))
     return im.getpixel((0,0)) == color
 
-def check_image(image_path, grayscale=True, confidence=.65):
-    coordinates = pyautogui.locateOnScreen(image_path, grayscale=grayscale, confidence=confidence)
+def check_image(image_path, region, grayscale=True, confidence=.65):
+    coordinates = pyautogui.locateOnScreen(image_path, grayscale=grayscale, confidence=confidence, region=region)
     return coordinates is not None
 
 

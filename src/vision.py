@@ -270,7 +270,7 @@ class VisionManager(metaclass=SingletonMeta):
     """ Other events
     """
     def get_game_phase(self):
-        is_vote_phase = check_image(r"src\img\skip_vote.PNG")
+        is_vote_phase = check_image(r"src\img\skip_vote.PNG", (280, 900, 230, 70))
         if is_vote_phase:
             result = GamePhase.Vote   
         else:
