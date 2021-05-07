@@ -13,7 +13,7 @@ from src.enums.texts import TasksTexts
 
 
 class Log:
-    def __init__(self,room, time, players=[], killed=[]):
+    def __init__(self,room, time = time.time(), players=[], killed=[]):
         self.room = room # Cafet
         self.time = time # t secode
         self.players = players # [yellow ...]
@@ -41,7 +41,7 @@ class Log:
         return df
     
     def equal(self, Log):
-        if Log.room == self.room and Log.time == self.time and len(Log.players) == len(self.players) and len(Log.killed) == len(self.killed):
+        if Log.room == self.room and len(Log.players) == len(self.players) and len(Log.killed) == len(self.killed):
             for player in self.players:
                 if(player not in Log.players):
                     return False
