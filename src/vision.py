@@ -85,7 +85,6 @@ class VisionManager(metaclass=SingletonMeta):
             cv.namedWindow('DEMO')
         for _ in range(self.MAX_ITERATIONS_FOR_THREAD):
             self.vision_screen = np.array(pyautogui.screenshot())
-            self.vision_screen = pyautogui.screenshot()
             self.is_btn_report_active()
             self.is_btn_admin_active()
             self.is_btn_security_active()
@@ -201,9 +200,9 @@ class VisionManager(metaclass=SingletonMeta):
         good_boxes = boxes[scores > min_confidence_threshold]
         self.is_see_people(good_boxes, screenshot_np)
         # draw the detection results onto the original image
+        self.vision_screen_transformed = draw_boxes(good_boxes, screenshot_np)
         if self.debug_mode:
             print(f"Found {len(good_boxes)} player(s)")
-            self.vision_screen_transformed = draw_boxes(good_boxes, screenshot_np)
 
     def is_detect_players_running(self):
         if self.detect_players_thread is not None:
