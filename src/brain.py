@@ -351,17 +351,21 @@ class BrainManager(metaclass=SingletonMeta):
             print("Terminate :", self.memorize_room_thread)
 
     def update_room(self, write_log=True):
+        room_found = "Couloir"
         for room in SkeldMap('src/img/new_walkable_small.png').room:
             if room.isIn(self.position.get_tuple_coordinates()) and room.name != self.room:
-                self.room = room.name
-                if write_log:
-                    if not self.log.empty:
-                        players = self.log["players"].iloc[-1]
-                        killed = self.log["killed"].iloc[-1]
-                    else :
-                        players = []
-                        killed = []
-                    self.addLog(room=self.room, players=players, killed=killed, toPrint=True)
+                found = True
+                room_found = room.name
+        self.room = room_found
+        if write_log:
+            if not self.log.empty:
+                players = self.log["players"].iloc[-1]
+                killed = self.log["killed"].iloc[-1]
+            else :
+                players = []
+                killed = []
+            self.addLog(room=self.room, players=players, killed=killed, toPrint=True)
+
                     
 
 
@@ -378,7 +382,6 @@ class BrainManager(metaclass=SingletonMeta):
         self.addLog(room=self.room, players=player_alive, killed=player_dead, toPrint=True)
 
     def addLog(self, room, players = [], killed = [], task="", toPrint = False):
-        self.time_init = time.time()
         new_log = Log(room, players, killed, time=(time.time() - self.time_init), task=task)
 
         if not self.log.empty:
@@ -392,18 +395,110 @@ class BrainManager(metaclass=SingletonMeta):
             if(toPrint):
                     print(new_log)
 
+    def sentence_from2Logs(self, log1: Log, log2: Log):
+        print("\n")
+        lst_people_arrive = []
+        lst_people_leave = []
+        lst_people_just_die = []
+
+        lst_people_present = []
+        task_done = ""
+
+        retour = ""
+
+        # Dans le cas ou on est dans la même salle
+        if log1.room == log2.room:
+            retour = "J'étais " + log1.room
+
+            # Dans le cas ou on a effectué une tâche
+            if log1.task != "" or log2.task != "":
+                if log1.task != "":
+                    taks_done = log1.task
+                    lst_people_present = log2.players.copy()
+                else :
+                    taks_done = log2.task
+                    lst_people_present = log1.players.copy()
+                # Construction de la chaine retour
+                retour += ", j'ai fais la tâche " + task_done + " et y'avait "
+                for player  in lst_people_present:
+                    retour += player + " et "
+                retour = retour[0:len(retour) - len(" et ")] + " dans la pièce"
+            
+            # Dans les cas les plus globaux
+            else:
+                for player in log1.players:
+                    if player in log2.players:
+                        lst_people_present.append(player)
+                    else:
+                        lst_people_leave.append(player)
+                for player in log2.players:
+                    if player in log1.players and player not in lst_people_present:
+                        lst_people_arrive.append(player)
+                if log1.killed != log2.killed:
+                    for kill in log2.killed:
+                        if kill not in log1.killed:
+                            lst_people_just_die.append(kill)
+                # Construction de la chaine retour
+                if len(lst_people_present) != 0:
+                    retour += " avec "
+                    for player  in lst_people_present:
+                        retour += player + " et "
+                    retour = retour[0:len(retour) - len(" et ")]
+
+                if len(lst_people_leave) != 0 or len(lst_people_arrive) != 0 or len(lst_people_just_die) != 0:
+                    retour += ", j'ai vu "
+                    if len(lst_people_arrive) != 0:
+                        for player  in lst_people_arrive:
+                            retour += player + " et "
+                        retour = retour[0:len(retour) - len(" et ")] + " arriver, "
+                    if len(lst_people_leave) != 0:
+                        for player  in lst_people_leave:
+                            retour += player + " et "
+                        retour = retour[0:len(retour) - len(" et ")] + " partir, "
+                    if len(lst_people_just_die) != 0:
+                        for player  in lst_people_just_die:
+                            retour += player + " et "
+                        retour = retour[0:len(retour) - len(" et ")] + " qui vient juste de mourir."
+
+        else:
+            for player in log1.players:
+                if player in log2.players:
+                    lst_people_present.append(player)
+                else:
+                    lst_people_leave.append(player)
+            for player in log2.players:
+                if player not in log1.players and player not in lst_people_leave:
+                    lst_people_leave.append(player)
+
+
+            if log1.room == "Couloir":
+                retour += "Je suis entré " + log2.room
+            elif log2.room == "Couloir":
+                retour += "Je suis sorti de " + log1.room
+            if len(lst_people_leave) != 0:
+                retour += ", j'ai croisé "
+                for player  in lst_people_leave:
+                    retour += player + " et "
+                retour = retour[0:len(retour) - len(" et ")]
+            if len(lst_people_present) != 0:
+                retour += " j'étais avec "
+                for player  in lst_people_present:
+                    retour += player + " et "
+                retour = retour[0:len(retour) - len(" et ")]
+            if len(log1.killed) != 0 or len(log2.killed) != 0 :
+                retour += " et j'ai vu le cadavre de "
+                for kill in log1.killed:
+                    retour += kill + " et "
+                for kill in log2.killed:
+                    retour += kill + " et "
+                retour = retour[0:len(retour) - len(" et ")]
+        
+        print(retour)
+
+
     def write_logs_file(self):
         filename = "log.csv"
         self.log.to_csv(filename, index=False, mode="a", header=False)
-        #self.log.set_index(keys='time', inplace = True)
-        #filename = "log.txt"
-        #with open(filename, "a") as file:
-            #for k in range(0,len(self.log)):
-                #log_temp = Log(self.log.loc[self.log.index == self.log.index[k]]['room'].values[0], \
-                            #self.log.loc[self.log.index == self.log.index[k]]['players'].values[0], \
-                            #self.log.loc[self.log.index == self.log.index[k]]['killed'].values[0], \
-                            #self.log.index[k])
-                #file.write(log_temp.__repr__() + "\n")
 
     def clean_logs(self):
         self.log.set_index(keys='time', inplace = True)
