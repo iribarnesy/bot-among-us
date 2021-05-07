@@ -389,6 +389,23 @@ class BrainManager(metaclass=SingletonMeta):
             if(toPrint):
                     print(new_log)
 
+    def clean_logs(self):
+        self.log.set_index(keys='time', inplace = True)
+        if len(self.log) > 2:
+            print(self.log)
+            compteur = 0
+            lst_to_delete = []
+            while compteur < len(self.log) -2:
+                if Log(self.log.loc[self.log.index == self.log.index[compteur]]['room'].values[0], self.log.loc[self.log.index == self.log.index[compteur]]['players'].values[0], self.log.loc[self.log.index == self.log.index[compteur]]['killed'].values[0]).equal( \
+                    Log(self.log.loc[self.log.index == self.log.index[compteur+2]]['room'].values[0], self.log.loc[self.log.index == self.log.index[compteur+2]]['players'].values[0], self.log.loc[self.log.index == self.log.index[compteur+2]]['killed'].values[0])):
+                    lst_to_delete.append(self.log.index[compteur])
+                    lst_to_delete.append(self.log.index[compteur+1])
+                    
+                compteur += 1
+
+            for to_del in lst_to_delete:
+                self.log.drop(index=to_del,inplace=True)
+
     ### Tasks methods
 
     def get_tasks(self):
