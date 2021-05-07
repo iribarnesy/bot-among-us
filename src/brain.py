@@ -29,7 +29,7 @@ class BrainManager(metaclass=SingletonMeta):
         self.vision_manager = vision_manager
         self.tasks_to_fake = None
 
-        self.log = pd.DataFrame(columns=["room","time","players","killed"])
+        self.log = pd.DataFrame(columns=["room","time","players","killed", "task"])
         self.events = {
             'btnReportChanged': self.on_report_btn_changed,
             'btnKillChanged': self.on_kill_btn_changed,
@@ -138,6 +138,7 @@ class BrainManager(metaclass=SingletonMeta):
             self.go_and_fake(self.tasks_to_fake[0])
             print("Task faked Haha !")
             self.tasks_to_fake.pop(0)
+            self.addLog(room=self.room, task=self.tasks_to_fake[0].name, toPrint=True)
         print("All tasks Faked ! ✅")
         self.patrol()
     
@@ -327,6 +328,7 @@ class BrainManager(metaclass=SingletonMeta):
         if VisionManager().is_btn_use_active():
             print(f"Perform task : {task.name} 🦾")
             self.perform_task(task)
+            self.addLog(room=self.room, task=task.name, toPrint=True)
             return True
         else:
             return False
@@ -375,11 +377,12 @@ class BrainManager(metaclass=SingletonMeta):
         self.update_room(write_log=False)
         self.addLog(room=self.room, players=player_alive, killed=player_dead, toPrint=True)
 
-    def addLog(self, room, players = [], killed = [], toPrint = False):
-        new_log = Log(room, time.time() - self.time_init, players, killed)
+    def addLog(self, room, players = [], killed = [], task="", toPrint = False):
+        self.time_init = time.time()
+        new_log = Log(room, players, killed, time=(time.time() - self.time_init), task=task)
 
         if not self.log.empty:
-            last_log = Log(self.log.iloc[-1]['room'], self.log.iloc[-1]['time'], self.log.iloc[-1]['players'], self.log.iloc[-1]['killed'])
+            last_log = Log(self.log.iloc[-1]['room'], self.log.iloc[-1]['players'], self.log.iloc[-1]['killed'], self.log.iloc[-1]['time'], self.log.iloc[-1]['task'])
             if not last_log.equal(new_log):
                 self.log = self.log.append(new_log.log_to_dataframe())
                 if(toPrint):
@@ -388,6 +391,19 @@ class BrainManager(metaclass=SingletonMeta):
             self.log = self.log.append(new_log.log_to_dataframe())
             if(toPrint):
                     print(new_log)
+
+    def write_logs_file(self):
+        filename = "log.csv"
+        self.log.to_csv(filename, index=False, mode="a", header=False)
+        #self.log.set_index(keys='time', inplace = True)
+        #filename = "log.txt"
+        #with open(filename, "a") as file:
+            #for k in range(0,len(self.log)):
+                #log_temp = Log(self.log.loc[self.log.index == self.log.index[k]]['room'].values[0], \
+                            #self.log.loc[self.log.index == self.log.index[k]]['players'].values[0], \
+                            #self.log.loc[self.log.index == self.log.index[k]]['killed'].values[0], \
+                            #self.log.index[k])
+                #file.write(log_temp.__repr__() + "\n")
 
     def clean_logs(self):
         self.log.set_index(keys='time', inplace = True)

@@ -13,15 +13,18 @@ from src.enums.texts import TasksTexts
 
 
 class Log:
-    def __init__(self,room, time = time.time(), players=[], killed=[]):
+    def __init__(self,room, players=[], killed=[], time = time.time(), task=""):
         self.room = room # Cafet
         self.time = time # t secode
         self.players = players # [yellow ...]
         self.killed = killed # [pink ...]
+        self.task = task
 
 
     def __repr__(self):
         retour = "(LOG) " + str(self.time) + " - " + str(self.room)
+        if self.task != "":
+            retour = retour + " - Task done : " + self.task
         if len(self.players) > 0:
             retour = retour + " - Players {"
             for player in self.players:
@@ -36,12 +39,12 @@ class Log:
         return retour
 
     def log_to_dataframe(self):
-        d = {'room': [self.room], 'time': [self.time], 'players': [self.players], 'killed': [self.killed]}
+        d = {'room': [self.room], 'time': [self.time], 'players': [self.players], 'killed': [self.killed], 'task': [self.task]}
         df = pd.DataFrame(data=d)
         return df
     
     def equal(self, Log):
-        if Log.room == self.room and len(Log.players) == len(self.players) and len(Log.killed) == len(self.killed):
+        if Log.room == self.room and len(Log.players) == len(self.players) and len(Log.killed) == len(self.killed) and Log.task == self.task:
             for player in self.players:
                 if(player not in Log.players):
                     return False
