@@ -169,12 +169,15 @@ class VisionManager(metaclass=SingletonMeta):
             return False
 
     def stop_vision_loop(self):
+        self.stop_detect_players()
+        self.stop_read_tasks()
+        if self.vision_thread is not None:
             self.vision_thread.kill()
             print("Terminate :", self.vision_thread)
+        self.stop_detect_players()
+        self.stop_read_tasks()
         # self.memorize_players_thread.kill()
         # print("Terminate :", self.memorize_players_thread)
-        self.stop_read_tasks()
-        self.stop_detect_players()
 
     """ Detection of the players
     """
