@@ -360,3 +360,15 @@ class VisionManager(metaclass=SingletonMeta):
             VisionManager().want_to_read_tasks = want_to_read_tasks
             return result
         return wrapper
+
+    @staticmethod
+    def pause_vision_manager_detect_players_decorator(func):
+        def wrapper(*args, **kwargs):
+            want_to_detect_players = VisionManager().want_to_detect_players
+            VisionManager().want_to_detect_players = False
+
+            result = func(*args, **kwargs)
+
+            VisionManager().want_to_detect_players = want_to_detect_players
+            return result
+        return wrapper
