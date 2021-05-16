@@ -324,6 +324,7 @@ class BrainManager(metaclass=SingletonMeta):
             # moving_action_thread.join()
             nb_actions_executed += 1
 
+    @VisionManager.pause_vision_manager_detect_players_decorator
     @VisionManager.pause_vision_manager_read_tasks_decorator
     def perform_task(self, task: Task):
         if task.task_type != TaskType.Unlock_Manifold:
@@ -361,14 +362,14 @@ class BrainManager(metaclass=SingletonMeta):
         for room in SkeldMap('src/img/new_walkable_small.png').room:
             if room.isIn(self.position.get_tuple_coordinates()) and room.name != self.room:
                 self.room = room.name
-        if write_log:
-            if not self.log.empty:
-                players = self.log["players"].iloc[-1]
-                killed = self.log["killed"].iloc[-1]
-            else :
-                players = []
-                killed = []
-            self.addLog(room=self.room, players=players, killed=killed, toPrint=True)
+                if write_log:
+                    if not self.log.empty:
+                        players = self.log["players"].iloc[-1]
+                        killed = self.log["killed"].iloc[-1]
+                    else :
+                        players = []
+                        killed = []
+                    self.addLog(room=self.room, players=players, killed=killed, toPrint=True)
 
     def is_new_room(self, write_log=True):
         memorize = True
