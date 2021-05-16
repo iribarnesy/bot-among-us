@@ -329,7 +329,6 @@ class BrainManager(metaclass=SingletonMeta):
         if task.task_type != TaskType.Unlock_Manifold:
             TaskManager().start_task()
         task.solve()
-        VisionManager().want_to_read_tasks = want_to_read_tasks
 
     def go_and_perform(self, task: Task):
         self.go_to_destination(task.location)
