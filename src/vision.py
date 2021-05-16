@@ -348,3 +348,15 @@ class VisionManager(metaclass=SingletonMeta):
             self._is_sabotage_running = is_sabotage_running
             self.event_handler.fire('sabotageRunningChanged', self.sabotage_running)
         return self._is_sabotage_running
+
+    @staticmethod
+    def pause_vision_manager_read_tasks_decorator(func):
+        def wrapper(*args, **kwargs):
+            want_to_read_tasks = VisionManager().want_to_read_tasks
+            VisionManager().want_to_read_tasks = False
+
+            result = func(*args, **kwargs)
+
+            VisionManager().want_to_read_tasks = want_to_read_tasks
+            return result
+        return wrapper
