@@ -50,7 +50,7 @@ class VisionManager(metaclass=SingletonMeta):
         self.init_event_values()
 
         self.SECONDS_BETWEEN_EACH_SCREEN = 0
-        self.MAX_ITERATIONS_FOR_THREAD = 60
+        self.MAX_ITERATIONS_FOR_THREAD = 1200
         self.event_handler = EventHandler('gamePhaseChanged', 'btnUseChanged', 'btnReportChanged', 'btnKillChanged',
                                          'btnVentChanged', 'btnSabotageChanged', 'btnAdminChanged', 'btnSecurityChanged', 
                                          'tasksTabChanged', 'sabotageRunningChanged','seePeople')
