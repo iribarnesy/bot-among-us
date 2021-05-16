@@ -118,6 +118,7 @@ class BrainManager(metaclass=SingletonMeta):
             self.tasks_resolution_thread.start()
         else:
             self.tasks_resolution_thread = KillableThread(name="tasks_resolution", target=self.tasks_resolution)
+        print("Start :", self.tasks_resolution_thread)            
             self.tasks_resolution_thread.start()
     
     def tasks_resolution(self):
@@ -182,6 +183,7 @@ class BrainManager(metaclass=SingletonMeta):
 
     def start_sabotage_resolution_thread(self, sabotage_running: TaskType):
         self.sabotage_resolution_thread = KillableThread(name="sabotage_resolution", target=self.sabotage_resolution, args=(sabotage_running,))
+        print("Start :", self.sabotage_resolution_thread)
         self.sabotage_resolution_thread.start()
     
     def sabotage_resolution(self, sabotage_running: TaskType):
@@ -342,6 +344,7 @@ class BrainManager(metaclass=SingletonMeta):
     def start_memorize_room_thread(self):
         self.position.find_me()
         self.memorize_room_thread = KillableThread(name="is_new_room", target=self.is_new_room)
+        print("Start :", self.memorize_room_thread)
         self.memorize_room_thread.start()
 
 

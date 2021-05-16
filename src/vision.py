@@ -75,6 +75,7 @@ class VisionManager(metaclass=SingletonMeta):
     def start_vision_loop(self):
         if not self.is_vision_looping():
             self.vision_thread = KillableThread(name="compute_screen", target=self.compute_screen)
+            print("Start :", self.vision_thread)
             self.vision_thread.start()
         # print("memorize players thread")
         # self.memorize_players_thread = KillableThread(name="memorize_players", target=self.memorize_players)
@@ -168,8 +169,8 @@ class VisionManager(metaclass=SingletonMeta):
             return False
 
     def stop_vision_loop(self):
-        self.vision_thread.kill()
-        print("Terminate :", self.vision_thread)
+            self.vision_thread.kill()
+            print("Terminate :", self.vision_thread)
         # self.memorize_players_thread.kill()
         # print("Terminate :", self.memorize_players_thread)
         self.stop_read_tasks()
@@ -180,7 +181,7 @@ class VisionManager(metaclass=SingletonMeta):
     def start_detect_players(self):
         if not self.is_detect_players_running():
             self.detect_players_thread = KillableThread(name="detect_players", target=self.detect_players)
-            print("Start:", self.detect_players_thread)
+            print("Start :", self.detect_players_thread)
             self.detect_players_thread.start()
 
     def detect_players(self, min_confidence_threshold=0.6):
@@ -212,6 +213,7 @@ class VisionManager(metaclass=SingletonMeta):
     def start_read_tasks(self):
         if not self.is_read_tasks_running():
             self.read_tasks_thread = KillableThread(name="read_tasks", target=self.read_tasks)
+            print("Start :", self.read_tasks_thread)
             self.read_tasks_thread.start()
 
     def read_tasks(self):
