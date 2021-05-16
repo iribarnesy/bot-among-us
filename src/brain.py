@@ -115,11 +115,10 @@ class BrainManager(metaclass=SingletonMeta):
     def start_tasks_resolution_thread(self):
         if self.vision_manager.is_impostor():
             self.tasks_resolution_thread = KillableThread(name="tasks_resolution", target=self.fake_task)
-            self.tasks_resolution_thread.start()
         else:
             self.tasks_resolution_thread = KillableThread(name="tasks_resolution", target=self.tasks_resolution)
         print("Start :", self.tasks_resolution_thread)            
-            self.tasks_resolution_thread.start()
+        self.tasks_resolution_thread.start()
     
     def tasks_resolution(self):
         self.get_nearest_task()
@@ -135,11 +134,14 @@ class BrainManager(metaclass=SingletonMeta):
         if self.tasks_to_fake == None :
             self.tasks_to_fake = self.get_tasks()
         while len(self.tasks_to_fake) != 0:
-            print(f"Next task : {self.tasks_to_fake[0].name}")
-            self.go_and_fake(self.tasks_to_fake[0])
+            task_to_fake = self.tasks_to_fake.pop(0)
+            print(f"Next task : {task_to_fake.name}")
+            self.go_and_fake(task_to_fake)
             print("Task faked Haha !")
-            self.tasks_to_fake.pop(0)
-            self.addLog(room=self.room, task=self.tasks_to_fake[0].name, toPrint=True)
+            if len(self.tasks_to_fake == 0):
+                self.addLog(room=None, task="J'ai fini mes tâches !", toPrint=True)
+            else:
+                self.addLog(room=self.room, task=task_to_fake.name, toPrint=True)
         print("All tasks Faked ! ✅")
         self.patrol()
     
@@ -342,7 +344,6 @@ class BrainManager(metaclass=SingletonMeta):
     """ Logs methods
     """
     def start_memorize_room_thread(self):
-        self.position.find_me()
         self.memorize_room_thread = KillableThread(name="is_new_room", target=self.is_new_room)
         print("Start :", self.memorize_room_thread)
         self.memorize_room_thread.start()
@@ -381,7 +382,6 @@ class BrainManager(metaclass=SingletonMeta):
         self.addLog(room=self.room, players=player_alive, killed=player_dead, toPrint=True)
 
     def addLog(self, room, players = [], killed = [], task="", toPrint = False):
-        self.time_init = time.time()
         new_log = Log(room, players, killed, time=(time.time() - self.time_init), task=task)
 
         if not self.log.empty:
