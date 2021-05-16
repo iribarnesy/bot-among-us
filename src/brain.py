@@ -5,6 +5,7 @@ import threading
 import pickle
 from PIL import ImageGrab
 import pandas as pd
+from datetime import datetime
 
 from src.game_map import SkeldMap
 from src.utils import SingletonMeta, KillableThread
@@ -13,6 +14,8 @@ from src.vision import VisionManager, GamePhase
 from src.tasks import TaskManager, TaskType, Task
 from src.navigation import NavigationManager
 from src.log import Log
+
+DATA_FOLDER_PATH = 'src/data/'
 
 class BrainManager(metaclass=SingletonMeta):
     def __init__(self, bot_position=None, bot_room=None, vision_manager=None):
@@ -30,6 +33,8 @@ class BrainManager(metaclass=SingletonMeta):
         self.tasks_to_fake = None
 
         self.log = pd.DataFrame(columns=["room","time","players","killed", "task"])
+        self.sentences = []
+
         self.events = {
             'btnReportChanged': self.on_report_btn_changed,
             'btnKillChanged': self.on_kill_btn_changed,
@@ -213,10 +218,10 @@ class BrainManager(metaclass=SingletonMeta):
     ### Control methods
 
     def patrol(self):
-        with open('./src/data/path_patrol.pkl', 'rb') as f:
+        with open(DATA_FOLDER_PATH + 'path_patrol.pkl', 'rb') as f:
             path = pickle.load(f)
 
-        with open('./src/data/moving_actions_patrol.pkl', 'rb') as f:
+        with open(DATA_FOLDER_PATH + 'moving_actions_patrol.pkl', 'rb') as f:
             moving_actions = pickle.load(f)
         
         our_position = self.position.find_me()
@@ -278,10 +283,10 @@ class BrainManager(metaclass=SingletonMeta):
         print(moving_actions)
         print("\n\n\n")
         
-        with open('./src/data/moving_actions_patrol.pkl', 'wb') as f:
+        with open(DATA_FOLDER_PATH + 'moving_actions_patrol.pkl', 'wb') as f:
             pickle.dump(moving_actions, f)
 
-        with open('./src/data/path_patrol.pkl', 'wb') as f:
+        with open(DATA_FOLDER_PATH + 'path_patrol.pkl', 'wb') as f:
             pickle.dump(pathFlat, f)
 
     def go_to_destination_from_pos(self, destination, position):
@@ -418,10 +423,22 @@ class BrainManager(metaclass=SingletonMeta):
         self.log = self.log.drop(indexes_sure_to_drop)
         return self.log
         
+    def generate_sentences(self):
+        self.clear_logs()
+        self.sentences = [Log(*self.log.iloc[i]).sentence(Log(*self.log.iloc[i + 1])) for i in range(len(self.log) - 1)]
+        return self.sentences
+
     def write_logs_to_file(self, filename=datetime.today().strftime("%Y-%m-%d_%Hh%Mm%Ss")):
         path = f"{DATA_FOLDER_PATH}{filename}.logs.csv"
         self.log.to_csv(path, index=False, mode="a", header=True)
     
+    def write_sentences_to_file(self, filename=datetime.today().strftime("%Y-%m-%d_%Hh%Mm%Ss")):
+        path = f"{DATA_FOLDER_PATH}{filename}.sentences.txt"
+        with open(path, 'a', encoding="utf-8") as f:
+            f.write("\n".join(self.sentences))
+
+
+    """ Mais mdr c'est quoi c'te fonction d'la mort x))"""
     def sentence_from2Logs(self, log1: Log, log2: Log):
         print("\n")
         lst_people_arrive = []
