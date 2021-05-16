@@ -324,9 +324,8 @@ class BrainManager(metaclass=SingletonMeta):
             # moving_action_thread.join()
             nb_actions_executed += 1
 
-    def perform_task(self, task):
-        want_to_read_tasks = VisionManager().want_to_read_tasks
-        VisionManager().want_to_read_tasks = False
+    @VisionManager.pause_vision_manager_read_tasks_decorator
+    def perform_task(self, task: Task):
         if task.task_type != TaskType.Unlock_Manifold:
             TaskManager().start_task()
         task.solve()
