@@ -7,18 +7,19 @@ import pytesseract
 import math
 from enum import Enum
 from shapely.geometry import Polygon, Point
+from ast import literal_eval
 
 import src.utils as utils
 from src.enums.texts import TasksTexts
 
 
 class Log:
-    def __init__(self,room, players=[], killed=[], time = time.time(), task=""):
+    def __init__(self, room, time=time.time(), players=[], killed=[], task=""):
         self.room = room # Cafet
         self.time = time # t secode
-        self.players = players # [yellow ...]
-        self.killed = killed # [pink ...]
-        self.task = task
+        self.players = players if type(players) == list else literal_eval(players) # [yellow ...]
+        self.killed = killed if type(killed) == list else literal_eval(killed) # [pink ...]
+        self.task = task if type(task) == str else ''
 
 
     def __repr__(self):

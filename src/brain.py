@@ -380,10 +380,10 @@ class BrainManager(metaclass=SingletonMeta):
         self.addLog(room=self.room, players=player_alive, killed=player_dead, toPrint=True)
 
     def addLog(self, room, players = [], killed = [], task="", toPrint = False):
-        new_log = Log(room, players, killed, time=(time.time() - self.time_init), task=task)
+        new_log = Log(room, time=(time.time() - self.time_init), players=players, killed=killed, task=task)
 
         if not self.log.empty:
-            last_log = Log(self.log.iloc[-1]['room'], self.log.iloc[-1]['players'], self.log.iloc[-1]['killed'], self.log.iloc[-1]['time'], self.log.iloc[-1]['task'])
+            last_log = Log(self.log.iloc[-1]['room'], self.log.iloc[-1]['time'], self.log.iloc[-1]['players'], self.log.iloc[-1]['killed'], self.log.iloc[-1]['task'])
             if not last_log.equal(new_log):
                 self.log = self.log.append(new_log.log_to_dataframe())
                 if(toPrint):
