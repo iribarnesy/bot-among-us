@@ -355,12 +355,9 @@ class BrainManager(metaclass=SingletonMeta):
             print("Terminate :", self.memorize_room_thread)
 
     def update_room(self, write_log=True):
-        room_found = "Couloir"
         for room in SkeldMap('src/img/new_walkable_small.png').room:
             if room.isIn(self.position.get_tuple_coordinates()) and room.name != self.room:
-                found = True
-                room_found = room.name
-        self.room = room_found
+                self.room = room.name
         if write_log:
             if not self.log.empty:
                 players = self.log["players"].iloc[-1]
@@ -369,9 +366,6 @@ class BrainManager(metaclass=SingletonMeta):
                 players = []
                 killed = []
             self.addLog(room=self.room, players=players, killed=killed, toPrint=True)
-
-                    
-
 
     def is_new_room(self, write_log=True):
         memorize = True
@@ -417,10 +411,10 @@ class BrainManager(metaclass=SingletonMeta):
             # Dans le cas ou on a effectué une tâche
             if log1.task != "" or log2.task != "":
                 if log1.task != "":
-                    taks_done = log1.task
+                    task_done = log1.task
                     lst_people_present = log2.players.copy()
                 else :
-                    taks_done = log2.task
+                    task_done = log2.task
                     lst_people_present = log1.players.copy()
                 # Construction de la chaine retour
                 retour += ", j'ai fais la tâche " + task_done + " et y'avait "
