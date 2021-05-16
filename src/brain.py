@@ -393,6 +393,35 @@ class BrainManager(metaclass=SingletonMeta):
             if(toPrint):
                     print(new_log)
 
+    def clear_logs(self):
+        """ Remove the rows where a player disappear and appear again
+        """
+        indexes_sure_to_drop = []
+        indexes_that_may_be_dropped = []
+        index_to_match_for_ubiquity = 0
+        for i in range(1, len(self.log)):
+            current_line = self.log.iloc[i]
+            line_to_match_for_ubiquity = self.log.iloc[index_to_match_for_ubiquity]
+            
+            a_column_changed = Log.a_column_changed(line_to_match_for_ubiquity, current_line, ['room', 'task'])
+            a_player_appeared = Log.player_appeared(line_to_match_for_ubiquity, current_line)
+            if a_column_changed or a_player_appeared:
+                index_to_match_for_ubiquity = i
+                indexes_that_may_be_dropped = []
+            elif Log.player_disappeared(line_to_match_for_ubiquity, current_line):
+                indexes_that_may_be_dropped.append(i)
+            else:
+                indexes_that_may_be_dropped.append(index_to_match_for_ubiquity)
+                indexes_sure_to_drop += indexes_that_may_be_dropped
+                index_to_match_for_ubiquity = i
+                indexes_that_may_be_dropped = []
+        self.log = self.log.drop(indexes_sure_to_drop)
+        return self.log
+        
+    def write_logs_to_file(self, filename=datetime.today().strftime("%Y-%m-%d_%Hh%Mm%Ss")):
+        path = f"{DATA_FOLDER_PATH}{filename}.logs.csv"
+        self.log.to_csv(path, index=False, mode="a", header=True)
+    
     def sentence_from2Logs(self, log1: Log, log2: Log):
         print("\n")
         lst_people_arrive = []
@@ -492,28 +521,6 @@ class BrainManager(metaclass=SingletonMeta):
                 retour = retour[0:len(retour) - len(" et ")]
         
         print(retour)
-
-
-    def write_logs_file(self):
-        filename = "log.csv"
-        self.log.to_csv(filename, index=False, mode="a", header=False)
-
-    def clean_logs(self):
-        self.log.set_index(keys='time', inplace = True)
-        if len(self.log) > 2:
-            print(self.log)
-            compteur = 0
-            lst_to_delete = []
-            while compteur < len(self.log) -2:
-                if Log(self.log.loc[self.log.index == self.log.index[compteur]]['room'].values[0], self.log.loc[self.log.index == self.log.index[compteur]]['players'].values[0], self.log.loc[self.log.index == self.log.index[compteur]]['killed'].values[0]).equal( \
-                    Log(self.log.loc[self.log.index == self.log.index[compteur+2]]['room'].values[0], self.log.loc[self.log.index == self.log.index[compteur+2]]['players'].values[0], self.log.loc[self.log.index == self.log.index[compteur+2]]['killed'].values[0])):
-                    lst_to_delete.append(self.log.index[compteur])
-                    lst_to_delete.append(self.log.index[compteur+1])
-                    
-                compteur += 1
-
-            for to_del in lst_to_delete:
-                self.log.drop(index=to_del,inplace=True)
 
     ### Tasks methods
 
