@@ -8,9 +8,12 @@ import math
 from enum import Enum
 from shapely.geometry import Polygon, Point
 from ast import literal_eval
+import random
 
 import src.utils as utils
 from src.enums.texts import TasksTexts
+from src.enums.sentences import SentencesForRoom, SentencesForPlayersAppeared, SentencesForPlayersDisappeared, SentencesForPlayersKilled, SentencesForTaskDone
+from src.enums.sentences import TranslationToFrench, TranslationToGameLanguage
 
 
 class Log:
@@ -55,3 +58,93 @@ class Log:
             return True
         else:
             return False
+
+
+    """ Creation of sentences
+    """
+    def room_changed(self, Log):
+        return self.room != Log.room
+    def players_appeared(self, Log):
+        return [player for player in Log.players if player not in self.players]
+    def players_killed(self, Log):
+        return [body for body in Log.killed if body not in self.killed]
+    def players_disappeared(self, Log):
+        return Log.players_appeared(self)
+    def a_task_is_done(self, Log):
+        return Log.task != ''
+        
+    def differences_with(self, Log):
+        differences = {}
+
+        if self.room_changed(Log):
+            differences['room'] = Log.room
+
+        def add_players_difference(players, name):
+            if len(players) > 0:
+                differences[name] = players
+        add_players_difference(self.players_appeared(Log), 'players_appeared')
+        add_players_difference(self.players_killed(Log), 'players_killed')
+        add_players_difference(self.players_disappeared(Log), 'players_disappeared')
+
+        if self.a_task_is_done(Log):
+            differences['task'] = Log.task
+        return differences
+
+    def sentence_for_room(self, room):
+        strf = random.choice(list(SentencesForRoom)).value
+        return strf(room)
+    def sentence_for_players_appeared(self, players):
+        strf = random.choice(list(SentencesForPlayersAppeared)).value
+        return strf(utils.join_words(players))
+    def sentence_for_players_disappeared(self, players):
+        strf = random.choice(list(SentencesForPlayersDisappeared)).value
+        return strf(utils.join_words(players))
+    def sentence_for_players_killed(self, players):
+        strf = random.choice(list(SentencesForPlayersKilled)).value
+        return strf(utils.join_words(players))
+    def sentence_for_task_done(self, task):
+        strf = random.choice(list(SentencesForTaskDone)).value
+        return strf(task)
+
+    def sentence(self, log):
+        differences = self.differences_with(log)
+        differences_to_sentence = {
+            'room': self.sentence_for_room,
+            'players_appeared': self.sentence_for_players_appeared,
+            'players_killed': self.sentence_for_players_killed,
+            'players_disappeared': self.sentence_for_players_disappeared,
+            'task': self.sentence_for_task_done
+        }
+        sentence = [differences_to_sentence[key](value) for key, value in differences.items()]
+        sentence = ". ".join(sentence)
+        sentence_translated = Log.translate_sentence_to_french(sentence)
+        return sentence_translated
+
+    @staticmethod
+    def translate_sentence_to_french(sentence):
+        return utils.translate_from_enum(sentence, TranslationToFrench)
+    @staticmethod
+    def translate_sentence_to_game_language(sentence):
+        return utils.translate_from_enum(sentence, TranslationToGameLanguage)
+
+
+
+    """ Static methods to work with dataframes
+    """
+    @staticmethod
+    def a_column_changed(row1, row2, columns):
+        a_column_changed = False
+        for col in columns:
+            a_column_changed = a_column_changed or row1[col] is not row2[col]
+        return a_column_changed
+
+    @staticmethod
+    def player_appeared(row1, row2, columns=['players', 'killed']):
+        player_appeared = False
+        for col in columns:
+            player_appeared = player_appeared or any(not element in row1[col] for element in row2[col])
+        return player_appeared
+
+    @staticmethod
+    def player_disappeared(row1, row2, columns=['players', 'killed']):
+        return Log.player_appeared(row2, row1, columns)

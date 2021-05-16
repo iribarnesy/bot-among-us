@@ -6,6 +6,7 @@ from typing import Tuple
 import time
 import sys
 import trace
+import copy
 
 from src.enums.pixels import PixelPositions, Colors
 
@@ -61,6 +62,30 @@ def is_in_text(short_text_to_find, long_text):
       res = long_text.find(short_text_to_find)
       return res != -1
 
+def join_words(list_of_words):
+      words = copy.copy(list_of_words)
+      last = words.pop()
+      res = ", ".join(words)
+      if len(words) > 0:
+            res = f"{res} et {last}"
+      else:
+            res = last
+      return res
+
+def translate_from_enum(sentence, enum):
+      translated_sentence = []
+      must_add_a_point = False
+      for word in sentence.split():
+          if word[-1] == '.':
+              must_add_a_point = True
+              word = word.split(".")[0]
+          if word in [e.name for e in list(enum)]:
+              word = enum[word].value
+          if must_add_a_point:
+              word += '.'
+              must_add_a_point = False
+          translated_sentence.append(word)
+      return " ".join(translated_sentence)
 
 def dominant_color(colors_representation):
   max_representation = 0
