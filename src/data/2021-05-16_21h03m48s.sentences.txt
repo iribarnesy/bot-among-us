@@ -1,0 +1,77 @@
+J'ai foulé le sol de Storage
+J'ai foulé le sol de Cafeteria
+Je suis entré à Storage
+Je suis entré à Electrical
+Je suis entré à Storage
+J'ai vu Noir
+Je voyais plus Noir
+Je suis entré à Electrical
+J'ai fini la tâche Calibrate Distributor
+Je suis entré à Storage
+Je suis entré à Shields
+Je suis entré à O2
+Je suis entré à Weapons
+Je suis entré à Cafeteria
+Je suis entré à Admin
+J'ai vu Bleu
+Je voyais plus Bleu. J'ai fini la tâche Swipe Card
+J'ai foulé le sol de Storage
+J'ai foulé le sol de Electrical
+J'ai fini la tâche Calibrate Distributor
+Je suis entré à Storage
+J'ai foulé le sol de Shields
+Je suis entré à O2
+J'ai foulé le sol de Shields
+J'ai foulé le sol de Storage
+J'ai foulé le sol de Electrical
+J'ai fini la tâche Calibrate Distributor
+J'ai foulé le sol de Storage
+Je suis entré à Shields
+Je suis entré à O2
+Je suis entré à Shields
+J'ai foulé le sol de Storage
+J'ai foulé le sol de Electrical
+J'ai fini la tâche Calibrate Distributor
+J'ai fini la tâche Divert Power
+Je suis entré à Lower Engine
+J'ai foulé le sol de Security
+J'ai vu Vert
+Je voyais plus Vert. J'ai fini la tâche Accept Power (Security)
+
+Je suis entré à Upper Engine
+J'ai fini la tâche Align Engine (Upper Engine)
+J'ai foulé le sol de Reactor
+Je suis entré à Security
+J'ai vu Vert
+Je suis entré à Lower Engine
+Je voyais plus Vert
+Je suis entré à Electrical
+J'ai vu personne
+Je voyais plus personne
+Je suis entré à Storage
+J'ai vu Noir
+J'ai foulé le sol de Admin
+Je voyais plus Noir
+Je suis entré à Cafeteria. J'ai vu Bleu
+Je voyais plus Bleu
+Je suis entré à Weapons
+Je suis entré à O2
+J'ai foulé le sol de Navigation
+J'ai vu Orange
+J'ai foulé le sol de Shields
+Je voyais plus Orange
+J'ai foulé le sol de Communications
+Je suis entré à Storage
+J'ai vu personne
+J'ai foulé le sol de Cafeteria
+Je voyais plus personne
+J'ai foulé le sol de Medbay
+J'ai foulé le sol de Cafeteria
+J'ai foulé le sol de Upper Engine
+Je suis entré à Reactor
+J'ai vu Vert
+J'ai vu Rose. Je voyais plus Vert
+Je suis entré à Security
+Je suis entré à Lower Engine
+J'ai vu Vert. Je voyais plus Rose
+Je voyais plus Vert
