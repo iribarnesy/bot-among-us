@@ -32,7 +32,7 @@ class BrainManager(metaclass=SingletonMeta):
         self.vision_manager = vision_manager
         self.tasks_to_fake = None
 
-        self.log = pd.DataFrame(columns=["room","time","players","killed", "task"])
+        self.log = None
         self.sentences = []
 
         self.events = {
@@ -100,6 +100,7 @@ class BrainManager(metaclass=SingletonMeta):
             pyautogui.click()
         elif game_phase == GamePhase.Game:
             self.time_init = time.time()
+            self.reset_log()
             print("Game phase : Do your tasks ! 🏃‍♂️")
             self.start_tasks_resolution_thread()
             print("Game phase : Memorize your rooms !") 
@@ -403,7 +404,7 @@ class BrainManager(metaclass=SingletonMeta):
         indexes_sure_to_drop = []
         indexes_that_may_be_dropped = []
         index_to_match_for_ubiquity = 0
-        for i in range(1, len(self.log)):
+        for i in range(2, len(self.log)):
             current_line = self.log.iloc[i]
             line_to_match_for_ubiquity = self.log.iloc[index_to_match_for_ubiquity]
             
@@ -537,6 +538,11 @@ class BrainManager(metaclass=SingletonMeta):
                 retour = retour[0:len(retour) - len(" et ")]
         
         print(retour)
+
+    def reset_logs(self):
+        self.log.drop(columns=["room","time","players","killed", "task"], inplace=True)
+        self.log = pd.DataFrame(columns=["room","time","players","killed", "task"])
+        self.addLog(room=None, task="Début de round", toPrint=True)
 
     ### Tasks methods
 
