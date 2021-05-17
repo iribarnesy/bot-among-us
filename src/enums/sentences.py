@@ -3,6 +3,10 @@ from enum import Enum
 class SentencesForRoom(Enum):
     A = "Je suis entré à {}".format
     B = "J'ai foulé le sol de {}".format
+    C = "Je me baladais dans {} , le coeur ouvert à l'inconnu".format
+    D = "J'étais à {}".format
+    E = "La vie de moi j'étais à {}".format
+    F = "Je me rappelle plus, je crois que j'étais à {}".format
 
 class SentencesForPlayersAppeared(Enum):
     A = "J'ai vu {}".format
