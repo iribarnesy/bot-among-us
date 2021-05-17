@@ -5,6 +5,8 @@ class TasksTexts(Enum):
     SABOTAGE_LIGHTS = "Fix Lights"
     SABOTAGE_COMMS = "Comms Sabotaged"
     SABOTAGE_REACTOR = "Reactor Meltdown"
+    
+    ROUND_BEGINNING = "Début de round"
 
     @classmethod
     def get_sabotage_texts(cls):

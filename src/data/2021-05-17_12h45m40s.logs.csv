@@ -1,0 +1,21 @@
+room,time,players,killed,task
+,0.010998964309692383,[],[],Début de round
+Upper Engine,11.668950319290161,[],[],
+Cafeteria,16.04099416732788,[],[],
+Upper Engine,54.46589398384094,[],[],
+Upper Engine,59.263059854507446,['YELLOW_PLAYER'],[],
+Reactor,61.26143765449524,['YELLOW_PLAYER'],[],
+Reactor,62.979281187057495,[],[],
+Medbay,64.99528002738953,[],[],
+Upper Engine,76.42067909240723,[],[],
+Upper Engine,81.79567575454712,['BLACK_PLAYER'],[],
+Reactor,83.23499417304993,['BLACK_PLAYER'],[],
+Security,90.06273221969604,['BLACK_PLAYER'],[],
+Reactor,92.14466977119446,['PINK_PLAYER'],[],
+Reactor,93.5879340171814,[],[],
+Cafeteria,0.01,[],[],Début de round
+Cafeteria,1004.750892162323,[],[],
+Upper Engine,1018.9668645858765,[],[],
+Lower Engine,1495.9786458015442,[],[],
+Upper Engine,1519.0340275764465,[],[],
+Middle Engine,1529.9257791042328,[],[],
