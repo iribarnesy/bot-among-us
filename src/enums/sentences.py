@@ -6,16 +6,27 @@ class SentencesForRoom(Enum):
 
 class SentencesForPlayersAppeared(Enum):
     A = "J'ai vu {}".format
-
+    B = "J'ai croisé {}".format 
+    C = "{} était avec moi".format
+    D = "{} était là".format
 class SentencesForPlayersDisappeared(Enum):
     A = "Je voyais plus {}".format
+    B = "{} a disparu".format
+    C = "{} est parti comme un ninja".format
 
 class SentencesForPlayersKilled(Enum):
     A = "J'ai vu un cadavre, c'était {}".format
     B = "Le sang de {} a giclé partout".format
+    C = "{} n'est plus".format
+    D = "J'ai vu {} décapité".format
+    E = "J'ai croisé {} sans tête".format
+    F = "J'ai croisé la colonne vertébrale de {}".format
 
 class SentencesForTaskDone(Enum):
     A = "J'ai fini la tâche {}".format
+    B = "{} términé".format
+    C = "{} est fini".format
+
 
 class TranslationToFrench(Enum):
     crewmate = "équipier"
