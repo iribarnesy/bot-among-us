@@ -32,6 +32,9 @@ class SentencesForTaskDone(Enum):
     C = "{} est fini".format
 
 
+class SentencesRandom(Enum):
+    A = "Tu buzz tu tej"
+
 class TranslationToFrench(Enum):
     crewmate = "équipier"
     vent = "trappe"
