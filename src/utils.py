@@ -73,17 +73,19 @@ def join_words(list_of_words):
       return res
 
 def translate_from_enum(sentence, enum):
+      PUNCTUATION_LIST = ['.', ',']
       translated_sentence = []
-      must_add_a_point = False
+      enum_names = [e.name for e in list(enum)]
+      punctuation = None
       for word in sentence.split():
-          if word[-1] == '.':
-              must_add_a_point = True
-              word = word.split(".")[0]
-          if word in [e.name for e in list(enum)]:
+          if word[-1] in PUNCTUATION_LIST:
+              punctuation = word[-1]
+              word = word[:-1]
+          if word in enum_names:
               word = enum[word].value
-          if must_add_a_point:
-              word += '.'
-              must_add_a_point = False
+          if punctuation is not None:
+              word += punctuation
+              punctuation = None
           translated_sentence.append(word)
       return " ".join(translated_sentence)
 
