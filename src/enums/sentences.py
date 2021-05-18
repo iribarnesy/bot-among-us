@@ -28,7 +28,7 @@ class SentencesForPlayersKilled(Enum):
 
 class SentencesForTaskDone(Enum):
     A = "J'ai fini la tâche {}".format
-    B = "{} términé".format
+    B = "{} terminé".format
     C = "{} est fini".format
 
 
