@@ -404,9 +404,12 @@ class BrainManager(metaclass=SingletonMeta):
             if(toPrint):
                     print(new_log)
 
-    def get_last_round_logs(self):
-        last_round_index = self.log.loc[self.log.task == TasksTexts.ROUND_BEGINNING.value].index[-1]
-        return self.log.iloc[last_round_index:]
+    def get_round_logs(self, round_index=-1):
+        begin_round_indexes = self.log.loc[self.log.task == TasksTexts.ROUND_BEGINNING.value]
+        round_index_in_df = begin_round_indexes.index[round_index]
+        next_round_index = round_index + 1 if not round_index + 1 in [0, len(begin_round_indexes)] else None
+        next_round_index_in_df = begin_round_indexes.index[next_round_index] if next_round_index is not None else None
+        return self.log.iloc[round_index_in_df:next_round_index_in_df]
 
     def clear_logs(self):
         """ Remove the rows where a player disappear and appear again
@@ -433,9 +436,10 @@ class BrainManager(metaclass=SingletonMeta):
         self.log = self.log.drop(indexes_sure_to_drop)
         return self.log
         
-    def generate_sentences(self):
+    def generate_sentences(self, round_index=-1):
         self.clear_logs()
-        self.sentences = [Log(*self.log.iloc[i]).sentence(Log(*self.log.iloc[i + 1])) for i in range(len(self.log) - 1)]
+        logs = self.get_round_logs(round_index)
+        self.sentences = [Log(*logs.iloc[i]).sentence(Log(*logs.iloc[i + 1])) for i in range(len(logs) - 1)]
         return self.sentences
 
     def write_logs_to_file(self, filename=datetime.today().strftime("%Y-%m-%d_%Hh%Mm%Ss")):
@@ -444,7 +448,7 @@ class BrainManager(metaclass=SingletonMeta):
     
     def write_sentences_to_file(self, filename=datetime.today().strftime("%Y-%m-%d_%Hh%Mm%Ss")):
         path = f"{DATA_FOLDER_PATH}{filename}.sentences.txt"
-        with open(path, 'a', encoding="utf-8") as f:
+        with open(path, 'w', encoding="utf-8") as f:
             f.write("\n".join(self.sentences))
 
     ### Tasks methods
