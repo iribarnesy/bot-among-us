@@ -13,7 +13,7 @@ import random
 import src.utils as utils
 from src.enums.texts import TasksTexts
 from src.enums.sentences import SentencesForRoom, SentencesForPlayersAppeared, SentencesForPlayersDisappeared, SentencesForPlayersKilled, SentencesForTaskDone
-from src.enums.sentences import TranslationToFrench, TranslationToGameLanguage
+from src.enums.sentences import TranslationToEnglish, TranslationToGameLanguage
 
 
 class Log:
@@ -122,7 +122,7 @@ class Log:
 
     @staticmethod
     def translate_sentence_to_french(sentence):
-        return utils.translate_from_enum(sentence, TranslationToFrench)
+        return utils.translate_from_enum(sentence, TranslationToEnglish)
     @staticmethod
     def translate_sentence_to_game_language(sentence):
         return utils.translate_from_enum(sentence, TranslationToGameLanguage)

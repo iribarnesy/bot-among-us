@@ -1,35 +1,35 @@
 from enum import Enum
 
 class SentencesForRoom(Enum):
-    A = "Je suis entré à {}".format
-    B = "J'ai foulé le sol de {}".format
-    C = "Je me baladais dans {} , le coeur ouvert à l'inconnu".format
-    D = "J'étais à {}".format
-    E = "La vie de moi j'étais à {}".format
-    F = "Je me rappelle plus, je crois que j'étais à {}".format
+    A = "I entered {}".format
+    B = "I walked on the floor of {}".format
+    C = "I walked around {} with my heart open to the unknown".format
+    D = "I was at {}".format
+    E = "The life of me I was at {}".format
+    F = "I don't remember, I think I was at {}".format
 
 class SentencesForPlayersAppeared(Enum):
-    A = "J'ai vu {}".format
-    B = "J'ai croisé {}".format 
-    C = "{} était avec moi".format
-    D = "{} était là".format
+    A = "I saw {}".format
+    B = "I crossed {}".format 
+    C = "{} was with me".format
+    D = "{} was there".format
 class SentencesForPlayersDisappeared(Enum):
-    A = "Je voyais plus {}".format
-    B = "{} a disparu".format
-    C = "{} est parti comme un ninja".format
+    A = "I saw more {}".format
+    B = "{} disappeared".format
+    C = "{} left like a ninja".format
 
 class SentencesForPlayersKilled(Enum):
-    A = "J'ai vu un cadavre, c'était {}".format
-    B = "Le sang de {} a giclé partout".format
-    C = "{} n'est plus".format
-    D = "J'ai vu {} décapité".format
-    E = "J'ai croisé {} sans tête".format
-    F = "J'ai croisé la colonne vertébrale de {}".format
+    A = "I saw a dead body, it was {}".format
+    B = "{}'s blood spurted everywhere".format
+    C = "{} is no more".format
+    D = "I saw {} beheaded".format
+    E = "I passed {} without a head".format
+    F = "I passed {}'s spine".format
 
 class SentencesForTaskDone(Enum):
-    A = "J'ai fini la tâche {}".format
-    B = "{} terminé".format
-    C = "{} est fini".format
+    A = "I finished the task {}".format
+    B = "{} finished".format
+    C = "{} is finished".format
 
 
 class SentencesRandom(Enum):
@@ -51,6 +51,23 @@ class TranslationToFrench(Enum):
     CYAN_PLAYER = "Cyan"
     LIME_PLAYER = "Citron vert"
     ALONE = "personne"
+
+class TranslationToEnglish(Enum):
+    crewmate = "crewmate"
+    vent = "vent"
+    RED_PLAYER = "Red"
+    BLUE_PLAYER = "Blue"
+    GREEN_PLAYER = "Green"
+    YELLOW_PLAYER = "Yellow"
+    ORANGE_PLAYER = "Orange"
+    PINK_PLAYER = "Pink"
+    PURPLE_PLAYER = "Purple"
+    WHITE_PLAYER = "White"
+    BLACK_PLAYER = "Black"
+    BROWN_PLAYER = "Brown"
+    CYAN_PLAYER = "Cyan"
+    LIME_PLAYER = "Lime"
+    ALONE = "Alone"
 
 class TranslationToGameLanguage(Enum):
     équipier = "crewmate"
