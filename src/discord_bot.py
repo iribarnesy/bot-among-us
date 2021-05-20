@@ -62,7 +62,7 @@ class DiscordBot(commands.Bot):
                 audio_source, 
                 after=lambda error: print('done', error))
 
-    def say(self, message, language="fr"):
+    def say(self, message, language="en"):
         audio = gTTS(text=message, lang=language, slow=False)
         audio_path = "tmp.mp3"
         audio.save(audio_path)
