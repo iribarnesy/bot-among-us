@@ -1,0 +1,49 @@
+room,time,players,killed,task
+,100.1685848236084,[],[],Début de round
+Weapons,21.084529399871826,[],[],
+O2,33.41470742225647,[],[],
+O2,45.8593647480011,[],[],Clean O2 Filter
+Navigation,63.41754722595215,[],[],
+Navigation,96.46077942848206,['BLACK_PLAYER'],[],
+Navigation,103.50465059280396,[],[],Download/Upload (Navigation)
+Navigation,109.05299091339111,[],[],
+Shields,140.36453294754028,[],[],
+Storage,144.02303338050842,[],[],
+Navigation,146.9262661933899,[],[],
+Navigation,147.1974151134491,['BLACK_PLAYER'],[],
+Shields,164.62668776512146,['BLACK_PLAYER'],[],
+Navigation,167.67751550674438,['BLACK_PLAYER'],[],
+Navigation,185.04105186462402,[],[],
+Shields,192.77726364135742,[],[],
+Storage,196.83821725845337,[],[],
+Admin,210.87755513191223,[],[],
+Admin,223.07315373420715,[],[],Download/Upload (Admin)
+Storage,236.70754051208496,[],[],
+Storage,270.1642036437988,[],[],Fix Wires (Storage)
+Storage,294.5850384235382,[],[],Fix Wires (Admin)
+Storage,334.9787950515747,[],[],Fuel Engine (Storage)
+Lower Engine,358.86675214767456,[],[],
+Lower Engine,378.6355094909668,[],[],Fix Wires (Security)
+Lower Engine,389.2410352230072,['GREEN_PLAYER'],[],
+Upper Engine,393.5464587211609,['GREEN_PLAYER'],[],
+Upper Engine,397.57833909988403,[],[],
+Upper Engine,405.510959148407,[],[],Fuel Engine (Upper Engine)
+Lower Engine,437.20137119293213,[],[],
+Storage,452.1476538181305,[],[],
+Lower Engine,455.7349274158478,[],[],
+Electrical,502.9586136341095,[],[],
+Storage,540.38818359375,[],[],
+Admin,547.7425479888916,[],[],
+Storage,550.7602226734161,[],[],
+Admin,581.5903060436249,[],[],
+Admin,587.1526861190796,['BLACK_PLAYER'],[],
+Admin,590.6326189041138,[],[],
+,696.0047624111176,[],[],Début de round
+Admin,0.0020999908447265625,[],[],
+Lower Engine,17.134005069732666,[],[],
+Lower Engine,17.502946853637695,['ORANGE_PLAYER'],[],
+Cafeteria,21.571797847747803,['ORANGE_PLAYER'],[],
+Cafeteria,25.074565649032593,[],[],
+Weapons,184.25193333625793,[],[],
+Cafeteria,288.3187463283539,[],[],
+Weapons,296.3009865283966,[],[],
