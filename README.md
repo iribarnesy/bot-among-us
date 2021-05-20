@@ -64,6 +64,16 @@ If you have some errors due to matplotlib or opencv please uninstall and reinsta
 pip uninstall opencv-python matplotlib
 pip install opencv-python matplotlib
 ```
+## Download Text Summarization model.
+
+Copy the model (download it from [the google drive folder](A changer !!)) to a new models/ folder at the root of the project. It should be as below :
+
+```bash
+models/
+└───A changer /
+    ├───config.json
+    └───pytorch_model.bin
+```
 
 ## Add dependencies to make the bot speak
 
