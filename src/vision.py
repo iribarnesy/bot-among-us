@@ -40,6 +40,7 @@ class VisionManager(metaclass=SingletonMeta):
         self.tasks_text = None
     
         self.detect_players_thread: KillableThread = None
+        self.SECONDS_BETWEEN_EACH_PLAYERS_DETECTION = 2
         self.want_to_detect_players = want_to_detect_players
         if self.want_to_detect_players:
             self.detector = PlayersDetector()
@@ -53,7 +54,7 @@ class VisionManager(metaclass=SingletonMeta):
         self.MAX_ITERATIONS_FOR_THREAD = 1200
         self.event_handler = EventHandler('gamePhaseChanged', 'btnUseChanged', 'btnReportChanged', 'btnKillChanged',
                                          'btnVentChanged', 'btnSabotageChanged', 'btnAdminChanged', 'btnSecurityChanged', 
-                                         'tasksTabChanged', 'sabotageRunningChanged','seePeople')
+                                         'tasksTabChanged', 'sabotageRunningChanged','seePeople', 'language_wantToSay')
         self.event_handler.link(self.is_sabotage_running, 'tasksTabChanged')
 
     def init_event_values(self):
@@ -199,6 +200,7 @@ class VisionManager(metaclass=SingletonMeta):
         self.vision_screen_transformed = draw_boxes(good_boxes, screenshot_np)
         if self.debug_mode:
             print(f"Found {len(good_boxes)} player(s)")
+        time.sleep(self.SECONDS_BETWEEN_EACH_PLAYERS_DETECTION)
 
     def is_detect_players_running(self):
         if self.detect_players_thread is not None:

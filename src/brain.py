@@ -97,10 +97,22 @@ class BrainManager(metaclass=SingletonMeta):
             pass
             # pyautogui.press("e")
 
+    @VisionManager.pause_vision_manager_detect_players_decorator
     def on_game_phase_changed(self, game_phase):
         if game_phase == GamePhase.Vote:
             self.stop_tasks_resolution_thread()
             self.stop_memorize_room_thread()
+
+            self.generate_sentences(round_index=-1)
+            now_string = datetime.today().strftime("%Y-%m-%d_%Hh%Mm%Ss")
+            self.write_logs_to_file(filename=now_string)
+            self.write_sentences_to_file(filename=f"{now_string}_round-{self.get_nb_rounds() - 1}")
+            time.sleep(5)
+            text_to_say = ". ".join(self.sentences[-10:])
+            self.vision_manager.event_handler.fire('language_wantToSay', text_to_say)
+            time.sleep(len(text_to_say) // 15)
+
+            # click on the "skip vote" button
             pyautogui.moveTo(337,936)
             pyautogui.click()
             pyautogui.moveTo(571,936)   
@@ -150,7 +162,7 @@ class BrainManager(metaclass=SingletonMeta):
             print(f"Next task : {task_to_fake.name}")
             self.go_and_fake(task_to_fake)
             print("Task faked Haha !")
-            if len(self.tasks_to_fake == 0):
+            if len(self.tasks_to_fake) == 0:
                 self.addLog(room=None, task="J'ai fini mes tâches !", toPrint=True)
             else:
                 self.addLog(room=self.room, task=task_to_fake.name, toPrint=True)
@@ -404,6 +416,9 @@ class BrainManager(metaclass=SingletonMeta):
             if(toPrint):
                     print(new_log)
 
+    def get_nb_rounds(self):
+        return len(self.log.loc[self.log.task == TasksTexts.ROUND_BEGINNING.value])
+
     def get_round_logs(self, round_index=-1):
         begin_round_indexes = self.log.loc[self.log.task == TasksTexts.ROUND_BEGINNING.value]
         round_index_in_df = begin_round_indexes.index[round_index]
@@ -444,7 +459,7 @@ class BrainManager(metaclass=SingletonMeta):
 
     def write_logs_to_file(self, filename=datetime.today().strftime("%Y-%m-%d_%Hh%Mm%Ss")):
         path = f"{DATA_FOLDER_PATH}{filename}.logs.csv"
-        self.log.to_csv(path, index=False, mode="a", header=True)
+        self.log.to_csv(path, index=False, mode="w", header=True)
     
     def write_sentences_to_file(self, filename=datetime.today().strftime("%Y-%m-%d_%Hh%Mm%Ss")):
         path = f"{DATA_FOLDER_PATH}{filename}.sentences.txt"

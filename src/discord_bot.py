@@ -23,7 +23,7 @@ ffmpeg_options = {
 client = discord.Client()
 
 class DiscordBot(commands.Bot):
-    def __init__(self):
+    def __init__(self, event_handler):
         commands.Bot.__init__(self, command_prefix='!', self_bot=False)
         self.guild = None
         self.voice_channel = None
@@ -32,11 +32,16 @@ class DiscordBot(commands.Bot):
         self.add_commands()
         self.loop = asyncio.get_event_loop()
 
+        self.event_handler = event_handler
+        self.event_handler.link(self.say, 'language_wantToSay')
+        self.ready = False
+
     async def on_ready(self):
         self.guild = discord.utils.get(self.guilds, name=GUILD)
         self.voice_channel = discord.utils.get(self.guild.channels, id=int(VOICE_CHANNEL_ID))
         self.text_channel = discord.utils.get(self.guild.channels, id=int(TEXT_CHANNEL_ID))
         print('{} is ready !'.format(self.user.name))
+        self.ready = True
 
     def _wait_for_function(self, func):
         future = asyncio.run_coroutine_threadsafe(
@@ -64,8 +69,13 @@ class DiscordBot(commands.Bot):
         self.play(audio_path)
 
     def join_voice_channel(self):
-        self._wait_for_function(self.voice_channel.connect())
-        self.voice_client = self.guild.voice_client
+        if self.ready:
+            self._wait_for_function(self.voice_channel.connect())
+            self.voice_client = self.guild.voice_client
+        else:
+            print("Discord bot not ready for joining voice channel, retrying...")
+            time.sleep(0.5)
+            self.join_voice_channel()
     
     def leave_voice_channel(self):
         voice_client = self.guild.voice_client

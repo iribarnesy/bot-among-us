@@ -20,7 +20,7 @@ class Bot:
         self.position = Position()
                 
         if want_to_connect_discord:
-            self.discord_bot = DiscordBot()
+            self.discord_bot = DiscordBot(event_handler=self.vision_manager.event_handler)
             self.discord_bot.start_listening()
 
         self.room = ""
