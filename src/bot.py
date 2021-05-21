@@ -13,6 +13,7 @@ class Bot:
                  want_to_read_tasks=True,
                  want_to_detect_players=True,
                  want_to_connect_discord=True,
+                 want_to_speak_T5=True,
                  debug_mode=True):
         self.name = "BOTéFATALE"
         self.game_map = SkeldMap(map_img_path)
@@ -24,7 +25,7 @@ class Bot:
             self.discord_bot.start_listening()
 
         self.room = ""
-        self.brain_manager = BrainManager(self.position, self.room, vision_manager=self.vision_manager)
+        self.brain_manager = BrainManager(self.position, self.room, want_to_speak_T5, vision_manager=self.vision_manager)
 
     def run(self, 
             react_to_events=True, blacklist_events=[], 

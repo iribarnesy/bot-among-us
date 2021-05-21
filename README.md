@@ -9,6 +9,8 @@
 - Among Us (Steam)
 - FFMPEG
 - shapely (install with conda)
+- PyTorch
+- Transformers[sentencepiece]
 
 ## Execute
 
@@ -64,6 +66,18 @@ If you have some errors due to matplotlib or opencv please uninstall and reinsta
 pip uninstall opencv-python matplotlib
 pip install opencv-python matplotlib
 ```
+## Download Text Summarization model.
+
+Copy the model (download it from [the google drive folder](https://drive.google.com/drive/u/1/folders/1-A17YbwDyzZiHLvBWI6JOAuIhSWR4OuM)) to a new models/ folder at the root of the project. It should be as below :
+
+```bash
+models/
+└───T5_summarization_model/
+    ├───config.json
+    └───pytorch_model.bin
+```
+
+This model needs torch and transformers[sentencepiece] packages to work.
 
 ## Add dependencies to make the bot speak
 
