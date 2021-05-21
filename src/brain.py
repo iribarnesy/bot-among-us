@@ -15,17 +15,22 @@ from src.tasks import TaskManager, TaskType, Task
 from src.navigation import NavigationManager
 from src.log import Log
 from src.enums.texts import TasksTexts
+from src.summarization import load_model_summarization, generate
 
 DATA_FOLDER_PATH = 'src/data/'
 
 class BrainManager(metaclass=SingletonMeta):
-    def __init__(self, bot_position=None, bot_room=None, vision_manager=None):
+    def __init__(self, bot_position=None, bot_room=None, want_to_speak_T5=True, vision_manager=None):
         self.MAX_RETRIES = 4
 
         self.sabotage_resolution_thread = None
         self.tasks_resolution_thread = None
         self.memorize_room_thread = None
         self.time_init = time.time()
+
+        self.want_to_speak_T5 = want_to_speak_T5
+        if self.want_to_speak_T5:
+            self.device,self.tokenizer,self.model = load_model_summarization()
 
         self.next_task: Task = None
         self.position = bot_position
@@ -97,6 +102,10 @@ class BrainManager(metaclass=SingletonMeta):
             pass
             # pyautogui.press("e")
 
+    def test_T5_summarization(self):
+        text = """I walked the floor of storage. I have walked the floor of cafeteria. I entered storage. I entered electrical. I entered storage. I saw Black. I saw more Black. I entered electrical. I have finished the Calibrate Distributor task. I entered storage. I entered shields. I entered oxygen. I entered weapons. I entered cafeteria. I entered admin. I saw Blue. I saw more Blue. I finished the Swipe Card task. I walked the floor of storage. I walked the floor of electrical. I have finished the Calibrate Distributor task. I entered storage. I have walked on shields soil. I entered oxygen. I have walked on shields soil. I walked the floor of storage. I walked the floor of electrical. I have finished the Calibrate Distributor task. I walked the floor of storage. I entered shields. I entered oxygen. I entered shields. I walked the floor of storage. I walked the floor of electrical. I have finished the Calibrate Distributor task. I finished the Divert Power task. I entered lower engine. I have stepped on the floor of security. I saw Green. I saw more Green. I finished the Accept Power (security) task."""
+        print(generate(self.tokenizer, self.model, self.device, text))
+
     @VisionManager.pause_vision_manager_detect_players_decorator
     def on_game_phase_changed(self, game_phase):
         if game_phase == GamePhase.Vote:
@@ -107,8 +116,12 @@ class BrainManager(metaclass=SingletonMeta):
             now_string = datetime.today().strftime("%Y-%m-%d_%Hh%Mm%Ss")
             self.write_logs_to_file(filename=now_string)
             self.write_sentences_to_file(filename=f"{now_string}_round-{self.get_nb_rounds() - 1}")
-            time.sleep(5)
-            text_to_say = ". ".join(self.sentences[-10:])
+            if self.want_to_speak_T5 :
+                text = ". ".join(self.sentences)
+                text_to_say = generate(self.tokenizer, self.model, self.device, text)
+            else:
+                time.sleep(5)
+                text_to_say = ". ".join(self.sentences[-10:])
             self.vision_manager.event_handler.fire('language_wantToSay', text_to_say)
             time.sleep(len(text_to_say) // 15)
 
