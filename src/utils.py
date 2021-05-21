@@ -116,7 +116,7 @@ def get_player_color(top_left_corner, bottom_right_corner, screen):
           if all(x <= max(y,z) and x >= min(y,z) for x, y, z in zip(pixel, color[0], color[1])):
             color_representation[Colors(color).name] += 1
     #Because black is to much present
-    color_representation["BLACK_PLAYER"] = color_representation["BLACK_PLAYER"]/2
+    color_representation["BLACK_PLAYER"] = 0
     # color_representation["WHITE_PLAYER"] = 0
    
     return dominant_color(color_representation)
