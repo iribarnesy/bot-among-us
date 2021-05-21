@@ -18,9 +18,11 @@
   </p>
 </p>
 
-## Features
+## Bot demonstration in video
 
 [![Bot demonstration](https://img.youtube.com/vi/ZJJWm91Fj_w/0.jpg)](https://www.youtube.com/watch?v=ZJJWm91Fj_w)
+
+## Features
 
 This repository contains a human-like bot (only use the screen, the mouse and the keyboard) which is autonomous.
 
@@ -49,7 +51,7 @@ You can read the french report if you want more details about the features and t
 
 ## Execute
 
-To run, use the command ``` python bot.py``` and use the menu to do your desired function!
+To run, use the command ``` python launch_bot.py```.
 
 ## Google Cloud Vision
 
