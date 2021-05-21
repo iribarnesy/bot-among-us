@@ -117,11 +117,11 @@ class Log:
         }
         sentence = [differences_to_sentence[key](value) for key, value in differences.items()]
         sentence = ". ".join(sentence)
-        sentence_translated = Log.translate_sentence_to_french(sentence)
+        sentence_translated = Log.translate_sentence_to_english(sentence)
         return sentence_translated
 
     @staticmethod
-    def translate_sentence_to_french(sentence):
+    def translate_sentence_to_english(sentence):
         return utils.translate_from_enum(sentence, TranslationToEnglish)
     @staticmethod
     def translate_sentence_to_game_language(sentence):
