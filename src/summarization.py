@@ -70,7 +70,7 @@ def generate(tokenizer, model, device, text):
             generated_ids = model.generate(
                 input_ids = ids,
                 attention_mask = mask, 
-                max_length=150, 
+                max_length=50, 
                 num_beams=2,
                 repetition_penalty=2.5, 
                 length_penalty=1.0, 
