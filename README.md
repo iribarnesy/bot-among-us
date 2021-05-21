@@ -1,4 +1,39 @@
-# Among Us Bot
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
+  <a href="https://store.steampowered.com/app/945360/Among_Us/">
+    <img src="presentation/Among_Us_Logo.png" alt="Logo">
+  </a>
+
+  <h3 align="center">Among Us intelligent agent - End of Study Project</h3>
+
+  <p align="center">
+    Intelligent agent in a social environment - Among Us, a bluff video game.
+    <br />
+    Study project in collaboration with CY-tech university.
+    <br />
+    <a href="https://drive.google.com/drive/u/1/folders/0AJSCBLTLuHC0Uk9PVA"><strong>Explore the Google Drive folder »</strong></a>
+    <br />
+    <a href="https://github.com/iribarnesy/bot-among-us/blob/main/rapport_PFE.pdf"><strong>Read the french report »</strong></a>
+  </p>
+</p>
+
+## Features
+
+[![Bot demonstration](https://img.youtube.com/vi/ZJJWm91Fj_w/0.jpg)](https://www.youtube.com/watch?v=ZJJWm91Fj_w)
+
+This repository contains a human-like bot (only use the screen, the mouse and the keyboard) which is autonomous.
+
+- The agent can navigate through the environment of the Skeld map.
+- He can do all the tasks of Skeld Map.
+- He can detect other players in the screen.
+- He can kill the crewmates.
+- He can report the bodies.
+- He can memorize the events he has lived (the moment, the room he was, the players he saw, the task he has done).
+- He can summarize what he lived during the past round.
+
+You can read the french report if you want more details about the features and their technical implementation.
+
 ## Requirements
 
 - Python3
