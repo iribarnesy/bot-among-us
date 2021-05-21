@@ -40,6 +40,7 @@ class BrainManager(metaclass=SingletonMeta):
 
         self.log = pd.DataFrame(columns=["room","time","players","killed", "task"])
         self.sentences = []
+        self.summary = None
 
         self.events = {
             'btnReportChanged': self.on_report_btn_changed,
@@ -117,13 +118,14 @@ class BrainManager(metaclass=SingletonMeta):
             self.write_logs_to_file(filename=now_string)
             self.write_sentences_to_file(filename=f"{now_string}_round-{self.get_nb_rounds() - 1}")
             if self.want_to_speak_T5 :
-                text = ". ".join(self.sentences)
-                text_to_say = generate(self.tokenizer, self.model, self.device, text)
+                text = ". ".join(self.sentences[-40:])
+                self.summary = generate(self.tokenizer, self.model, self.device, text)
+                text_to_say = self.summary
             else:
                 time.sleep(5)
                 text_to_say = ". ".join(self.sentences[-10:])
             self.vision_manager.event_handler.fire('language_wantToSay', text_to_say)
-            time.sleep(len(text_to_say) // 15)
+            time.sleep(len(text_to_say) // 11)
 
             # click on the "skip vote" button
             pyautogui.moveTo(337,936)
