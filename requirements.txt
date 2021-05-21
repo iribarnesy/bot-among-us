@@ -10,3 +10,5 @@ playsound
 discord.py
 asyncio
 python-dotenv
+torch
+transformers[sentencepiece]
