@@ -67,8 +67,8 @@ class TranslationToEnglish(Enum):
     BROWN_PLAYER = "Brown"
     CYAN_PLAYER = "Cyan"
     LIME_PLAYER = "Lime"
-    ALONE = "Alone"
-
+    ALONE = "Nobody"
+    
 class TranslationToGameLanguage(Enum):
     équipier = "crewmate"
     équipiers = "crewmates"
